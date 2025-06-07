@@ -1,0 +1,117 @@
+# Apéndice  {#sec:ap .unnumbered}
+
+## Teorema Central del Límite {#sec:tcl .unnumbered}
+
+
+
+```{theorem, label="tcl", name="Teorema Central del Límite"}
+
+Siguiendo a @bertsekas2008introduction, sea $X_1,X_2, \dots$ con $i=1,\dots,n$, una secuencia de variables aleatorias $iid$ con media \( \mu \) y varianza \( \sigma^2 \) finita y definamos 
+
+\begin{equation}
+Z_n=\frac{X_1+\dots+ X_n-n\mu}{\sigma\sqrt{n}}
+\end{equation}
+
+
+Entonces, la función de distribución acumulada (CDF) de \( Z_n \) converge a la CDF normal estándar \( \Phi(z) \), es decir:
+  
+$$
+\lim_{n \to \infty} \mathbb{P}(Z_n \leq z) = \Phi(z) = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^z e^{-x^2/2} dx, \quad \text{para todo } z \in \mathbb{R}.
+$$
+```
+
+
+__Importancia conceptual:__ El TCL nos dice que la suma de muchas variables aleatorias independientes es aproximadamente normal. Esto se observa en situaciones donde un efecto aleatorio es la suma de muchas influencias pequeñas e independientes. 
+
+__Importancia práctica:__ El TCL permite aproximar distribuciones sin conocer los detalles exactos de las funciones de masa o densidad. Basta con conocer la media y la varianza, lo que facilita el uso de la tabla de la normal estándar para cálculos de probabilidades, estimaciones e inferencias estadísticas.
+
+## Aproximaciones Basadas en el Teorema Central del Límite {.unlisted .unnumbered}
+
+El **Teorema Central del Límite (TCL)** permite aproximar probabilidades asociadas a la suma de variables aleatorias independientes tratándolas como si siguieran una distribución normal. Dado que la normalidad se preserva bajo transformaciones lineales, esto equivale a considerar que \( S_n \) es una variable aleatoria normal con media \( n\mu \) y varianza \( n\sigma^2 \).
+
+### Aproximación Normal Basada en el TCL
+
+Sea \( S_n = X_1 + \dots + X_n \), donde las \( X_i \) son variables aleatorias independientes e idénticamente distribuidas con media \( \mu \) y varianza \( \sigma^2 \). Si \( n \) es grande, la probabilidad \( \mathbb{P}(S_n \leq c) \) puede aproximarse tratando a \( S_n \) como si siguiera una distribución normal, siguiendo el siguiente procedimiento:
+
+1. Calcular la media \( n\mu \) y la varianza \( n\sigma^2 \) de \( S_n \).
+2. Calcular el valor normalizado
+   $$
+   z = \frac{c - n\mu}{\sigma \sqrt{n}}.
+   $$
+3. Usar la aproximación
+   $$
+   \mathbb{P}(S_n \leq c) \approx \Phi(z),
+   $$
+   donde \( \Phi(z) \) es la función de distribución acumulada de la normal estándar, disponible en tablas estadísticas o mediante software.
+
+ Esta aproximación es válida cuando \( n \) es suficientemente grande y se cumplen las condiciones del Teorema Central del Límite.
+
+
+## Teorema de los tipos de extremales {#sec:teoext .unnumbered}
+
+Las tres distribuciones de valores extremos son Gumbel, Frechet y Weibull, como se expresan en el siguiente Teorema \@ref(thm:thap1).
+
+
+
+
+::: {.theorem #thap1 name="Teorema de los tipos de extremales"}
+Si $\exists$ las secuencias de constantes $\left\{  a_n \right\}$ y $\left\{  b_n \right\}$ tal que 
+
+$$
+\Pr\{M^{\ast}_n \leq z\} \to G(z) \quad\text{a medida que}\quad n\to\infty
+$$  
+  
+siendo $G$ una función de distribución no degenerada, entonces $G$ pertenece a una de las 3 siguientes familias:
+  
+\begin{align}
+\begin{array}{rcl}
+1)\;G(z) & = & \exp\left\{ -\exp\left[-\left( \frac{z-b}{a} \right)  \right] \right\}, \quad-\infty< z < \infty  \\
+\\
+2)\;G(z)& = & \left\{ \begin{array}{cl}
+0 & ,\quad z\leq b\\
+\exp\left\{ -\left( \frac{z-b}{a} \right)^{-\alpha} \right\} & , \quad z>b
+\end{array} \right. \\
+\\
+3)\;G(z) & = &\left\{ \begin{array}{cl}
+\exp\left\{ -\left[  -\left( \frac{z-b}{a} \right)^{\alpha}\right] \right\} & , \quad z< b \\
+1 & , \quad z \geq b
+\end{array} \right.
+\end{array}
+\end{align}
+  
+para parámetros $a>0$, $b$, y en los casos 2) y 3) para $\alpha >0$. $\square$
+::: 
+
+
+
+El Teorema \@ref(thm:thap1) establece que los máximos muestrales reescalados $\frac{M_n - b_n}{a_n}$
+convergen en distribución hacia una variable cuya distribución pertenece a una de las tres familias mencionadas. Lo notable de este resultado es que los tres tipos de distribuciones extremales son los únicos límites posibles para las distribuciones de \( M_n \), independientemente de la distribución \( F \) de la población. En este sentido, el teorema proporciona un análogo del teorema central del límite para valores extremos. Es decir, no importa cuál sea la distribución original de los datos, cuando tomás muchos máximos muestrales ( valores máximos), y los reescalás de forma adecuada, su distribución siempre va a parecerse a una de tres formas posibles: Gumbel, Fréchet o Weibull [@coles2001introduction].
+
+\clearpage
+
+## Función de densidad (PDF) vs Función de distribución acumulada (CDF) {#sec:densdistr .unnumbered}
+
+
+\begin{table}[h!]
+\centering
+\caption{Comparación entre PDF y CDF}
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Concepto} & \textbf{PDF} & \textbf{CDF} \\
+\hline
+\textbf{Nombre técnico} & Probability Density Function & Cumulative Distribution Function \\
+\hline
+\textbf{Notación típica} & $f(x)$ & $F(x)$ \\
+\hline
+\textbf{Qué representa} & La \textit{intensidad} de probabilidad en un punto & La \textit{probabilidad acumulada} hasta un punto \\
+\hline
+\textbf{Propósito} & Describe cómo se concentra la probabilidad & Indica la probabilidad de que $X \le x$ \\
+\hline
+\textbf{Interpretación} & No es una probabilidad directa & Es una probabilidad \\
+\hline
+\textbf{Propiedades clave} & $f(x) \ge 0$, $\int_{-\infty}^{\infty} f(x)\,dx = 1$ & $F(x) = \int_{-\infty}^{x} f(t)\,dt$, creciente, $F(\infty)=1$ \\
+\hline
+\textbf{Usos comunes} & Visualizar dónde se concentran valores de $X$ & Calcular probabilidades y cuantiles \\
+\hline
+\end{tabularx}
+\end{table}

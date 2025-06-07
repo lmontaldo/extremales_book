@@ -1,8 +1,70 @@
+\usepackage[a4paper,top=3cm,bottom=3cm,left=2.5cm,right=2.5cm]{geometry}
+\usepackage{fancyhdr}
+\fancyhf{} % limpia encabezados y pies
+\fancyfoot[C]{\thepage} % número de página centrado en el pie
+\pagestyle{fancy}
 \usepackage{booktabs}
+\usepackage{etoolbox}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{tabularx}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{xcolor}
+\definecolor{benettongreen}{RGB}{0, 173, 67}
+\definecolor{mustardyellow}{RGB}{204, 143, 0}
+\definecolor{darkgrey}{RGB}{60, 60, 60}
+\definecolor{darkergrey}{rgb}{0.5, 0.5, 0.5}
+\definecolor{lightgrey}{rgb}{0.8, 0.8, 0.8}
+\definecolor{red}{RGB}{240, 0, 0}
+\definecolor{blue}{RGB}{0, 0, 255}
+\definecolor{acrcolor}{RGB}{150, 60, 0}
+\definecolor{VeryDarkBlue}{rgb}{0.0, 0.0, 0.7}
+\definecolor{DarkBloodRed}{RGB}{139, 0, 0}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=red,
+    citecolor=VeryDarkBlue,
+    filecolor=darkergrey,
+    urlcolor=mustardyellow
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifxetex
+  \usepackage{polyglossia}
+  \usepackage{fontspec}
+  \setmainfont{Palatino}
+  \setmainlanguage{spanish}
+  % Tabla en lugar de cuadro
+  \gappto\captionsspanish{\renewcommand{\tablename}{Tabla}
+          \renewcommand{\listtablename}{Índice de tablas}}
+\else
+  \usepackage[spanish,es-tabla]{babel}
+\fi
+
+\AtBeginDocument{
+    \AtBeginShipoutNext{
+        \AtBeginShipoutUpperLeft{
+            \put(\dimexpr\paperwidth/2-\textwidth/2\relax, -750){
+                \makebox[\textwidth]{
+                    \includegraphics[width=0.35\textwidth]{images/logomedia.png}  % Adjust width as needed
+                    \hfill
+                    \includegraphics[width=0.3\textwidth]{images/cure.png} % Make it 90% smaller
+                }
+            }
+        }
+    }
+}
+
 \usepackage{amsthm}
 \makeatletter
 \def\thm@space@setup{%
   \thm@preskip=8pt plus 2pt minus 4pt
   \thm@postskip=\thm@preskip
 }
-\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+

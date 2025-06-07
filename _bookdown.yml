@@ -1,5 +1,21 @@
-book_filename: "bookdown-demo"
+book_filename: 'Extremales'
+output_dir: _book
+new_session: no
 language:
+  label:
+    fig: 'Figura '
+    tab: 'Tabla '
+    eq: 'Ecuación '
+    thm: 'Teorema '
+    lem: 'Lema '
+    def: 'Definición '
+    cor: 'Corolario '
+    prp: 'Proposición '
+    exm: 'Ejemplo '
+    exr: 'Ejercicio '
+    proof: 'Demostración '
+    remark: 'Observación '
+    solution: 'Solución '
   ui:
-    chapter_name: "Chapter "
+    chapter_name: 'Capítulo '
 delete_merged_file: true

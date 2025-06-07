@@ -1,0 +1,525 @@
+# El enfoque de conteo de eventos y los modelos de base Poissoniana.
+
+
+
+Vamos ahora a cambiar el enfoque de manera
+importante. Seguiremos ocupándonos de valores
+extremadamente altos^[En los extremadamente bajos la teoría se reduce a este caso.], pero desde una mirada diferente.
+Fijaremos un cierto umbral, llamaremos _evento_
+cuando la variable observada supera dicho umbral
+y dado un cierto intervalo del tiempo $J$, contaremos 
+$$N(J)= \text{número de eventos en el intervalo}\; J.$$
+
+Por ejemplo, si lo que registramos son velocidades de vientos máximas medidas cada 10
+minutos, y fijamos como umbral 80 km/h (aproximadamente $22.22\; m/s$), entonces
+$N(Enero)=$ cantidad de períodos de 10 minutos durante enero, en que se registró una velocidad de viento superior a los $80\; km/h$.
+
+Obviamente, dadas las fluctuaciones que tienen los fenómenos que estudiamos, intentamos realizar estadísticas sobre el número de eventos $N$ y para ello primero debemos presentar algunos modelos probabilísticos, de más simples a más complejos.
+
+$N$ es lo que se llama un _proceso de conteo_^[_Counting process_ en inglés.] o _proceso
+puntual_^[_Point process_ en inglés.], un tipo de modelos empleados en Logística, Telecomunicaciones, estudios de Contaminación, Atmosférica o Costera, Clima, entre otros.
+El proceso de conteo más simple es el llamado
+Proceso de Poisson, que puede caracterizarse de la
+siguiente manera.
+
+
+```{definition, label="d13", name="Proceso de Poisson"}
+Si $N$ es un proceso de conteo y $\lambda >0$, entonces diremos que $N$
+es un Proceso de Poisson de parámetro $\lambda$, $PP(\lambda)$, si se cumple que :
+  
+a) Para todo intervalo $J$ de los reales positivos, $N(J)$
+es una variable aleatoria que tiene distribución de
+Poisson de parámetro $\lambda$ $longitud(J)$.
+
+b) Si $J, L, M, \dots$ es una cantidad arbitraria de
+intervalos de reales positivos DISJUNTOS,
+entonces $N(J), N(L), N(M),\dots$ son variables
+aleatorias independientes.
+```
+
+El siguiente teorema brinda una visualización muy
+interesante de los Procesos de Poisson, que nos
+servirá mucho para introducir otros modelos y que
+es ideal para poder simular computacionalmente
+Procesos de Poissson.
+
+```{theorem, label="d31", name="Otra visión de los Procesos de Poisson"}
+Si $T_1,\dots,T_n,\dots$ es $iid$ con distribución Exponencial de
+parámetro $\lambda>0$ y definimos que ocurre el primer
+evento en el instante $T_1$, el segundo en el instante
+$T_1+T_2$, el tercero en el instante $T_1+T_2+T_3$ y asì
+sucesivamente, el proceso $N$ de conteo de tales
+eventos, es un proceso de Poisson.
+```
+
+Dicho de otro modo el Proceso de Poisson representa eventos aislados (“que ocurren de a uno y claramente separados”), con tiempos inter-eventos $iid$ y exponenciales.
+Obviamente, esto muchas veces es “too good to be true”, pero variaciones de este modelo tan simple nos brindarán a menudo modelos realistas.
+
+
+
+__Observación 1:__ En la práctica, si se toman datos
+en los instantes $1,\dots,n$ suele reescalarse el tiempo
+dividiendo por $n$ y los instantes quedan en $[0,1]$. Allí se define un PP de manera casi idéntica, obviamente modificando en la definición, tanto en
+a) como en b) que los intervalos deben estar
+contenidos en $[0,1]$.
+
+
+
+
+__Observación 2:__ Conviene recordar que si $X$ es
+una $VA$ Poisson de parámetro $\lambda>0$ y $T$ es una $VA$
+exponencial de parámetro $\lambda$, entonces $E(X)= \lambda$ y $E(T)=1/\lambda$.
+Si $T_1,\dots,T_n,\dots$ iid son los tiempos inter-eventos de un
+$PP(\lambda)$ se deduce entonces de la ley de los grandes
+números que
+
+$$
+\lim_{n \to \infty} \frac{1}{n} \sum_{i=1}^n T_i = \frac{1}{\lambda}
+$$
+
+Es decir que el tiempo promedio entre eventos “a
+la larga ” es $\frac{1}{\lambda}$. De manera similar, si $J1,\dots,J_n,\dots$ son
+intervalos disjuntos de longitud 1, por la definición
+1 y la ley de los grandes números se tiene que
+
+$$
+\lim_{n \to \infty} \frac{1}{n} \sum_{i=1}^n N(J_i) = \lambda
+$$
+
+Más aún, puede probarse que:
+
+$$
+\lim_{t \to \infty} \frac{N(0,t)}{t} = \lambda
+$$
+Esto permite observar una consecuencia del Teorema \@ref(thm:d31), que es una propiedad intuitivamente
+muy atractiva.
+
+La tasa promedial de incidencia de los eventos en un $PP(\lambda)$ es inversamente proporcional al tiempo
+promedial inter-eventos.
+
+
+```{example, label="ex13", name="Proceso de ocupación de las líneas entre dos centrales"}
+Propiedades como esta hicieron, en las primeras dos décadas del siglo XX, a un
+creador genial como Agner Erlang modelar mediante Procesos de Poisson las llamadas que
+arribaban a una central telefónica, así como (con parámetros muy distintos) el proceso de ocupación
+de las líneas entre dos centrales. Eso condujo no sólo al desarrollo de las primeras centrales de
+telefonía conmutada por circuitos por CTC, la filial danesa de Bell, sino además a que Erlang
+desarrollara su “fórmulas de bloqueo”, fino cálculo por el cual, según los parámetros del proceso de
+arribo y del proceso de ocupación de líneas, se calcula la probabilidad de “saturación” (no hay
+ninguna línea disponible) dado el número de líneas entre centrales, o, dada una probabilidad de
+saturación “tolerable” $\varepsilon$ DISEÑAR (determinar el mínimo número de lineas necesarias para que la probabilidad de bloqueo no exceda $\varepsilon$). Si el tiempo entre arribos de llamadas a la central es Exponencial de parámetro $\lambda$, y la duración media de una llamada es Exponencial de parámetro $\mu$, entonces el parámetro crucial de la fórmula de Erlang es
+
+$$
+\rho=\frac{\lambda}{\mu}=\frac{\text{Duración media de la llamada}}{\text{Tiempo medio entre llamadas}}
+$$  
+  
+y a mayor valor de $\rho$, mayor probabilidad de saturación para una conectividad dada. Esta fórmula aún sigue en uso en algunos problemas y
+dió pie al desarrollo de fórmulas de bloqueo más sofisticadas para situaciones más complejas. Con mucha justicia, la unidad en la que se mide la intensidad de tráfico en redes se llama “erlang” y éste ejemplo nos parece una clara muestra de cuán útil ha sido el muy sencillo Proceso de Poisson.
+
+Sin embargo, en otros problemas, por ejemplo en modernas redes de datos en las que los “eventos” de “demanda de servicio” pueden ocurrir
+simultáneamente en muy grandes cantidades (“clustering”), aparece un modelo más sofisticado, que puede ser definido a partir del Proceso de
+Poisson: el Proceso de Poisson Compuesto.
+```
+
+
+
+```{definition, label="def13", name="Proceso de Poisson Compuesto"}
+Si $N$ es un Proceso de Poisson de parámetro $\lambda>0$ , $G$ es una distribución de probabilidad en los naturales $(1,2,3,\dots)$, consideramos $S_1,\dots,S_n,\dots$ iid con distribución $G$ y construímos un nuevo proceso de conteo $M$ de la forma siguiente:
+  
+- Cuando $N$ tiene su primer evento, $M$ tiene $S_1$ eventos simultáneos; 
+
+- Cuando $N$ tiene su segundo evento, $M$ tiene $S_2$ eventos simultáneos.....y así sucesivamente.
+
+decimos que $M$ es un Proceso de Poisson Compuesto de parámetro $\lambda>0$ y distribución de eventos $G$, abreviaremos $M$ es $PPC(\lambda;G)$.
+```
+
+
+
+
+```{exercise, label="ex1"}
+Demostrar que para un $PPC(\lambda;G)$ el tiempo medio inter-eventos sigue siendo $1/\lambda$, pero que la tasa de incidencia media de eventos ahora es $\lambda E(G)$..
+```
+
+__Observación 3.__ Para aclarar, si $G$ es una distribución degenerada otorga al $1$ probabilidad $1$, el correspondiente $PPC(\lambda;G)$ en realidad es un $PPC(\lambda)$. Ergo, el $PP$ es un caso particular de $PPC$.
+
+
+__Observación 4.__ Para evitar confusiones frecuentes, distinguiremos explícitamente estos procesos de los llamados _Procesos de Poisson no-homogéneos_. Para ello recordemos, sin entrar en tecnicismos, que una medida en los reales positivos es una función que a los conjuntos asocia números positivos con las mismas propiedades formales,
+excepto que no tiene por qué dar a todo el conjunto de los reales positivos (a todo el universo) el valor 1. Dicho de otro modo, una probabilidad es una medida particular, que a todo el universo asigna el valor 1. Puede pensarse como ejemplo típico de una medida, la que asigna a un conjunto la integral sobre ese conjunto de una función no negativa (no
+necesariamente de integral total 1, puede ser incluso infinita). La longitud es el ejemplo más simple de medida (llamada también _Medida de Lebesgue_) y la longitud de todos los reales positivos es infinito. Puede demostrarse que la longitud multiplicada por una constante no negativa son las únicas medidas invariantes por traslaciones, punto importante para la distinción que queremos hacer.
+
+```{definition, label="def14", name="Proceso de Poisson No Homogéneo"}
+Si $N$ es un proceso de conteo y $m$ es una medida que no puede expresarse como una constante por la longitud, diremos que $N$ es un Proceso de Poisson No Homogéneo de medida $m$ ($N$ es $PPNH(m)$ ) si se cumple:
+  
+a) Para todo intervalo $J$ de los reales positivos, $N(J)$ es una variable aleatoria que tiene distribución de Poisson de parámetro $m(J)$.
+
+
+b) Si $J, L, M, \dots$ es una cantidad arbitraria de intervalos positivos DISJUNTOS, entonces $N(J), N(L), N(M),\dots$ son variables aleatorias independientes.
+```
+
+
+Queda claro que el proceso de Poisson podría verse de la manera a) y b) anterior cuando $m=$ constante por longitud, por eso, para no confundir, se excluye a título expreso que $m$ pueda ser constante por longitud.
+
+Para dejar en claro la diferencia entre los $PPNH$ y los $PPC$ ( o el simple $PP$), recordemos que en los $PPC$, los tiempos inter-eventos son exponenciales de parámetro $\lambda>0$ e iid. El siguiente resultado muestra la diferencia de conceptos. Por su extrema simplicidad, lo detallaremos.
+
+```{theorem, label="th13", name="PPNH no es PPC"}
+Si $N$ es un $PPNH$ y $T_1$ es el tiempo del primer evento, la distribución de $T_1$ no es exponencial. Por lo tanto, un $PPNH$ no es $PPC$.
+```
+
+__Demostración:__ 
+
+\begin{align}
+P(T_1\leq t)&= P(N((0,t))\geq 1)\\
+&=1-P(N((0,t))=0)\\
+&=1-e^{-m((0,t))},\;\forall\;t>0.
+\end{align}
+
+Si $T_1$ fuera exponencial entonces, para algún $\lambda>0$ y para todo $t>0$, sería $m((0,t))=\lambda t$. Por ende, si $a<b$ cualquiera, 
+
+\begin{align}
+m((a,b))&= m((0,b))-m((0,a))\\
+&=\lambda b - \lambda a=\lambda(a-b)\\
+&=\lambda x \;\text{longitud}((a,b)).
+\end{align}
+
+Por lo cual se concluye $m=\lambda x \;\text{longitud}$, lo cual es absurdo $\diamond$.
+
+__Observación 5.__ Si $n$ es grande y se dispone de una muestra $X_1,\dots,Xn,\dots$ donde se intenta describir eventos extremos de este tipo de datos, la técnica de
+pasajes de altos niveles, $HLE$ (High Level Exceedances, en inglés), implica hacer un
+“tunning” del umbral en función de $n$, respecto al cual se considerará un evento “extremo”, pues es lógico que para mayor n, sea posible distinguir con mayor precisión eventos de extremos de mayor o menor intensidad. Por lo tanto se supone una
+selección de umbral un tal que vale
+
+
+a) Existe $\lambda>0$ tal que, para $n$ tendiendo a infinito, $nP(X_1>u_n)$ tiende a $\lambda$.
+
+__Observación 6.__ Si se cumple a., entonces $P(X_1>u_n)\approx \lambda/n$, por lo cual, si $n$ es grande, el evento de que los datos observados superen el umbral un es un _evento raro_, con probabilidad muy baja, poco frecuente. Esto hace que al conteo de eventos extremos respecto a un tal umbral en la Literatura Estadística, algunos autores le llamen _Laws of Small Numbers_ (@flaws), pues se cuenta algo poco frecuente. Iremos a resultados concretos en tal dirección. Como se indicó en la observación 1, reescalamos el instante $j$ al instante $j/n$ de $[0,1]$. 
+
+
+```{theorem, label="th14", name="HLE en el caso iid"}
+Si $X_1,\dots,X_n,\dots$ iid, se cumple la condición a. y se
+considera el proceso puntual $N_n$ de _pasajes de altos niveles_, definido para todo intervalo $J$ de $[0,1]$ por
+$$
+N_n(J)= \text{Cantidad de i en}\; nJ\; \text{tales que} X_i>u_n,
+$$
+entonces cuando $n$ tiende a infinito, $N_n$ tiende a un $PP( \lambda )$.
+
+```
+
+
+__Observación 7.__ Uno de los elementos más notorios que produce la dependencia entre los
+datos, aunque sea débil, es el “clustering” o agrupamiento de los datos muy grandes. Esto se traduce a que los pasajes altos se disparan de acuerdo a Proceso de Poisson, pero cuando se disparan, pueden dispararse varios juntos. Esta es la base intuitiva del siguiente resultado.
+
+
+```{theorem, label="th15", name="HLE para procesos estacionarios débilmente dependiente"}
+Si $X_1,\dots,X_n,\dots$ es un proceso estacionario y débilmente dependiente que cumple la condición a. y se considera el proceso puntual $N_n$ de “pasajes de altos niveles” como antes, entonces si
+
+$$
+\lim_{n \to \infty} N_n=PPC( \lambda;G )
+$$
+  
+y $G$ puede ser identificado por una fórmula (o bien estimada a partir de la muestra de “saltos”).
+```
+
+Esto brinda un modelo razonablemente realista en muchas situaciones. Sin embargo, para modelar contaminación urbana por $O_3$, dada la presencia de covariables muy influyentes debimos lidiar con un modelo más complejo que veremos más adelante.
+
+## Ejemplos concretos de HLE
+
+### Datos $iid$
+
+<!---  [Text to display](https://otexts.com/fpp3/decomposition.html) 
+Para “bajar a tierra” los conceptos vistos vamos a ver ejemplos concretos de HLE. Todos los ejemplos que veremos los instantes de registro de datos $n=5000$ y como se indicó en la observación 1, reescalaremos el tiempo para llevarlo a $[0,1]$.
+
+Comenzaremos por un ejemplo en que los datos registrados son $iid$.
+-->
+
+```{r echo=FALSE, warning=TRUE}
+# Parámetros
+n <- 5000                # Número de observaciones
+set.seed(123)            # Para reproducibilidad
+
+# Simulación de datos iid de una distribución Pareto (cola pesada)
+# Parámetro de forma (alpha > 0) controla la pesadez de la cola
+alpha <- 2.5
+x <- (runif(n))^(-1/alpha)
+
+# Reescalado del tiempo a [0,1]
+tiempo <- seq(1, n) / n
+
+# Gráfico: Datos vs. Tiempo reescalado
+plot(tiempo, x, type = 'l', col = 'blue', lwd = 1.5,
+     xlab = 'Tiempo (reescalado en [0,1])', ylab = 'Valor observado',
+     main = 'Ejemplo de Datos iid con Cola Pesada (Pareto)')
+
+# Línea horizontal roja en y = 10
+abline(h = 10, col = 'red', lwd = 2, lty = 2)
+
+# Leyenda opcional para aclarar la línea roja
+legend("topright", legend = "Umbral = 10",
+       col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+
+```{r echo=FALSE}
+# Definir el umbral
+umbral <- 10
+
+# Identificar los índices donde x excede el umbral
+excesos_idx <- which(x > umbral)
+
+# Valores excedentes y tiempos reescalados
+excesos <- x[excesos_idx]
+tiempos_excesos <- tiempo[excesos_idx]
+
+# Calcular los tiempos inter-eventos (diferencias entre tiempos consecutivos)
+tiempos_intereventos <- diff(tiempos_excesos)
+
+# Crear tabla: para el último exceso no hay tiempo inter-evento (se coloca NA)
+tabla_excesos <- data.frame(
+  Exceso = excesos,
+  Tiempo = tiempos_excesos,
+  Interevento = c(tiempos_intereventos, NA)  # NA para la última fila
+)
+
+# Mostrar tabla
+head(tabla_excesos, 10)  # Mostramos las 10 primeras filas
+```
+
+```{r echo=FALSE}
+promedio_intereventos <- mean(tiempos_intereventos)
+cat("Promedio intereventos:", promedio_intereventos, "\n")
+```
+
+
+
+Se pone a prueba: $H_0)\;\text{Los tiempos inter-eventos son independientes.}$ contra
+
+$H_1)\;\text{Los tiempos inter-eventos son independientes.}$
+
+
+```{r}
+# 1. Test de Ljung-Box (autocorrelación global)
+ljung <- Box.test(tiempos_intereventos, lag = 10, type = "Ljung-Box")
+
+# 2. Runs Test (binarizando respecto a la mediana)
+library(tseries)
+
+# Crear secuencia binaria: 1 si > mediana, 0 si <= mediana
+mediana_intereventos <- median(tiempos_intereventos)
+secuencia_binaria <- ifelse(tiempos_intereventos > mediana_intereventos, 1, 0)
+
+# Aplicar Runs Test a la secuencia binaria
+runs <- runs.test(as.factor(secuencia_binaria))
+
+# 4. Mostrar resultados
+cat("Test de Ljung-Box: p-valor =", round(ljung$p.value, 4), "\n")
+cat("Runs Test: p-valor =", round(runs$p.value, 4), "\n")
+```
+
+Se aplicaron pruebas de independencia a los tiempos inter-eventos obtenidos a partir de los excesos sobre un umbral de 10 en datos simulados de Pareto.
+El Test de Ljung-Box arrojó un $p-valor = 0.9954$, indicando ausencia de autocorrelación significativa. Asimismo, el Runs Test obtuvo un 
+$p-valor = 0.3215$, compatible con la hipótesis de aleatoriedad en la secuencia de tiempos inter-eventos. Estos resultados son consistentes con la generación de datos iid, y validan la hipótesis de independencia en este contexto.
+
+Conclusión: Ambos tests no rechazan la hipótesis nula de independencia, no hay señales de dependencia temporal.
+
+```{r echo=FALSE}
+# 3. ACF visual
+acf(tiempos_intereventos, main = "ACF de los tiempos inter-eventos (excesos > 10)")
+```
+
+El ACF mide la correlación entre los tiempos inter-eventos separados por diferentes lags (retardos).
+
+Si los datos son independientes, la ACF debería oscilar cerca de 0 para todos los lags.
+
+Se dibujan bandas azules (intervalos de confianza): si los valores están dentro → no hay autocorrelación significativa
+
+
+----------
+IMPORTANTE:
+p. 75-89 de las notas de clase: No entendi hasta Observación 8.
+----------
+
+__Observación 8:__ Brindaremos alguna información adicional sobre los $PPNH(m)$. Supondremos que existe una función NO CONSTANTE $\lambda(x)  \geq 0$ para
+todo $x>0$, continua por derecha tal que
+
+\begin{equation}
+m(A)=\int_A \lambda(x)\;dx
+(\#eq:ma)
+\end{equation}
+
+y supondremos que la integral de la derecha en Eq. \@ref(eq:ma) es
+finita cuando $A$ es acotado y que vale infinito cuando $A$ es el conjunto de todos los reales positivos.
+
+Observar que si la función fuera constante se obtendría un $PP$, por eso se excluye explícitamente. Bajo las hipótesis anteriores veremos que los tiempos inter-eventos no sólo no son exponenciales (como probamos) sino que tampoco pueden ser ni
+independientes, ni idénticamente distribuídos. Eso puede plantear dudas sobre cómo se simula un tal proceso, como se comprueba si se ajusta a datos
+dados, como estimar la medida $m$ o la función $\lambda$ a partir de los datos, etc. Intentaremos aclarar estas inquietudes.
+
+
+Intuitivamente $\lambda(t)$ representa la intensidad del
+evento en el instante $t$. Por ende, un modelo sumamente razonable en
+muchos eventos relacionados al clima es el anterior
+con $\lambda$ una función constante a trozos, que va
+tomando alternadamente 4 valores: uno para todos
+los instantes del verano, otro para todos los
+instantes del otoño, otro para todos los del invierno
+y otros para todos los de la primavera.
+
+Para entender más claramente, supongamos que la
+unidad de tiempo es el día y que tenemos los datos
+de 8 años, y veamos la gráfica de una tal función $\lambda$.
+
+
+```{r echo=FALSE, warning=TRUE}
+# Parámetros
+dias_por_anio <- 365
+anios <- 8
+total_dias <- dias_por_anio * anios
+
+# Eje de días
+dias <- 1:total_dias
+
+# Definir los valores de λ por estación (por año)
+lambda_verano <- rep(10, 90)
+lambda_otono  <- rep(5, 90)
+lambda_invierno <- rep(2, 90)
+lambda_primavera <- rep(8, 95)  # para completar los 365 días
+
+# Un año completo de lambda
+lambda_anio <- c(lambda_verano, lambda_otono, lambda_invierno, lambda_primavera)
+
+# Repetir por 8 años
+lambda_total <- rep(lambda_anio, anios)
+
+# Graficar
+plot(dias, lambda_total, type = "s", col = "blue", lwd = 2,
+     xlab = "Día", ylab = expression(lambda(t)),
+     main = expression("Intensidad " * lambda(t) * " por estación (8 años)"))
+grid()
+```
+
+Si se tienen los datos de los registros observados durante esos 8 años (no graficados), es evidente cómo estimar el valor de cada estación: la submuestra de datos correspondiente a una estación dada se uede mostrara fácilmente que es un simple $PP$ cuyo parámetro es el valor de $\lambda$ correspondiente a dicha estación. Como ya
+sabemos estimar el parámetro de un PP, sabemos cómo estimar los valores de $\lambda$ de cada estación.
+
+Pero además, tenemos una forma de chequear que el modelo $PPNH(m)$ se ajusta a los registros observados, simplemente verificando que las 4
+submuestras estacionales se ajustan cada una a un $PP$, cosa que ya sabemos hacer también!
+
+Continuando ahora con los $PPNH$ con las suposiciones adicionales que hicimos sobre la
+medida $m$ al principio de esta observación, puede demostrarse fácilmente que la densidad de $T_1$, instante del primer evento es
+
+
+\begin{equation}
+f_1(t)=\lambda(t)\; e^{-\int_0^t \lambda(x)\;dx}
+(\#eq:f1)
+\end{equation}
+
+o sea,  $f_1(t)$ es la densidad del primer tiempo de ocurrencia del evento, donde $\lambda(t)$ es intensidad instantánea en el tiempo $t$ y $\int_0^t \lambda(x)\;dx$
+la acumulación de la intensidad hasta el tiempo $t$. La función $e^{-\int_0^t \lambda(x)\;dx}$ es la función de supervivencia (probabilidad de que no haya ocurrido nada antes de $t$).
+
+
+Por otro lado, puede probarse que la densidad de $T_2$, tiempo que transcurre entre el primer evento y el segundo evento es
+
+
+\begin{equation}
+f_2(t)=\int_0^{\infty}\lambda(u+s)\; e^{-\int_u^{u+s} \lambda(x)\;dx} \;f_1(u) du
+(\#eq:f2)
+\end{equation}
+
+Puede probarse que $f_1(t)=f_2(t)$ solamente cuando la función $\lambda$ es constante, por lo cual en un $PPNH$ los dos primeros tiempos inter-eventos NO tienen idéntica distribución.
+
+Además, la distribución conjunta de dichos dos primeros tiempos inter-eventos es
+
+\begin{equation}
+f_{1,2}(t,s)=\lambda(t+s)\;e^{-\int_t^{t+s} \lambda(x)\;dx}\;f_1(t)
+(\#eq:f12)
+\end{equation}
+
+
+Puede probarse que $f_1(t)\:f_2(s)=f_{1,2}(t,s)$ para todo par $t>0$, $s>0$, solamente cuando la función $\lambda$ es constante, por lo cual en un $PPNH$ los dos primeros tiempos inter-eventos NO son independientes.
+
+Quedando claro las complejidades de los $PPNH$, puede entonces preguntarse cómo se hace para
+simular un $PPNH(m)$, con $m$ como supusimos al principio de la observación.
+Un tal método es bastante sencillo de implementar, como veremos en lo siguiente.
+
+Dividamos todo el eje del tiempo en intervalitos sucesivos de longitud $h$, llamémosle $\Delta_1, \Delta_2,\cdots$ y llamemos $t_j$ al extremo izquierdo de $\Delta_j$ . Simulemos
+entonces para cada $j$, $N_j$, un $PP(\lambda(t_j)\;h)$, de forma tal que los distintos $PP$ sean independientes entre sí, y definamos
+
+\begin{equation}
+N(A)=\sum_j N_j(A),\quad \forall\; A
+(\#eq:na)
+\end{equation}
+
+Si $h$ es muy pequeño entonces $N$ se aproxima a un $PPNH(m)$ y por lo tanto $N$ es lo que se simula.
+
+Finalmente, uno podría desear describir un proceso de eventos con la complejidad de un $PPNH$
+pero que además permita eventos múltiples, la respuesta es obviamente un Proceso de Poisson No
+Homegéneo Compuesto de medida temporal $m$ y distribución de multiplicidad $G$ ($PPNHC(m;G)$),
+donde un $PPNH(m)$ indica dónde se producen los eventos, e, independientemente, el orden de
+multiplicidad de los eventos siguen la distribución $G$ (en los naturales).
+
+El siguiente punto, por su relevancia práctica, amerita ser destacado especialmente.
+
+__Observación 9:__ Estimación de la intensidad de un $PPNH$. Aquí veremos dos métodos diferentes, basados en distintos niveles de información previa y acceso a datos.
+Concretamente:
+
+a) Estimación paramétrica basada en una sola trayectoria del $PPNH$.
+
+b) Estimación no-paramétrica a partir de muchas réplicas del $PPNH$.
+
+Comenzaremos con el primer abordaje, basado en el método de máxima verosimilitud.
+
+__a. Estimación basada en una sola trayectoria del $PPNH$.__
+
+Supondremos que observamos el $PPNH$ $N$ durante tanto tiempo como sea necesario, concretamente
+que observamos $N$ sobre $[0,n)$, con $n$ muy grande. Asumiremos que $N$ tiene intensidad $\lambda$ continua. Hasta aquí, no hemos supuesto casi nada, por lo cual el abordaje sería muy general. En este punto introducimos una suposición bastante restrictiva: asumiremos que sabemos que la intensidad pertenece a una familia paramétrica, que depende
+de $d$ parámetros reales para especificarse por completo. Escribiremos entonces que la intensidad es $\lambda_{\theta}$, donde $\theta$ es un parámetro $d$-dimensional, cuyo verdadero valor deseamos estimar de la forma más precisa posible. Para ello recurriremos al método de máxima verosimilitud.
+
+Supongamos que en la observación disponible del $PPNH$ tenemos que $N([i,i+1))=n(i)$ para $i=0,1,\dots,n-1$. Los $n(i)$ son los valores concretos observados en cada intervalo. 
+
+En máxima verosimilitud $\theta$ es estimado por $\theta_n$, valor que maximiza la función de $\theta$
+
+\begin{equation}
+L(\theta)= P(N([i, i+1))=n(i),\quad \text{para}\; i=0,1,….,n-1
+(\#eq:ltheta)
+\end{equation}
+
+
+Usando la independencia de intervalos disjuntos, la distribución de Poisson en cada intervalo,
+descartando factores que no dependen de $\theta$ y tomando la función estrictamente creciente $\log$, resulta que $\theta_n$ maximiza la siguiente función
+
+\begin{equation}
+l(\theta)=\left\{ \sum_{i=0}^{n-1} n(i)\; \log \left( \int_{[i,i+1)} \lambda_{\theta} (x) \;dx \right)\right\}-\left\{ \int_{[0,n)} \lambda_{\theta} (x) \;dx \right\}
+(\#eq:lntheta)
+\end{equation}
+
+Asumiendo que $\lambda_{\theta}$ tiene dos derivadas continuas respecto a $\theta$, esta maximización puede ser realizada computacionalmente.
+
+__b. Estimación no-paramétrica a partir de muchas réplicas del $PPNH$.__
+
+En este abordaje no supondremos el conocimiento previo de forma paramétrica alguna de la intensidad, por lo cual desde este punto de vista es un método más general que el anterior. En sentido contrario, supondremos que tenemos una cantidad $n$ muy grande de 'réplicas' de $N$. Esto significa que disponemos de trayectorias de $N(1),\dots,N(n)$ donde cada $N(i)$ es un $PPNH$ con la misma estructura (en particular misma intensidad, que $N$) y que $N(1),\dots,N(n)$ son independientes entre sí. El método a utilizar está basado en la estimación de densidades a partir de un núcleo (kernel). Antes de presentar el método puntualicemos que si $N$ es un $PPNH$ se pueden definir integrales (estocásticas, aleatorias) del tipo $\int_J f(x)\;dN(x)$ para $f$ continua en el intervalo $J$, como límite de sumas a la Riemann $\sum_{i=0}^{n-1}f(x(i)) \cdot N(\Delta(i))$ donde $\Delta(1),\dots,\Delta(n)$ es la partición del intervalo $J$ en intervalos muy pequeños y $x(i)$ punto intermedio de $\Delta(i)$.
+
+El estimador que consideraremos es 
+
+\begin{equation*}
+\lambda_n(x) = \left\{ \frac{1}{n h(n)} \right\} \sum_{i=0}^{n-1} \int_{\mathbb{R}} K\left( \frac{x - t}{h(n)} \right) dN^{(i)}(t),
+\end{equation*}
+
+donde, para $n$ tendiendo a infinito, la 'ventana' $h(n)$ tiende a $0$ y $n h(n)$ tiende a infinito, y donde la función $K$ (kernel) debe ser no-negativa, par, nula fuera del intervalo $[-1,1]$ (lo cual implica que las integrales estocásticas no son sobre $\mathbb{R}$, sino sobre un intervalo acotado) y con derivadas de todos los órdenes.
+
+
+En tales condiciones $\lim_{n \to 0} \lambda_n(x)=\lambda(x),\; \forall x$.
+
+Si además se supone que $\lim_{n \to 0} \;n \cdot  h(n)^5=0$ (un ejemplo de $h(n)$ que
+cumple con todas las condiciones impuestas es $h(N)= 1/nb$, con $1/5<b<1$), entonces cuando $n$ tiende
+a infinito, la distribución de $\left\{ n\cdot h(h) \right\}^{1/2}\; \left\{\lambda_n(x)-\lambda (x)  \right\}$ tiende a $N(0,\lambda (x))$.
+
+Usando la fórmula de Taylor se deduce que si $g$ tiene dos derivadas continuas en un entorno de $\lambda (x)$, entonces la distribución de $\left\{ n\cdot h(h) \right\}^{1/2}\; \left\{g\left( \lambda_n(x) \right)-g\left( \lambda (x) \right)  \right\}$ tiende a una $N\left( 0,g^{\prime}\left( \lambda(x) \right)^2\;\lambda(x) \right)$. 
+
+Tomando entonces $g(x)=2\sqrt{x}$, resulta entonces que la distribución de $2\;\left\{ n \cdot h(n)) \right\}^{1/2} \left\{ \sqrt{\lambda_n(x)} \;\sqrt{\lambda(x)}\right\}$ tiende a una $N(0,1)$.
+
+De aquí se deduce un Intervalo al $95\%$ de confianza para $\sqrt{\lambda(x)}$ y por lo tanto, el siguiente
+Intervalo al $95\%$ de Confianza para $\lambda(x)$ tal que $\left[ A(x), B(x) \right]$ donde
+
+\begin{align}
+&A(x)=\lambda_n(x)-1.96\left\{ \frac{\lambda_n(x)}{n\cdot h(n)} \right\}^{1/2}+\frac{0.98^2}{n\cdot h(n)},\\
+&B(x)=\lambda_n(x)+1.96\left\{ \frac{\lambda_n(x)}{n\cdot h(n)} \right\}^{1/2}+\frac{0.98^2}{n\cdot h(n)}.
+\end{align}
+
+

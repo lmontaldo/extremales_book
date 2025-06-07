@@ -1,36 +1,88 @@
+
 --- 
-title: "A Minimal Book Example"
-author: "Yihui Xie"
+title: "Estadística para datos extremales"
+author: "Angel Segura, Carolina Crisci, Laura Montaldo, Gonzalo Perera"
 date: "`r Sys.Date()`"
-site: bookdown::bookdown_site
-output: bookdown::gitbook
-documentclass: book
+site: https://media.cure.edu.uy/
+output:
+  bookdown::gitbook:
+    lib_dir: assets
+    split_by: section
+    config:
+      toolbar:
+        position: static
+  bookdown::pdf_book:
+    keep_tex: true
+  bookdown::html_book:
+    css: toc.css
+documentclass: report
+classoption: 12pt
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike-es
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+description: "Este es un libro de posgrado."
+lang: es-u-co-trad
+---
+
+# Prefacio {.unnumbered .unlisted}
+
+Este es un libro de curso de posgrado pensado para introducir a lxs estudiantes a la estadística para datos extremales. 
+Agradecemos y recordamos son cariño a Gonzalo Perera, autor de las siguientes notas.
+
+# Introducción: la teoría de valores extremos {.unnumbered .unlisted}
+
+Siguiendo a @coles2001introduction, la teoría de valores extremos es única como disciplina estadística: desarrolla técnicas y modelos para describir lo inusual en lugar de lo habitual. Por definición, los valores extremos son poco frecuentes, así que muchas veces necesitamos estimar qué podría pasar para una cantidad de datos mucho más alta de lo que ya observamos. Eso nos obliga a extrapolar —es decir, a proyectar más allá de los datos disponibles—, y para eso la teoría de valores extremos ofrece modelos pensados justamente para este tipo de situaciones.
+
+Como en general no hay una base empírica o física sólida para esos casos tan raros, lo que se usa son argumentos teóricos, en particular __asintóticos__. Es lógico que esto genere dudas: extrapolar a lo que nunca vimos requiere cierto acto de fe, incluso si los modelos tienen respaldo matemático. Pero lo cierto es que, cuando las aplicaciones reales nos exigen ir más allá de los datos, es mejor usar herramientas que tengan al menos un fundamento teórico. 
+
+Adoptamos un enfoque basado en la __verosimilitud__, ya que proporciona un marco en el cual los modelos pueden adaptarse a los tipos de patrones no homogéneos de valores extremos, que se observan en conjuntos de datos reales. Además, permiten incorporar toda la información relevante en la inferencia y la posibilidad de cuantificar la incertidumbre en la estimación.
+
+El principal objetivo del análisis de valores extremos consiste en cuantificar el __comportamiento estocástico__ de un proceso para niveles inusualmente altos (o bajos). En particular, los análisis de valores extremos buscan estimar la probabilidad de eventos extremos.
+
+<!--
+Por ejemplo, imaginemos que se está diseñando una defensa costera y se necesita que un muro de contención sea capaz de resistir todos los niveles del mar que podrían registrarse durante su vida útil estimada, digamos 100 años. Tal vez se disponga de datos locales sobre los niveles del mar, pero solo para un período relativamente corto, como 10 años. El desafío es entonces estimar qué niveles podrían alcanzarse en los próximos 100 años, basándose únicamente en ese historial limitado. La teoría de valores extremos ofrece un marco adecuado para realizar este tipo de extrapolaciones. En ausencia de criterios empíricos o físicos que permitan formular una regla de extrapolación, los modelos estándar se construyen a partir de argumentos asintóticos. 
+-->
+
+
+<!-- 
+--- 
+title: "Estadística para datos extremales"
+author: "Carolina Crisci, Laura Montaldo, Gonzalo Perera, Angel Segura"
+date: "`r Sys.Date()`"
+site: https://media.cure.edu.uy/
+output: bookdown::pdf_book
+documentclass: scrbook
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
 github-repo: rstudio/bookdown-demo
-description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
+description: "Este es un libro de posgrado."
+lang: es
 ---
+-->
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  fig.width = 6,     # ancho en pulgadas
+  fig.height = 6,    # alto en pulgadas
+  fig.align = "center",  # centrado
+  dev.args = list(pointsize = 10)  # opcional: tamaño de letra en plots
+)
+```
 
-# Prerequisites
+```{r fig.align='center', include=FALSE}
+knitr::include_graphics("images/logo.png")
+```
 
-This is a _sample_ book written in **Markdown**. You can use anything that Pandoc's Markdown supports, e.g., a math equation $a^2 + b^2 = c^2$.
-
-The **bookdown** package can be installed from CRAN or Github:
-
-```{r eval=FALSE}
+```{r eval=FALSE, include=FALSE}
 install.packages("bookdown")
 # or the development version
 # devtools::install_github("rstudio/bookdown")
 ```
 
-Remember each Rmd file contains one and only one chapter, and a chapter is defined by the first-level heading `#`.
 
-To compile this example to PDF, you need XeLaTeX. You are recommended to install TinyTeX (which includes XeLaTeX): <https://yihui.org/tinytex/>.
 
 ```{r include=FALSE}
 # automatically create a bib database for R packages
-knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown'
-), 'packages.bib')
+knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown' ), 'packages.bib')
 ```

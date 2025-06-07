@@ -1,0 +1,476 @@
+
+# Un primer enfoque de datos no $iid$ {#noiid}
+
+## Datos no $iid$
+
+Vamos a ver que en la realidad frecuentemente los datos no son $iid$, y
+que hay muy diversos tipos de datos no $iid$.
+
+Recordemos que si los datos no son $iid$ es porque los datos:
+
+-   no son independientes,
+-   su distribución no es la misma,
+-   no son independientes y su distribución no es la misma.
+
+Nota: Los tests que permiten contrastar la hipótesis $iid$ son:
+Spearman, runs up and down, etc. En R se encuentran como randtests.
+
+```{=html}
+<!--
+Aclaración 1: Dado que abordamos un curso de
+posgrado, y que en los cursos básicos se abordan
+los tests que permiten contrastar la hipótesis iid
+(Spearman, runs up and down, etc.) supondremos
+estas técnicas conocidas, pero obviamente podemos
+analizarlas aparte con quien lo necesite. En R, por
+ejemplo, se encuentran como randtests. Un escalón
+más arriba, las Series de Tiempo, su análisis
+espectral, etc., es tema de otros curso de segundo
+nivel de Estadística que ofrecemos, por lo cual no
+nos detendremos mayormente, pero nuevamente,
+estamos a disposición de quien lo requiera y en este
+curso al menos explicaremos brevemente los
+aspectos medulares que usemos.
+-->
+```
+Cuando los datos:
+
+-   No necesariamente son independientes pero la estructura de
+    distribuciones es siempre la misma, se habla de datos estacionarios
+    o *procesos estacionarios*.
+
+-   No son independientes pero la dependencia se va atenuando a medida
+    que se consideran datos más lejanos (para fijar ideas, imaginemos
+    que los datos corresponde a medidas en el tiempo, y que datos muy
+    viejos no influirían significativamente sobre el presente, por
+    ejemplo), se habla de datos débilmente dependientes.
+
+El caso más sencillo de esta situación es la de datos $m$-dependientes,
+siendo $m$ un número; si los datos que están a una distancia mayor que
+$m$ entonces son independientes. Un ejemplo son los procesos llamados
+promedios móviles de orden $q$, $MA(q)$[^1] con $m=q$.
+
+[^1]: Moving Averages en inglés.
+
+Algunos datos bioquímicos del agua de determinadas playas uruguayas que
+se miden diariamente suelen ser 7-dependientes, por ejemplo. Esto
+significa que datos que fueron tomados con más de una semana de
+separación, son independientes. En cambio, algunos datos de poblaciones
+o de composición de suelos que se van registrando a lo largo de los
+años, son débilmente dependientes, pero no son $m$-dependientes para
+ningún $m$. Es el caso de los llamados procesos autorregresivos de orden
+$p$, $AR(p)$, donde cada dato es una combinación lineal de los $p$
+anteriores más un término aleatorio que es un ruido blanco. Esto
+procesos son Markovianos, es decir, de memoria infinita: todo el pasado
+es tan informativo como los últimos $p$ datos[^2]. En este sentido, la
+genética aporta excelentes ejemplos para distinguir los procesos
+markovianos. Esto es así porque algunas pocas generaciones atrás
+alcanzan para calcular probabilidades de muchas características de la
+descendencia, mientras que la memoria no es corta sino infinita: cada
+característica resulta de toda la fiogenética, así nos remontemos al
+origen de las especies.
+
+[^2]: El carácter Markoviano es mal presentado en algunos textos y
+    cursos, hablando confusamente de *memoria corta*
+
+<!--- EJEMPLO DEL LIBRO A REVEER -->
+
+```{=html}
+<!--- Para simplificar al extremo y usando la
+imagen bíblica (con todo respeto a todos los
+pensares), si Adán y Eva hubieran tenido otros
+genes, la especie podría ser diferente!!-->
+```
+En la teoría clásica de series de tiempo, una estructura $AR(p)$ a
+partir de un proceso $MA(q)$, da lugar a los procesos $ARMA(p,q)$, que
+en general son débilmente dependientes y aproximan bien a cualquier
+proceso estacionario débilmente dependiente[^3]. Lo opuesto a
+dependencia débil es dependencia fuerte[^4]. En algunos datos de
+telecomunicaciones que se registran en escalas temporales muy finas, se
+han encontrado ejemplos de dependencia fuerte.
+
+[^3]: Lo cual es una de las razones de su popularidad.
+
+[^4]: En inglés, long range dependence.
+
+Cuando los datos no son $iid$ pero se vuelven $iid$ al restarle una
+función determinística, son bastante simples de manejar.
+
+Si esta función es monótona, se habla de que los datos presentan
+tendencias (trends). Si en cambio la función es periódica, se dice que
+los datos presentan ciclos (seasonal effects).
+
+<!---  [Text to display](https://otexts.com/fpp3/decomposition.html) -->
+
+Se puede demostrar que si los datos se vuelven iid al restar una función
+determinística cualquiera (lo cual no siempre es el caso!), entonces se
+pueden modelar aproximadamente como TENDENCIAS+CICLOS+ DATOS IID.
+
+Al descomponer una serie temporal, a veces es útil primero transformar o
+ajustar la serie para que la descomposición, y su análisis posterior,
+sea lo más sencilla posible (@hyndman).
+
+Vamos a presentar a continuación como “lucen” los distintos tipos de
+datos y qué tan reconocibles son. Los datos se han simulado
+computacionalmente, por lo tanto sabemos a cuál es su real estructura.
+Empecemos por lo básico”:¿Cómo lucen datos iid? A continuación una
+muestra de tamaño mil de datos iid con distribución Gumbel.
+
+```{r echo=FALSE, warning=FALSE}
+set.seed(123)
+n <- 1000
+library(evd)
+datos_iid <- rgumbel(n)
+
+plot(datos_iid, type = "l", col = "steelblue", lwd = 1.2,
+     main = "Datos iid con distribución Gumbel simulados como serie temporal",
+     xlab = "Tiempo", ylab = "Valor")
+```
+
+Lo más sobresaliente en la visualización es la presencia de
+**variaciones abruptas** en los datos, que dificultan su representación
+gráfica e interpretación inmediata. Estas oscilaciones no son
+necesariamente equilibradas en torno a un eje horizontal, lo cual se
+debe a la **asimetría de la distribución Gumbel**, que presenta una cola
+más larga hacia la izquierda.
+
+Aunque su valor esperado es aproximadamente 0.577, la mediana se
+encuentra en torno a -0.366, reflejando dicha asimetría. Si hubiésemos
+simulado datos a partir de una distribución simétrica, como la Normal,
+podríamos observar un mayor equilibrio visual entre los picos y valles
+de la serie. Sin embargo, eso podría desviar la atención del aspecto
+esencial: **las oscilaciones intensas** y el hecho de que **el conjunto
+de datos no muestra una tendencia clara** ni evidencia de **ciclos
+persistentes**.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(123)
+n <- 1000
+library(evd)
+library(ggplot2)
+library(dplyr)
+
+# Simular datos
+datos <- tibble(
+  tiempo = 1:n,
+  Gumbel = rgumbel(n),
+  Normal = rnorm(n)
+) %>%
+  tidyr::pivot_longer(cols = c(Gumbel, Normal), names_to = "Distribución", values_to = "Valor")
+
+# Graficar
+ggplot(datos, aes(x = tiempo, y = Valor, color = Distribución)) +
+  geom_line() +
+  scale_color_manual(values = c("Gumbel" = "red", "Normal" = "blue")) +
+  facet_wrap(~Distribución, ncol = 1, scales = "free_y") +
+  labs(title = "Simulación de datos iid: Gumbel (asimétrica) vs. Normal (simétrica)",
+       x = "Tiempo", y = "Valor") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+Del gráfico se desprende que :
+
+-   Gumbel muestra más valores extremos hacia la izquierda (asimetría
+    negativa).
+
+-   Normal muestra oscilaciones más simétricas alrededor de cero.
+
+```{r echo=FALSE, warning=FALSE}
+ggplot(datos, aes(x = Valor, fill = Distribución, color = Distribución)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 40, alpha = 0.4, position = "identity") +
+  geom_density(linewidth  = 1.2, alpha = 0.2)+
+  scale_fill_manual(values = c("Gumbel" = "red", "Normal" = "blue")) +
+  scale_color_manual(values = c("Gumbel" = "red", "Normal" = "blue")) +
+  facet_wrap(~Distribución, ncol = 1, scales = "free") +
+  labs(title = "Comparación de distribuciones marginales: Gumbel vs. Normal",
+       x = "Valor", y = "Densidad") +
+  theme_minimal()
+```
+
+Este comportamiento es típico de secuencias iid: aunque presentan
+variabilidad local intensa, su estructura global carece de patrones de
+dependencia temporal.
+
+Veamos ahora como lucen datos que son Gumbel iid, a los que se les ha
+sumado una tendencia parabólica y ciclos sinusoidales.
+
+
+```{r echo=FALSE, warning=FALSE}
+set.seed(123)
+n <- 500
+gumbel_data <- rgumbel(n, loc = 0, scale = 1.2)
+
+time <- 1:n
+trend <- 0.03 * time  # tendencia lineal
+
+frequency <- 2 * pi / 50  # frecuencia del ciclo
+seasonality <- 3 * sin(frequency * time)  # ciclo de gran amplitud
+
+observed_data <- gumbel_data + trend + seasonality
+
+df <- data.frame(time = time, observed_data = observed_data)
+
+ggplot(df, aes(x = time, y = observed_data)) +
+  geom_line(color = 'steelblue', size = 0.8) +
+  labs(x = "Tiempo", y = "Dato") +
+  theme_minimal()
+```
+
+
+Si bien hay oscilaciones aleatorias, es perceptible a simple vista una tendencia creciente y la presencia de una estructura cíclica.
+
+Tras un poco de análisis exploratorio uno puede percatarse que la tendencia debe ser lineal o cuadrática, por lo cual si se propone un polinomio de orden 2 más un término sinusoidal (con parámetros de amplitud, frecuencia y fase), mediante mínimos cuadrados se puede ajustar bien, resultando efectivamente cuadrática la tendencia.
+
+Si se le restaran a los datos originales los valores de las componentes determinísticas (Tendencia + Ciclo) ajustadas, los nuevos datos que resultan, llamados *Residuos*, deberían razonablemente superar los tests para datos $iid$.
+
+
+```{r echo=FALSE, warning=FALSE}
+# Simular datos Gumbel iid
+set.seed(123)
+n <- 500
+gumbel_data <- rgumbel(n + 2, loc = 0, scale = 1)  # generar 2 extras para rezagos
+
+# Coeficientes de dependencia
+a1 <- 0.5
+a2 <- 0.3
+
+# Construir proceso 2-dependiente
+X <- numeric(n)
+for (t in 3:(n+2)) {
+  X[t-2] <- a1 * gumbel_data[t-1] + a2 * gumbel_data[t-2] + gumbel_data[t]
+}
+
+# Graficar
+time <- 1:n
+df <- data.frame(time = time, X = X)
+
+ggplot(df, aes(x = time, y = X)) +
+  geom_line(color = 'steelblue', size = 0.8) +
+  labs(title = "Proceso 2-dependiente estacionario con datos Gumbel",
+       x = "Tiempo", y = "Observación") +
+  theme_minimal()
+```
+
+
+
+```{r echo=FALSE, warning=FALSE}
+# Simular datos Gumbel iid
+set.seed(123)
+n <- 500
+gumbel_iid <- rgumbel(n, loc = 0, scale = 1)
+
+# Proceso 2-dependiente
+gumbel_full <- rgumbel(n + 2, loc = 0, scale = 1)
+a1 <- 0.5
+a2 <- 0.3
+
+X_dep <- numeric(n)
+for (t in 3:(n+2)) {
+  X_dep[t-2] <- a1 * gumbel_full[t-1] + a2 * gumbel_full[t-2] + gumbel_full[t]
+}
+
+# Crear data frame en formato largo manualmente
+df_long <- data.frame(
+  time = rep(1:n, 2),
+  Valor = c(gumbel_iid, X_dep),
+  Proceso = factor(rep(c("IID", "Dependiente"), each = n))
+)
+
+# Graficar comparación
+ggplot(df_long, aes(x = time, y = Valor, color = Proceso)) +
+  geom_line(alpha = 0.8) +
+  labs(title = "Comparación: Gumbel iid vs. Gumbel 2-dependiente",
+       x = "Tiempo", y = "Valor") +
+  theme_minimal()
+```
+
+Aún para el ojo más adiestrado es muy difícil
+distinguir las dos situaciones. Puede quizás
+percibirse mayor “inercia” en el caso de los datos en linea roja, correspondiente a la 2-dependencia, pero es realmente muy difícil lograrlo (y nada seguro jugarse).
+
+Esto demuestra la importancia de realizar tests de hipótesis sobre la estructura subyacente y no
+utilizar el “ojímetro”.
+
+
+Veamos como luce ahora una serie de datos Gumbel 2-dependientes con componente cíclica.
+
+
+```{r echo=FALSE, warning=FALSE}
+set.seed(123)
+n <- 500
+gumbel_full <- rgumbel(n + 2, loc = 0, scale = 0.7)
+
+a1 <- 0.5
+a2 <- 0.3
+
+frequency <- 2 * pi / 100
+amplitude <- 0.2
+
+X_dep_cycle <- numeric(n)
+for (t in 3:(n+2)) {
+  X_dep_cycle[t-2] <- a1 * gumbel_full[t-1] + a2 * gumbel_full[t-2] +
+                      gumbel_full[t] + amplitude * sin(frequency * (t-2))
+}
+
+time <- 1:n
+df <- data.frame(time = time, X = X_dep_cycle)
+
+ggplot(df, aes(x = time, y = X)) +
+  geom_line(color = 'steelblue', size = 0.8) +
+  labs(x = "Tiempo", y = "Observación") +
+  theme_minimal()
+```
+
+
+Se insinúa una estructura de ciclos, pero
+nuevamente es altanebte recomendable chequear la
+estructura mediante tests.
+La adición de una tendencia creciente fuerte,
+podría ser una técnica exploratoria que ayudara a
+visualizar los ciclos, como apuntó Juan Piccini en
+la primera edición de este curso.
+
+Veamos finalmente como luce la dependencia
+fuerte. Nuevamente el proceso es estacionario y los
+datos son Gumbel.
+
+```{r echo=FALSE, warning=FALSE}
+set.seed(123)
+n <- 500
+gumbel_full <- rgumbel(n + 2, loc = 0, scale = 0.7)
+
+a1 <- 0.9
+a2 <- -0.7  # más negativo para intensificar la poda
+
+X_dep_poda <- numeric(n)
+for (t in 3:(n+2)) {
+  X_dep_poda[t-2] <- a1 * gumbel_full[t-1] + a2 * gumbel_full[t-2] + gumbel_full[t]
+}
+
+time <- 1:n
+df <- data.frame(time = time, X = X_dep_poda)
+
+ggplot(df, aes(x = time, y = X)) +
+  geom_line(color = 'steelblue', size = 0.8) +
+  labs(title = "Proceso Gumbel 2-dependiente con poda inferior evidente",
+       x = "Tiempo", y = "Observación") +
+  theme_minimal()
+```
+
+Las oscilaciones son parecidas a los casos anteriores pero la muy parejita “poda” inferior es la que hace sospechar algo “raro”. De todos modos, las posibles estructuras de dependencia fuerte son muchas, complejas y
+verificarlas no es sencillo.
+Como resumen final, en los más próximos capítulos
+tomaremos direcciones no iid, en las que veremos:
+
+1- Si el proceso es estacionario y débilmente
+dependiente, la técnica clásica de DEA puede
+aplicarse esencialmente igual (Leadbetter,
+Lindgren, Rootzén).
+
+2- Si el proceso no es estacionario o no es
+débilmente dependiente, cumple algunas
+propiedades condicionales a otro proceso que le
+pauta la “fase”, la técnica clásica de DEA
+puede aplicarse, pero con modificaciones no
+menores.
+
+Además:
+
+3- Puede cambiarse el enfoque y mirar el número
+de eventos extremos en diversos lapsos, esto
+lleva en el caso iid a un proceso de Poisson,
+para estacionarios y débilmente dependientes a
+un Poisson Compuesto y en el marco más
+general del punto 2, a mezclas de Procesos de
+Poisson Compuestos (Lise Bellanger-GP).
+
+El conteo de eventos extremos será también la base
+o el “pie”, para introducir una técnica muy usada,
+POT (Picos Sobre Umbrales) y sus variaciones más
+recientes que veremos al final.
+
+## Análisis de series temporales
+
+
+
+## Pruebas de raíz unitaria y tendencia
+
+```{r include=FALSE, warning=FALSE}
+library(ismev)
+data(portpirie)
+```
+
+### Concepto de Estacionariedad
+
+```{r}
+head(portpirie)
+```
+
+```{r nice-fig2, echo=FALSE, fig.cap='Niveles máximos anuales del nivel del mar registrados en Port Pirie.', out.width='80%', fig.asp=.75, fig.align='center', fig.alt='Niveles máximos anuales del nivel del mar registrados en Port Pirie, una localidad justo al norte de Adelaida, Australia del Sur, durante el período 1923-1987'}
+
+plot(portpirie,  xlab = "Year", ylab = "Sea Level (meters)", col="brown")
+```
+
+La figura \@ref(fig:nice-fig2) muestra los niveles máximos anuales del
+nivel del mar registrados en Port Pirie, una localidad justo al norte de
+Adelaida, Australia del Sur, durante el período 1923-1987. A partir de
+estos datos, puede ser necesario estimar el nivel máximo del mar que
+probablemente ocurra en la región en los próximos 100 o 1000 años. Esto
+plantea una cuestión importante: ¿cómo podemos estimar los niveles que
+pueden ocurrir en los próximos 1000 años sin conocer, por ejemplo, los
+cambios climáticos que podrían suceder?
+
+No hay evidencia contundente en la figura que sugiera que el patrón de
+variación en los niveles del mar haya cambiado durante el período de
+observación, pero dicha estabilidad podría no persistir en el futuro.
+Esta advertencia es crucial: aunque la teoría de valores extremos ha
+adoptado terminología como el "nivel de retorno a 1000 años", que
+corresponde al nivel que se espera que sea excedido exactamente una vez
+en los próximos 1000 años, esto solo tiene sentido bajo el supuesto de
+estabilidad (o estacionariedad) en el proceso subyacente. Es más
+realista hablar en términos de niveles que, bajo las condiciones
+actuales, ocurrirán en un año determinado con una baja probabilidad
+(@coles2001introduction).
+
+#### Ejemplo en Finanzas
+
+Las técnicas de valores extremos han ganado popularidad en aplicaciones
+financieras. Esto no es sorprendente: la solvencia financiera de una
+inversión probablemente esté determinada por cambios extremos en las
+condiciones del mercado en lugar de cambios típicos. Sin embargo, la
+compleja estructura estocástica de los mercados financieros implica que
+la aplicación ingenua de técnicas de valores extremos puede ser engañosa
+(@coles2001introduction).
+
+```{r echo=TRUE}
+data(dowjones)
+dowjones$LogDiff <- c(NA, diff(log(dowjones$Index)))
+```
+
+```{r echo=TRUE}
+head(dowjones)
+```
+
+```{r nice-fig4,echo=FALSE, fig.cap='Panel a) Precios de cierre diario del índice Dow Jones. Panel b) Rendimientos diarios del índice Dow Jones (en logarítmos).', out.width='80%', fig.asp=.75, fig.align='center', fig.alt='Panel izquierdo: precios de cierre diario del índice Dow Jones.Panel derecho: rendimientos logarítmicos diarios del índice Dow Jones.'}
+par(mfrow = c(1,2))
+plot(x=dowjones$Date, y=dowjones$Index, type="l", col="blue", xlab="Date", ylab="Index", main="a)")
+plot(x=dowjones$Date, y=dowjones$LogDiff, type="l", col="purple", xlab="Date", ylab="diff log Index", main="b)")
+```
+
+La Fig.\@ref(fig:nice-fig4) muestra los precios de cierre diario del
+índice Dow Jones durante un período de 5 años. Evidentemente, el nivel
+del proceso ha cambiado drásticamente a lo largo del período observado,
+y las cuestiones sobre los valores extremos del comportamiento diario
+quedan eclipsadas por la variación temporal a largo plazo en la serie.
+Varios estudios empíricos sobre series de este tipo han indicado que se
+puede obtener una aproximación a la estacionariedad tomando los
+logaritmos de los cocientes de observaciones sucesivas, lo que se conoce
+como los retornos logarítmicos diarios. El panel b) de la Fig.
+\@ref(fig:nice-fig4) sugiere una transformación razonablemente exitosa
+hacia la estacionariedad. El análisis de las propiedades de valores
+extremos de dichas series transformadas puede proporcionar a los
+analistas financieros información clave sobre el mercado
+(@coles2001introduction).
+

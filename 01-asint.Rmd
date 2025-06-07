@@ -1,0 +1,1455 @@
+# La teoría asintótica clásica, las distribuciones extremales y sus dominios de atracción
+
+
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+<!-- ## Introducción: las distribuciones extremales {#intro}-->
+
+ 
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(evd)
+library(ggplot2)
+```
+
+
+<!-- ecuaciones, su label y ref
+\begin{equation} 
+  f\left(k\right) = \binom{n}{k} p^k\left(1-p\right)^{n-k}
+  (\#eq:binom)
+\end{equation} 
+
+You may refer to using `\@ref(eq:binom)`, like see Equation \@ref(eq:binom).
+-->
+
+
+<!-- 
+{.unlisted .unnumbered}. 
+para sacar la numeracion a la seccion
+-->
+
+## Datos extremos
+
+Se dice que tenemos _datos extremos_ cuando cada dato corresponde al máximo o mínimo de varios
+registros. Ejemplos de este tipo de datos son:
+
+- La máxima altura semanal de la ola en una
+plataforma marina o portuaria $(m)$.
+- La máxima velocidad de viento en determinada
+dirección a lo largo de un mes $(km/h)$.
+- La temperatura ambiental mínima a lo largo de
+un día $(\dot{C})$.
+- La temperatura ambiental mínima a lo largo de
+un día ($\dot{C}$)
+- La máxima velocidad de tráfico en un enlace de
+una red de datos de datos en una hora ($Mb/s$).
+- El mayor registro en un conteo de Coliformes
+fecales sobre agua costeras al cabo de quince días.
+
+Son un caso particular de evento raro o gran desviación respecto a la media. En resumen, para una gran variedad de dominios disciplinares suele ser de gran interés el trabajo con datos extremos, por ejemplo, medioambiente, telecomunicaciones, portafolio y riesgo, entre otros.
+
+El comienzo del curso se centra en la teoría más clásica de estadística de datos extremos, basada en los trabajos de @frechet1927, @gumbel1958statistics, @weibull1951, @fisher1928, @gnedenko1943, entre otros. En este marco, los argumentos que manejamos son de tipo __asintóticos__^[El análisis asintótico es un método de descripción del comportamiento en el límite.] y podríamos decir que nos ubicamos en lo que se conoce en la literatura como _paradigma de los valores extremos_ [@coles2001introduction].
+
+ 
+
+__Observación 1.1__ (Distribución del máximo de dos variables independientes).
+Se recuerda que si \( X \) e \( Y \) son variables aleatorias independientes, con funciones de distribución acumulada (cdf) \( F \) y \( G \), respectivamente. Entonces, la función de distribución acumulada de la variable aleatoria
+
+\begin{equation}
+Z = \max(X, Y)
+\label{eq:defZ}
+\end{equation}
+
+es
+
+\begin{equation}
+H(t) = \Pr(\max(X, Y) \le t) = \Pr(X \le t, Y \le t) = F(t) \cdot G(t)
+(\#eq:HZ)
+\end{equation}
+
+donde \( t \in \mathbb{R} \) es un valor real arbitrario.
+
+Esto se debe directamente a la independencia de \( X \) e \( Y \), que implica que
+
+\begin{equation}
+\Pr(X \le t, Y \le t) = \mathbb{P}(X \le t) \cdot \Pr(Y \le t).
+(\#eq:indep)
+\end{equation}
+
+
+__Observación 2.1__(Datos independientes e idénticamente distribuidos ($iid$)).  En esta parte inicial del curso
+asumiremos que nuestros datos son $iid$. Esta doble suposición suele no ser realista en aplicaciones concretas pero
+para comenzar a entender la teoría clásica, la utilizaremos por un tiempo.
+
+
+__Observación 3.1__ Resulta de la Observación 1.1, que si tenemos la secuencia de datos $X_1,\dots,X_n$ que son $iid$ con distribución $F$, entonces
+
+\begin{equation}
+X_n^{\ast}= \max \left( X_1,\dots,X_n \right)
+\end{equation}
+
+tiene distribución $F_n^\ast$ dada por
+
+\begin{equation}
+F_n^\ast (t) = F_n(t)
+\end{equation}
+
+Si conocemos la distribución $F$ conoceríamos la distribución $F_n^\ast$, pero en algunos casos la lectura que queda registrada es la del dato máximo, y no la de cada observación que dio lugar al mismo, por lo que a veces ni siquiera es viable estimar $F$. Pero aún en los casos en que $F$ es conocida o estimable, si $n$ es grande, la fórmula de $F_n^\ast$ puede resultar prácticamente inmanejable. En una línea de trabajo similar a la que aporta el *Teorema
+Central del Límite* (TCL) [@bertsekas2008introduction] en la estadística de valores medios (ver Apéndice  \@ref(sec:ap), un teorema nos va a permitir aproximar $F_n^\ast$ por distribuciones más sencillas. Este es el *Teorema de Fischer-Tippet-Gnedenko* (FTG) que presentaremos en breve (@fisher1928limiting,  @gnedenko1943).
+
+
+
+__Observación 4:__ Si la secuencia de datos $X_1,\dots,X_n\;$ es $iid\;$ y definimos
+$\;Y_i = -X_i\;$ para todo valor de $i,\dots,n$, entonces $Y_1,\dots,Y_n\;$ es $iid\;$ y además
+
+\begin{equation}
+min(X_1,\dots,X_n) = - max(Y_1,\dots,Y_n)
+\end{equation}
+
+la teoría asintótica de los mínimos de datos $iid$ se reduce a la de los máximos, razón por la que
+nos concentramos aquí en estudiar el comportamiento asintótico de los **máximos** exclusivamente. A modo de ejemplo, si suponemos que $R_1, R_2, \dots$ es la secuencia de rendimientos diarios de un índice bursátil. Entonces
+
+\begin{equation}
+M_n=\max\left\{ R_1, \dots, R_t\right\}
+\end{equation}
+
+es el máximo rendimiento diario observado en un período de “t observaciones”, con $t=1,\dots, T$.
+
+
+## Teoría de los valores extremos: formulación del modelo
+
+En un marco asintótico, se puede partir de la siguiente formulación. Supongamos que nuestro modelo se basa en el comportamiento estadístico de 
+
+\begin{equation}
+M_n=\max\left\{ X_1, \dots, X_n\right\}
+\end{equation}
+
+donde $X_1, \dots, X_n$ es la secuencia de variables aleatorias independientes que tienen una distribución común $F$.
+
+En teoría, la distribución de \( M_n \) podría derivarse exactamente para todos los valores de \( n \):
+\begin{align}
+\Pr\{M_n \leq z\} &= \Pr\{X_1 \leq z, \ldots, X_n \leq z\}\nonumber \\
+&= \Pr\{X_1 \leq z\} \times \cdots \times \Pr\{X_n \leq z\} \nonumber \\
+&= \left[F(z)\right]^n
+(\#eq:Mn)
+\end{align}
+
+donde \( F(z) = \Pr\{X_i \leq z\} \) es la función de distribución de cada variable \( X_i \). Sin embargo, en la práctica esto no es útil porque la función de distribución $F$ es desconocida. Por este motivo, una solución consiste en aproximar _familias de modelos_ para $F^n$ que se estiman únicamente en base a datos extremos:
+
+- Vamos a emplear argumentos análogos a los del TCL: estudiamos el comportamiento de $F^n$ cuando $n\rightarrow \infty$. 
+
+- Lo anterior por sí solo no es suficiente: para cualquier \( z < z^+ \), donde \( z^+ \) es el extremo superior^[Sea \( z^+ \) el menor valor de \( z \) tal que \( F(z) = 1 \). O sea, es el valor más bajo a partir del cual la función de distribución ya no crece más. Es el "techo" natural de la variable aleatoria.] de la función de distribución \( F \), se cumple que \( F_n(z) \to 0 \) cuando \( n \to \infty \), lo que implica que la distribución de \( M_n \) degenera en una masa puntual en \( z^+ \).
+
+<!--__¿Qué significa lo anterior?__ Si tomás infinitos datos, el máximo va a ser siempre, con probabilidad 1, \( z^+ \).-->
+
+Lo anterior se puede evitar normalizando la variable
+
+\begin{equation}
+M^{\ast}_n=\frac{M_n-b_n}{a_n}.
+(\#eq:Mnr)
+\end{equation}
+
+<!-- \quad \text{para las secuencias de constantes}\;\left\{  a_n \right\}\;,  \left\{  b_n \right\}.-->
+Si elegimos apropiadamente los valores de las secuencias de constantes $\left\{  a_n \right\}$ y $\left\{  b_n \right\}$ es posible estabilizar la escala de $M^{\ast}_n$ a medida que $n$ aumenta. Es por esto, que vamos a buscar las distribuciones límite de $M^{\ast}_n$ [@coles2001introduction]. 
+
+
+
+
+## Las distribuciones extremales
+
+
+Las distribuciones extremales son tres: la *distribución de Gumbel*, la *distribución de Weibull* y
+la *distribución de Fréchet*. En su versión *standard* o *típica* se definen del modo siguiente^[En el Apéndice \@ref(sec:ap) se encuentra el Teorema \@ref(thm:thap1) de los tipos de extremales.].
+
+
+Bajo ciertas condiciones, \( M_n^* \) tiende, cuando \( n \to \infty \), a una función límite \( G \) que puede pertenecer a una de las siguientes tres familias^[Donde \( x = \frac{z - b}{a} \), y se ha fijado \( b = 0 \) y \( a = 1 \) para expresar las distribuciones en su forma estándar.]:
+
+
+-__Gumbel__ si su distribución es
+ 
+$$\Lambda(x) = e^{\{-e^{-x}\}}\hspace{0.3cm},\text{ para todo }\: x \;\text{real}$$
+
+
+-__Weibull__ de orden $\alpha>0$ si su distribución es
+
+
+$$\Psi_{\alpha}(x)=\begin{cases}
+e^{\left\{-(-x)^{\alpha}  \right\}} &, si\;x<0\\
+1 &,\text{en otro caso}
+\end{cases}$$
+
+
+-__Fréchet__ de orden $\alpha>0$ si su distribución es
+
+$$
+\Phi_{\alpha}(x)=\begin{cases}
+e^{\left\{ -x^{-\alpha}\right\}} &, \:si\;x>0\\
+0&, \:\text{en otro caso}
+\end{cases}
+$$
+
+
+Las familias Fréchet y Weibull tienen un parámetro de forma \( \alpha \).
+
+Como los máximos en general son valores grandes, importa particularmente observar el comportamiento de estas distribuciones cuando \( x \to \infty \). En toda distribución, el límite es 1, pero no todas se acercan a ese valor de la misma manera. La Weibull se aproxima rápidamente, seguida por la Gumbel y luego la Fréchet. Esto indica que la distribución Fréchet modela datos \emph{más extremos}, es decir, valores máximos provenientes de datos con colas más pesadas que la Gumbel, y ésta más pesadas que la Weibull (Figura \@ref(fig:colas)).
+
+
+```{r colas, fig.cap="CDF extremales" ,echo=FALSE, fig.height=3, fig.width=3, message=FALSE, warning=FALSE}
+
+# Márgenes reducidos
+par(mar = c(5, 4, 1, 1))  # abajo, izquierda, arriba, derecha
+library(ggplot2)
+library(tidyr)
+
+# Rango de x extendido para mostrar Weibull
+x <- seq(-20, 100, length.out = 10000)
+alpha <- 2
+
+# Funciones CDF
+cdf_frechet <- function(x, alpha) ifelse(x > 0, exp(-x^(-alpha)), 0)
+cdf_weibull <- function(x, alpha) ifelse(x < 0, exp(-(-x)^alpha), 1)
+cdf_gumbel  <- function(x) exp(-exp(-x))
+
+# Evaluar las distribuciones
+df <- data.frame(
+  x = x,
+  Fréchet = cdf_frechet(x, alpha),
+  Gumbel = cdf_gumbel(x),
+  Weibull = cdf_weibull(x, alpha)
+)
+
+# Reorganizar para ggplot
+df_long <- pivot_longer(df, cols = -x, names_to = "Distribución", values_to = "CDF")
+
+# Gráfico
+ggplot(df_long, aes(x = x, y = CDF, color = Distribución)) +
+  geom_line(size = 1.2) +
+  coord_cartesian(xlim = c(-10, 100), ylim = c(0.85, 1)) +
+  labs(
+    x = "x",
+    y = "F(x)"
+  ) +
+theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    legend.box.margin = margin(t = 10)
+  )
+```
+
+
+
+En la distribución Fréchet, cuanto menor es el parámetro de forma \( \alpha \), más pesada es la cola y más lenta la convergencia a 1 (Figura \@ref(fig:frcolas)). En cambio, la Weibull tiene soporte acotado superior y el parámetro \( \alpha \) afecta principalmente la forma de la cola izquierda^[Porque la Wibull tiene soporte en $(-\infty, 0]$.], hacia \( -\infty \) (Figura \@ref(fig:weicolas)). 
+
+```{r frcolas, fig.cap="Distribución Fréchet para dististos parámetros de forma" ,echo=FALSE, fig.height=3, fig.width=3, message=FALSE, warning=FALSE}
+# Valores de x y alphas
+x <- seq(0.01, 50, length.out = 10000)
+alphas <- c(0.8, 2.5, 5)
+
+# Crear data frame con todas las curvas
+df <- lapply(alphas, function(alpha) {
+  data.frame(
+    x = x,
+    CDF = exp(-x^(-alpha)),
+    alpha = paste("", alpha)
+  )
+}) %>% bind_rows()
+
+# Graficar con ggplot
+ggplot(df, aes(x = x, y = CDF, color = alpha)) +
+  geom_line(size = 1.2) +
+  coord_cartesian(ylim = c(0.85, 1)) +
+  scale_color_manual(values = c("orange", "forestgreen", "blue")) +
+  labs(
+    x = "x",
+    y = "F(x)",
+  ) +
+theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    legend.box.margin = margin(t = 20)
+  )
+```
+
+
+```{r weicolas, fig.cap="Distribución Weibull para dististos parámetros de forma" ,echo=FALSE, fig.height=3, fig.width=3, message=FALSE, warning=FALSE}
+# Dominio negativo
+x <- seq(-50, -0.01, length.out = 1000)
+alphas <- c(0.4, 1, 5)
+
+# CDF Weibull extremal
+cdf_weibull <- function(x, alpha) ifelse(x < 0, exp(-(-x)^alpha), 1)
+
+# Armar data frame para ggplot
+df <- lapply(alphas, function(alpha) {
+  data.frame(
+    x = x,
+    CDF = cdf_weibull(x, alpha),
+    alpha = paste("", alpha)
+  )
+}) %>% bind_rows()
+
+# Gráfico
+ggplot(df, aes(x = x, y = CDF, color = alpha)) +
+  geom_line(size = 1.2) +
+  coord_cartesian(ylim = c(0, 1), xlim = c(-50, 0)) +
+  scale_color_manual(values = c("orange", "forestgreen", "blue")) +
+  labs(
+    x = "x",
+    y = "F(x)"
+  ) +
+theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    legend.box.margin = margin(t = 20)
+  )
+```
+
+
+\newpage
+
+Estos fenómenos se visualizarán con mayor claridad al presentar el Teorema \@ref(thm:foo1) del curso. Además, observar las funciones de densidad correspondientes puede ayudar a comprender mejor el peso relativo de las colas de cada distribución. En la Figura \@ref(fig:distributions), se presentan las funciones de densidad de probabilidad (PDF) extremales. Las PDF permiten visualizar de forma clara las diferencias en la forma, simetría y comportamiento en las colas^[En el Apéndice \@ref(sec:ap) se explica la diferencia entre PDF y CDF.].
+\vspace{0.5cm}
+
+<!--
+Como los máximos en general son valores grandes, importa particularmente observar el comportamiento de estas distribuciones para $x$ tendiendo a infinito. En toda distribución, el límite es $1$. Tiende más rápido a 1 la Weibull, luego la Gumbel y luego la Fréchet. Esto es indica que la distribución Fréchet modela datos *más extremos*, es decir, máximos de datos de colas más pesadas que la Gumbel y ésta que la Weibull. 
+
+En la Fréchet, la velocidad de convergencia a 1 crece al aumentar el orden. En cambio en la Weibull el orden afecta la velocidad con que va a 0 cuando $x$ tiende a menos infinito, que crece cuanto mayor el orden. Esto quedará más claro con el Teorema 1 del curso. La visualización de las densidades de cada tipo quizás ayude a comprender mejor los pesos relativos de las colas.
+-->
+
+```{r distributions, fig.cap="PDF extremales (alpha=1)" ,echo=FALSE, fig.height=3, fig.width=3, message=FALSE, warning=FALSE}
+
+# Define the range of x values, ensuring negative values are included
+x_gumbel <- seq(-5, 5, length.out = 1000)
+x_weibull <- seq(-5, 5, length.out = 1000)  
+x_frechet <- seq(-5, 5, length.out = 1000)  # Extended to include negative values
+
+# Define the PDFs based on given formulas
+gumbel_pdf <- function(x) exp(-x) * exp(-exp(-x))
+weibull_pdf <- function(x, alpha = 1) ifelse(x < 0, alpha * (-x)^(alpha - 1) * exp(-(-x)^alpha), 0)
+frechet_pdf <- function(x, alpha = 1) ifelse(x > 0, alpha * x^(-alpha - 1) * exp(-x^(-alpha)), 0)  # Explicitly defined for x ≤ 0
+
+# Compute PDFs
+gumbel_vals <- gumbel_pdf(x_gumbel)
+weibull_vals <- weibull_pdf(x_weibull, alpha = 1)  # Order 1
+frechet_vals <- frechet_pdf(x_frechet, alpha = 1)  # Order 1
+
+# Create data frames for ggplot
+df_gumbel <- data.frame(x = x_gumbel, y = gumbel_vals, PDF = "Gumbel")
+df_weibull <- data.frame(x = x_weibull, y = weibull_vals, PDF = "Weibull")
+df_frechet <- data.frame(x = x_frechet, y = frechet_vals, PDF = "Fréchet")
+
+# Combine all data
+df <- rbind(df_gumbel, df_weibull, df_frechet)
+
+# Plot using ggplot2
+ggplot(df, aes(x, y, color = PDF))+
+  geom_line(size = 1) +
+  labs(x = "x", y = "F'(x)=f(x)") +
+  theme_minimal() +
+  scale_color_manual(values = c("blue", "red", "green"))+
+theme(
+  legend.position = "bottom",  # or "right", etc.
+  legend.title = element_text(size = 8),
+  legend.text = element_text(size = 7),
+  legend.key.size = unit(0.4, "lines"),  # smaller symbol boxes
+  legend.spacing.x = unit(0.2, "cm"),    # tighter horizontal spacing
+  legend.box.margin = margin(t = 2)      # optional: slight padding above
+)
+```
+
+\newpage
+A estas versiones standard se las puede extender
+agregando un parámetro de recentramiento $(\mu)$ y
+un parámetro de escala $(\beta)$. 
+
+Se dice que $X$ tiene distribución: 
+
+- __Gumbel__ : $\Lambda^{(\mu, \beta)}$ si $\;X=\mu + \beta Y\;$, donde $Y$ tiene distribución $\Lambda$.
+- __Weibull__: $\;\Psi^{(\mu, \beta)}\;$ si $\;X=\mu + \beta Y\;$, donde $Y$ tiene distribución $\Psi_{\alpha}$.
+
+- __Fréchet__: $\;\Phi^{(\mu, \beta)}\;$ si $X=\mu + \beta Y$, donde $Y$ tiene distribución $\Phi_{\alpha}$.
+
+
+En general, es en este sentido que diremos que una
+variable es Gumbel, Weibull o Fréchet (incluyendo
+recentramiento y reescalamiento), pero en cálculos
+donde los parámetros $\mu$ y $\beta$ no sean relevantes, por
+simplicidad, usaremos las versiones standard. 
+
+
+El siguiente teorema vincula las distribuciones
+extremales en sus formatos standard y resulta de
+gran utilidad práctica sobre todo al hacer tests de
+ajustes, etc.
+
+
+```{theorem, label="foo1", name="Relaciones entre las versiones standard de las distribuciones extremales"}
+
+$X$ tiene distribución $\Phi_{\alpha}$ $\Leftrightarrow$  $(-1/X)$ tiene distribución $\Psi_{\alpha}$ $\Leftrightarrow$ $\log(X^{\alpha})$ tiene distribución $\Lambda$.
+```
+
+
+
+
+
+
+Nota: en otros contextos de la Estadística (en particular en
+alguna rutinas del R), se le llama Weibull a una variable que
+corresponde a -X, con X Weibull como definimos nosotros.
+
+__Observación 5:__  Recordamos que la función
+Gamma ($\Gamma$ ), que extiende a la función factorial
+($\Gamma(n)=n-1!\quad \forall n$ natural) definida por
+
+
+\begin{equation}
+\Gamma(x)=\int_{0}^{\infty} t^{u-1}e^{-t}dt
+\end{equation}
+
+es una función disponible tanto en el software R
+como en planillas de cálculo, etc.
+
+```{theorem, label="foo2", name="Algunos datos de las distribuciones extremales"}
+Tres partes:
+  
+__Parte 1__
+
+Si $X$ tiene distribución $\Lambda^{(\mu,\beta)}$ entonces tiene:
+
+
+
+a) __Esperanza__: $E(X) = \mu + \beta\gamma$, donde $\gamma$ es la constante de Euler-Mascheroni, cuyo valor aproximado es $0.5772156649$.
+
+b) __Moda__:  $\text{moda}(X)=\mu$
+
+c)  __Mediana__: $\text{med}(X)=\mu - \beta \log(\log 2) \approx \mu - 0.36651 \beta$
+
+d)  __Desviación estándar__: $\sigma(X)=\frac{\beta \pi}{\sqrt{6}}   \approx 1.2825 \beta$
+
+e) Si $X^+ = \max(X,0)$, entonces $E(X+k)$ es finito para todo valor de $k$ natural
+
+f) Para simular computacionalmente $X$, se puede tomar $U$ uniforme en $(0,1)$ y hacer $X = \mu - \beta \log(-\log U)$.
+
+
+__Parte 2__
+
+Si $X$ tiene distribución $\Psi^{(\mu, \beta)}$ entonces tiene:
+
+a) $E(X)=\mu -\beta \Gamma (1+1/\alpha)$
+
+b) \begin{equation*}\text{moda}(X) =\begin{cases} 
+  \mu  & \text{si }\; \alpha \leq 1 \\
+    \mu-\beta\left\{ \frac{\left( \alpha-1 \right)}{\alpha} \right\}^{1/\alpha} & \text{si }\; \alpha >1
+\end{cases}\end{equation*}
+
+
+c) $\text{med}(X)=\mu - \beta (\log 2)^{\frac{1}{\alpha}}$
+
+d) $\sigma(X)=\beta\left\{\Gamma\left( 1+\frac{2}{\alpha} \right)-\Gamma\left( 1+\frac{1}{\alpha} \right)^2  \right\}^{1/2}$.
+
+__Parte 3__
+
+Si $X$ tiene distribución $\Phi_{\alpha}^{(\mu, \beta)}$ entonces tiene:
+
+a) 
+\begin{equation*}
+E(x) =
+\begin{cases} 
+    \mu + \beta\;\Gamma\left( 1-\frac{1}{\alpha} \right) & \text{si } \alpha>1 \\
+    \infty & \text{en otro caso}
+\end{cases}
+\end{equation*}
+
+b)  $\text{moda}(X)=\mu+ \beta\;\left\{ \frac{\alpha}{\left( 1+ \alpha\right)}\right\}^{1/\alpha}$
+
+c) $\text{med}(X)=\mu + \beta \;\left( \log 2 \right)^{\left( -1/\alpha \right)}$
+
+d) \begin{equation*}
+\sigma(x) =
+\begin{cases} 
+    \mu + \left| \Gamma \left( 1 - \frac{2}{\alpha} \right) - \Gamma \left(  1 - \frac{1}{\alpha}\right)\right|  & \text{si } \; \alpha>2 \\
+    \infty & \text{si } \; 1<\alpha \leq 2
+\end{cases}
+\end{equation*}
+
+
+```
+
+
+
+
+
+
+__Observación 6:__ El item e) de la Parte 1 es
+trivialmente cierto para Weibull y tomando en
+cuenta el item a) de la Parte 3, es claramente falso
+para Fréchet.
+
+__Observación 7:__ El item f) de la Parte 1 en
+conjunto con el Teorema \@ref(thm:foo1) brinda fórmulas
+sencillas para simular computacionalmente
+distribuciones Weibull o Fréchet.
+
+__Observación 8:__ Se generaron mil números aleatorios y aplicando el
+item f) de la Parte 1: se simularon mil variables
+Gumbel standard $iid$, calculándose su promedio, su
+desviación standard empírica y su mediana
+empírica. 
+
+```{r echo=TRUE}
+# Fijar semilla para reproducibilidad
+set.seed(123)
+
+# Definir parámetros
+mu <- 0       # Centro
+beta <- 1     # Escala
+gamma <- 0.5772156649  # Constante de Euler-Mascheroni
+
+# Número de simulaciones
+n <- 1000
+
+# Generar 1000 valores de una variable uniforme en (0,1)
+U <- runif(n)
+
+# Simular la variable Gumbel con parámetros (mu, beta)
+X_gumbel <- mu - beta * log(-log(U))
+
+# Calcular estadísticas
+esperanza <- mu + beta * gamma
+moda <- mu
+mediana_teorica <- mu - beta * log(log(2))
+desviacion_std_teorica <- beta * pi / sqrt(6)
+
+# Calcular estadísticas empíricas
+promedio_empirico <- mean(X_gumbel)
+desviacion_std_empirica <- sd(X_gumbel)
+mediana_empirica <- median(X_gumbel)
+```
+
+Los resultados fueron los siguientes:
+
+```{r echo=FALSE}
+# Mostrar resultados teóricos
+cat("----- Resultados teóricos: ----- \n")
+cat("Esperanza teórica:", esperanza, "\n")
+cat("Moda teórica:", moda, "\n")
+cat("Mediana teórica:", mediana_teorica, "\n")
+cat("Desviación estándar teórica:", desviacion_std_teorica, "\n\n")
+
+# Mostrar resultados empíricos
+cat("----- Resultados empíricos (simulación con n =", n, "): -----\n")
+cat("Promedio empírico:", promedio_empirico, "\n")
+cat("Desviación estándar empírica:", desviacion_std_empirica, "\n")
+cat("Mediana empírica:", mediana_empirica, "\n")
+```
+
+Observar que los resultados empíricos están cerca del valor esperado, desvío standard y mediana de la Gumbel standard.
+
+
+A continuación presentaremos el Teorema medular de esta primera parte, expresado de la manera más llana posible. Veremos posteriormente algunos detalles con más cuidado. En particular, veremos que la continuidad de la distribución $F$ no
+es una hipótesis real (ni es necesaria ni es suficiente, por eso la
+entrecomillamos), pero ayuda a visualizar que no vale el teorema para toda distribución $F$, así como veremos con cierto detalle más adelante...
+
+
+__Teorema 3: de Fischer-Tippet-Gnedenko (FTG)__ 
+
+Si $X_1,\dots,X_n$ es $iid$ con distribución $F$ 'continua',
+llamamos $F^{\ast}_n$ a la distribución de $max(X_1,\dots,X_n)$ y $n$
+es grande, entonces existen $\mu$ real y $\beta > 0$ tales que
+alguna de las siguientes tres afirmaciones es
+correcta:
+
+a) $F^{\ast}_n$ se puede aproximar por la distribución
+de $\mu+\beta Y$, con $Y$ variable con distribución $\Lambda$.
+b) Existe $\alpha>0$ tal que $F_n^{\ast}$ se puede aproximar por la distribución de $\mu+\beta Y$ con $Y$ variable con distribución $\Phi_{\alpha}$. 
+c) Existe $\alpha>0$ tal que $F_n^{\ast}$ se puede aproximar por la distribución de $\mu+\beta Y$ con $Y$ variable con distribución $\Phi_{\alpha}$. 
+
+
+Lo anterior equivale a decir que la distribución del máximo de datos _continuos_ e $iid$, si $n$ es grande, puede aproximarse por una Gumbel, una Fréchet o una Weibull. 
+
+__Observación 9:__ Como veremos con cierto detalle, cuál de las tres aproximaciones es la válida depende de cómo sea la distribución $F$.
+
+Por ejemplo, veremos que:
+
+- Si $F$ es normal o exponencial, se aplica a $F_n^{\ast}$ la aproximación por una Gumbel .
+- Si $F$ es uniforme, vale para $F_n^{\ast}$ la aproximación por una Weibull.
+- Si $F$ es Cauchy, la aproximación válida para $F_n^{\ast}$ es por una Fréchet.
+
+Más precisamente, cuál de las tres aproximaciones es la aplicable depende de la cola de $F$^[Los valores de $F(t)$ para valores grandes de $t$.].
+
+En concreto, Weibull aparece cuando $F$ es la
+distribución de una variable acotada por arriba
+(como la Uniforme), Gumbel para distribuciones
+de variables no acotadas por arriba pero con colas muy livianas (caso Exponencial y Normal) y Fréchet para colas pesadas (caso Cauchy).
+Finalmente, si bien aclaramos que la hipótesis de continuidad de $F$ no es esencial, veremos que si $F$ es la distribución Binomial o Poisson, por mencionar
+dos ejemplos muy conocidos y sencillos, NO se
+puede aplicar ninguna de las tres aproximaciones
+anteriores.
+
+
+__Observación 10.__ Como consecuencia del $FTG$ si se tienen datos de máximos, las distribuciones extremales son “candidatas” razonables para proponer en un ajuste.
+Sin embargo no debe pensarse que siempre se va a lograr ajustar a una de las tres distribuciones extremales, ya que hay al menos dos causas evidentes que podrían desbaratar la aplicación del FTG:
+
+1) Que la cantidad de registros que se consideran al
+calcular cada máximo no sea suficientemente
+grande. 
+
+2) Que los registros que se consideran al calcular cada máximo no sean $iid$^[Al final del capítulo 2 se verá que esto puede subsanarse con versiones más generales del FTG.].
+
+Por consiguiente el $FTG$ alienta a intentar ajustar datos
+extremales a una de las tres distribuciones extremales, pero no
+siempre un tal ajuste dará un resultado afirmativo.
+
+<!--- EJEMPLO DEL LIBRO A REVEER -->
+
+__Ejemplo 1.__ Veamos un ejemplo de ajuste. Los
+siguientes datos corresponden a los valores, en $80$ puntos geográficos distintos de la región parisina, del máximo estival del contaminante atmosférico $O_3$ (no perceptible sensorialmente y con impacto
+sanitario serio). Cada dato es el máximo registro en cada sensor a lo largo de todo un verano; el contaminante se mide diariamente, por lo cual, cada uno de nuestros $80$ datos es el máximo de unas $100$ lecturas diarias.
+
+
+
+```{r echo=FALSE, paged.print=TRUE}
+data <- data.frame(
+#  i = 1:80,
+  X_i = c(430.3, 115.7, 4.48, 26.95, 72.27, 206.4, 22.79, 25.03, 226.8, 11.1,
+        1572, 100, 104.5, 37.1, 20.22, 106.9, 47.2, 62.82, 39.3, 18.52,
+        41.47, 429.5, 1228, 127.6, 9.93, 90.4, 201.7, 295.1, 20.62, 20.58,
+        13.27, 538.1, 804, 321.6, 16.11, 22.05, 100.2, 40.76, 262.7, 19.32,
+        7.79, 58.02, 28.02, 18.38, 13.12, 572.8, 44.46, 40.72, 25.07, 24.07,
+        511.8, 38.12, 15.86, 75.48, 24.09, 119.4, 174.7, 104.7, 140, 79.67,
+        158, 25.46, 462.5, 35.53, 876.4, 462.5, 53.47, 23.59, 38.77, 494.2,
+        164.2, 52.06, 54.13, 15.53, 29, 14.35, 1675, 15.01, 72.07, 22.99))
+```
+
+```{r echo=FALSE, paged.print=FALSE}
+print("Primeros 6 datos:")
+head(data)
+```
+Los valores se miden en unidades de referencia
+standarizadas que, en particular, permiten
+comparar las medidas de lugares diferentes,
+independientemente de variables relevantes como
+altura e incidencia solar, por trabajo previo de
+calibración.
+
+El objetivo del estudio en esta etapa es conocer la
+distribución de estos datos y en particular estimar
+la probabilidad de que el máximo estival en los 80
+puntos supere el valor 50 (correspondiente a
+existencia de riesgo moderado).
+
+Veamos los datos que tenemos:
+
+
+  
+  
+  
+```{r echo=FALSE}  
+print('Cálculo de estadísticos básicos')
+summary(data$X_i)
+```
+Como la mayoría de tests de ajustes suponen datos
+$iid$, realizaremos dos tests de aleatoriedad^[En inglés es 
+_randomness_.]:
+
+- Runs test (Up & Down)
+- Spearman correlation of ranks
+
+
+Para realizar el ajuste utilizaremos el test $\chi^2$ de
+ajuste^[Una excelente referencia para la temática de los
+test $\chi^2$ de ajuste es la introducción del trabajo
+Pearsonian Tests and Modifications (Jorge Graneri,
+CMAT, Facultad de Ciencias, 2002).]. 
+Este test requiere elegir una partición más o
+menos arbitraria de la recta real en intervalos; sin
+embargo es importante que en cada intervalo caiga
+una cantidad suficiente de datos de la muestra; en
+este caso hemos tomado como extremos de los
+intervalos los quintiles empíricos de nuestra
+muestra. 
+
+Una aclaración mucho más importante es
+que este test requiere estimar parámetros por el
+método de Máxima Verosimilitud Categórica, que da
+resultado distintos al método de Máxima
+Verosimilitud a secas^[Este hecho es frecuentemente
+ignorado y presentado erróneamente en los textos y
+cursos básicos de Estadística.].
+
+```{r echo=FALSE}
+# Cargar librería necesaria para el Runs Test
+library(tseries)  
+
+# Crear una secuencia de diferencias consecutivas
+differences <- diff(data$X_i)
+
+# Convertir en una secuencia de signos (+1 si aumenta, -1 si disminuye)
+runs_sequence <- ifelse(differences > 0, 1, -1)
+
+# Aplicar Runs Test correctamente
+runs_test_result <- runs.test(as.factor(runs_sequence))
+print(runs_test_result)
+```
+
+```{r echo=FALSE, warning=FALSE}
+# Asegurar que data$Xi sea un vector numérico
+data$X_i <- as.numeric(data$X_i)
+
+# Test de correlación de Spearman (comparando con los índices)
+spearman_test_result <- cor.test(data$X_i, seq_along(data$X_i), method = "spearman")
+
+# Mostrar resultado
+print(spearman_test_result)
+```
+
+<!--El p-valor en runs up and down es 0,868 y en
+Spearman es 0,474.-->
+
+Como cada dato de los 80 que disponemos es un
+máximo de un centenar de observaciones,
+intentaremos ajustarlos a una distribución
+extremal sabiendo que no necesariamente
+tendremos éxito. 
+
+Observemos en particular que lo
+que pasamos por dos tests de aleatoriedad son los
+80 máximos, pero no el centenar de lecturas que
+forman cada uno de los 80 máximos (ni siquiera
+tenemos esos datos originales). 
+
+Dado que visualmente se aprecian valores muy apartados, se
+presume una distribución de colas pesadas y por
+ese motivo se intenta un ajuste a una Fréchet.
+
+```{r echo=FALSE}
+# Histograma de los datos
+ggplot(data, aes(x = X_i)) +
+  geom_histogram(binwidth = 50, fill = "blue", alpha = 0.5, color = "black") +
+  labs(title = "Distribución de los datos", x = "X_i", y = "Frecuencia")
+```
+
+<!--
+El test de ajuste $\chi^2$ da un $p-$valor de 0,467 para
+una Fréchet de α=1.04, μ= -6.5, β=44.
+-->
+
+
+```{r}
+# Parámetros del libro
+loc_libro <- -6.5    # μ
+scale_libro <- 44     # β
+shape_libro <- 1.04   # α (parámetro de forma positivo, Fréchet)
+
+# Cálculo de la probabilidad de exceder el valor 50
+prob_excede_50 <- 1 - pgev(50, loc = loc_libro, scale = scale_libro, shape = shape_libro)
+
+# Mostrar la probabilidad de excedencia
+print(paste("Probabilidad de excedencia del nivel 50:", round(prob_excede_50, 4)))
+
+```
+
+
+```{r}
+# Proporción empírica de excedencia del nivel 50
+prop_empirica <- mean(data$X_i > 50)
+print(paste("Proporción empírica de excedencia del nivel 50:", round(prop_empirica, 4)))
+
+# Intervalo de confianza para la proporción empírica
+prop_ci <- prop.test(sum(data$X_i > 50), length(data$X_i))$conf.int
+print(paste("Intervalo de confianza al 95%:", round(prop_ci[1], 3), "-", round(prop_ci[2], 3)))
+```
+
+```{r}
+print(paste("Probabilidad de excedencia del nivel 50:", round(prob_excede_50, 4)))
+
+```
+```{r}
+# Parámetros del libro
+loc_libro <- -6.5    # μ
+scale_libro <- 44     # β
+shape_libro <- 1.04   # α (parámetro de forma positivo, Fréchet)
+
+# Cálculo de la probabilidad de exceder el valor 50
+prob_excede_50 <- 1 - pgev(50, loc = loc_libro, scale = scale_libro, shape = shape_libro)
+print(paste("Probabilidad de excedencia del nivel 50:", round(prob_excede_50, 4)))
+
+```
+
+```{r}
+# Parámetros del libro
+loc_libro <- -6.5    # μ
+scale_libro <- 44     # β
+shape_libro <- 1.04   # α (parámetro de forma positivo, Fréchet)
+
+# Definir intervalos usando los quintiles empíricos
+breaks <- quantile(data$X_i, probs = seq(0, 1, length.out = 6))  # 5 intervalos
+
+# Calcular las frecuencias observadas en cada intervalo
+observed_counts <- hist(data$X_i, breaks = breaks, plot = FALSE)$counts
+
+# Calcular las probabilidades teóricas en cada intervalo usando la distribución Fréchet ajustada
+probs <- diff(pgev(breaks, loc = loc_libro, scale = scale_libro, shape = shape_libro))
+
+# Convertir probabilidades en frecuencias esperadas
+expected_counts <- probs * length(data$X_i)
+
+# Realizar el test de ajuste Chi-cuadrado
+chi_sq_test <- chisq.test(observed_counts, p = probs, rescale.p = TRUE)
+
+# Mostrar los resultados del test
+print("Resultados del test Chi-cuadrado con los parámetros del libro:")
+print(chi_sq_test)
+```
+
+
+```{r echo=FALSE}
+# Comparar gráficamente con un Q-Q plot
+theoretical_quantiles <- qgev(ppoints(length(data$X_i)), 
+                              loc = loc_libro, 
+                              scale = scale_libro, 
+                              shape = shape_libro)
+
+# Gráfico Q-Q
+qqplot(theoretical_quantiles, sort(data$X_i), 
+       main = "Q-Q Plot para la Distribución Fréchet Ajustada",
+       xlab = "Cuantiles Teóricos (Fréchet)",
+       ylab = "Datos Observados")
+abline(0, 1, col = "red")
+```
+
+<!-- Análisis del Q-Q Plot
+
+- Sección Inicial (Cuantiles Bajos): En los valores bajos, los puntos se alinean bien con la diagonal roja, indicando un buen ajuste en la parte central de la distribución.
+Colas Extremas:
+
+- Para los valores más extremos, se observan desviaciones importantes de la diagonal, especialmente en los cuantiles más altos.
+Esto sugiere que la distribución Fréchet ajustada podría no estar capturando completamente la cola extrema de los datos observados.
+-->
+
+
+
+```{r echo=FALSE}
+# Histograma con la curva de densidad ajustada
+hist(data$X_i, breaks = 20, prob = TRUE, main = "Histograma y Densidad Ajustada (Fréchet)",
+     xlab = "X_i", col = "lightblue", border = "white")
+curve(dgev(x, loc = loc_libro, scale = scale_libro, shape = shape_libro), 
+      add = TRUE, col = "red", lwd = 2)
+legend("topright", legend = "Fréchet ajustada", col = "red", lwd = 2)
+
+```
+
+<!-- Análisis del Histograma con Densidad Ajustada (Fréchet)
+
+- Ajuste General:La curva de densidad Fréchet (línea roja) sigue la tendencia general del histograma.
+Sin embargo, la altura de la primera barra es significativamente mayor que la densidad esperada, lo que sugiere una mayor concentración de valores pequeños.
+
+- Colas Pesadas: La distribución Fréchet modela bien las colas pesadas, aunque podría estar subestimando la frecuencia en las colas extremas.
+
+------------------------
+
+Conclusión: 
+- El test de ajuste $\chi^2$ mostró un p-valor aceptable (0.3553), lo cual apoya la hipótesis de un buen ajuste.
+
+Sin embargo, las visualizaciones gráficas indican que:
+
+- Hay una sobreestimación de la densidad en la parte inicial (valores bajos).
+- Hay una subestimación de la probabilidad de los valores extremadamente altos.
+
+Entonces, podría ser beneficioso:
+
+Probar otras distribuciones de colas pesadas, como Weibull o Pareto Generalizada (GPD).
+Realizar un análisis de valores extremos específicamente en la cola superior.
+
+
+------- ESTA ES LA CCL DE GONZA, COMO HIZO EL EJ? ------
+
+Conclusión del libro a reveer ejercicio porque no tengo los calculos: 
+Adoptando pues este modelo, un sencillo cálculo
+muestra que la probabilidad de que el máximo
+exceda 50 es 0.455, lo cual es absolutamente
+consistente con lo observado en la muestra, donde
+la proporción empírica de excedencia del nivel 50
+es 0.5125 con un intervalo de confianza al 95%
+para esta proporción de (0.403, 0.622). Se llega a la conclusión que hay una incidencia
+muy seria de niveles moderados de riesgo (se
+prevee que cerca de la mitad de los puntos estén
+afectados). 
+<!--- FIN EJEMPLO DEL LIBRO A REVEER -->
+
+__Observación 10.__ Una distribución $H$ se dice degenerada si $H(t)=0 \text{ ó } 1$ para todo valor de $t$. Representan a variables que no son tales, si la distribución de $X$ es degenerada, entonces $X$ es una constante, y no tiene sentido
+hacer estadística sobre $X$, por lo tanto sólo tienen
+interés para nosotros las distribuciones no-degeneradas.
+
+
+## Distribución Extremal Asintótica
+
+Si $X_1,\dots,X_n$ es iid con distribución $F$ diremos que $H$ no-degenerada es la Distribución Extremal Asintótica
+(DEA) de $F$^[De manera equivalente, que $F$ tiene DEA $H$.], si existen dos sucesiones de números reales, $d_n$ y $c_n>0$, tales que la distribución de
+\begin{equation}
+\frac{max(X_1,\dots,X_n)- d_n}{c_n}\;\text{ tiende a } H \text{ cuando } n \text{ tiende a infinito.}
+\end{equation}
+
+## Supremo esencial de una variable aleatoria o distribución
+
+Si $X$ tiene distribución $F$,
+se llama  $M_X$ al supremo esencial de $X$ o,
+indistintamente, supremo esencial de $F$ (denotado
+$M_F$) a
+
+
+\begin{equation}
+M_X = M_F = \sup\{t \; / \; F(t) < 1\}
+\end{equation}
+
+__Observación 11.__
+
+- Si $F$ es $U(a,b)$, $M_F=b$.
+- Si $F$  es $Bin(m,p)$, $M_F=m$.
+- Si $F$  es Normal, Exponencial, Cauchy o Poisson entonces $M_F$ es infinito.
+
+__Teorema 4:__ Si $X_1,\dots,X_n$ iid con distribución $F$ cualquiera, entonces, para $n \rightarrow \infty$,
+
+\begin{equation}
+X_n^{\ast} =max(X_1,\dots,X_n) \rightarrow M_F
+\end{equation}
+
+
+__Observación 12.__ El resultado anterior vale
+incluso si $M_F$ es infinito, pero si $M_F$ es finito, como
+$Xn* - Mf$ tiende a cero, por analogía con el Teorema
+Central del Límite para promedios, buscaríamos
+una sucesión $c_n>0$ y que tienda a cero de modo tal
+que $(X_n^{\ast}- M_F )/ c_n$ tienda a una distribución no-
+degenerada y de allí surge buscar la DEA.
+
+
+__Teorema 5:__  Si $F$ es una distribución con $M_F$ finito, y para $X$ con distribución $F$ se cumple que
+\begin{equation}
+P(X=M_F)>0
+\end{equation}
+entonces $F$ no admite DEA.
+
+__Observación 13.__ Si $F$ es $Bin(m,p) \Rightarrow M_F=m$. Si $X$
+tiene distribución $F$, entonces
+$P( X=M_F)= P( X=m)= p^m>0$,
+asi que la distribucion $Bin(m,p)$ NO admite DEA,
+no se puede aproximar la distribución del máximo
+de una muestra iid de variables $Bin(m,p)$.
+
+El Teorema anterior es un caso particular del
+próximo.
+
+__Teorema 6:__ Si $F$ es una distribución con $M_F$ finito o infinito que
+admite DEA, y $X$ tiene distribución $F$, entonces el
+limite cuando $t$ tiende a $M_F$ por izquierda de
+
+\begin{equation}
+P(X>t)/P(X \leq t)
+\end{equation}
+
+debe ser 1.
+
+__Observación 13.__ Si $F$ es una distribución de
+Poisson de parámetro $\lambda >0$, $M_F$ es infinito. Si $k$ es un
+natural, entonces
+
+\begin{align}
+P(X>t)/P(X \leq t)& = P(X \leq k+1)/P(X \leq k)\\
+& = 1-\left\{ P(X=k)/P(X \leq k) \right\} \approx 1-(1- \lambda/k)
+\end{align}
+
+que tiende a 0 cuando $k$ tiende a infinito, por lo
+cual $F$ NO admite DEA, o sea que no se puede aproximar el máximo de una sucesión iid de variables de Poisson.
+
+__Observación 14.__ El Teorema 6 brinda una
+condición NECESARIA pero NO SUFICIENTE
+para DEA. Un ejemplo de ello lo aportó Von Mises,
+mostrando que la distribución
+
+\begin{equation}
+F(x)= 1- e^{(-x-\sin(x))}
+\end{equation}
+
+cumple con la condicion del Teorema 6 pero no
+admite DEA. El tema será cerrado al estudiar los
+dominios de atracción maximal, en breve.
+
+Veamos ahora ejemplos donde la DEA resulta
+aplicable y que ratifican algunos hechos que
+anticipáramos.
+
+__Observación 15.__  Si $F$ es $U(0,1)$ y consideramos
+$X_1,\dots,X_n$ iid con distribución $F$, resulta que
+la distribución de $n( X_n^{\ast} - 1)$ tiende a $\Psi_1$ por lo cual la distribución uniforme tiene DEA
+Weibull.
+
+__Observación 16.__ Si $F$ es Exponencial de
+parámetro 1 y consideramos $X_1,\dots,X_n$ iid con
+distribución $F$, se tiene que la distribución de $X_n^{\ast} - \log n$ tiende a $\Lambda$ por lo cual la distribución exponencial tiene DEA Gumbel.
+
+__Observación 17.__ Si $F$ es $N(0,1)$ y consideramos
+$X_1,\dots,X_n$ iid con distribución $F$, definimos la función continua y estrictamente decreciente (para $u>0$)
+
+\begin{equation}
+g(u)= \frac{e^{-u^2/4\pi}}{u}.
+\end{equation}
+
+Como $\lim_{u \to 0}\; g(u) \rightarrow \infty$ y $\lim_{u \to \infty}\; g(u) \rightarrow 0$,
+para todo natural $n$ existe un único valor $u_n$ tal que 
+
+\begin{equation}
+g(u_n)=\frac{1}{n}
+\end{equation}
+
+y resulta que $\frac{u_n}{\sqrt{2\pi} (X_n^{\ast}- u_n /\sqrt 2\pi)} \rightarrow \Lambda$, por lo cual la distribución normal tiene DEA Gumbel.
+
+
+__Observación 18.__ Si $F$ es Cauchy standard que se expresa como $C(0,1)$ 
+y consideramos $X_1,\dots,X_n$ iid con distribución $F$, se tiene que
+la distribución de $\pi X_n^{\ast}/n$ tiende a $F_1$ por lo cual la distribución Cauchy tiene DEA Fréchet.
+
+Los ejemplos anteriores no son sorprendentes, en el sentido
+que aunque presentamos FTG en una versión simplificada,
+dicho teorema sugiere que cuando $F$ admite DEA, la
+distribución $H$ deberá ser una distribución extremal. De hecho
+FTG resulta de combinar dos teoremas, basadas en una nueva
+definición, la de distribución __max-estable__.
+ 
+### Distribución max-estables
+
+Si dada $F$ distribución, $X$ con distribución $F$, $k$ natural
+arbitrario y $X_1,\dots,X_k$ iid con distribución $F$, existen
+reales $a_k, b_k$ tales que $max(X_1,\dots,X_k)$ tiene la misma
+distribución que $a_k X+ b_k$, $F$ se dice max-estable.
+
+
+El Teorema FTG resulta de superponer los dos
+siguientes teoremas.
+
+__Teorema 7:__
+
+a) Si $F$ admite DEA $H$, entonces $H$ es max-estable.
+
+b) Si $H$ es max-estable, es la DEA de sí misma.
+
+__Teorema 8:__
+
+
+Una distribución es max-estable si y solo si es extremal: Gumbel, Weibull, Fréchet.
+
+El Teorema 7 es bastante intuitivo y análogo a los
+teoremas de Lévy sobre distribuciones estables en
+aproximaciones asintóticas de las distribuciones de
+sumas. Para el Teorema 8 haremos enseguida un
+ejercicio sencillo que nos ayudará a hacerlo creíble.
+
+Luego precisaremos, para terminar con esta parte,
+cómo son las distribuciones que tienen por DEA
+cada uno de los tres tipos de distribuciones
+extremales. Para eso precisamos recordar algunas
+definiciones, como la siguiente.
+
+__Observación 19.__ Si $F$ y $G$ son dos distribuciones,
+tienen colas equivalentes si $M_F=M_G$ y cuando $t$
+tiende a $M_F$ por izquierda, $(1-F(t))/(1-G(t))$ tiende a
+un valor $c>0$.
+
+Recordando ahora cómo se calcula la distribución
+del máximo de dos variables independientes, es
+muy sencillo calcular la distribución del $max\left\{ X,Y \right\}$,
+cuando $X$ e $Y$ son independientes y cada una de
+ellas es una distribución extremal. Se tiene el
+siguiente resultado.
+
+
+
+| $X$ | $Y$| $max(X,Y)$ |
+|-------|-------|--------------|
+| \textcolor{red}{Weibull} | \textcolor{red}{Weibull} | \textcolor{red}{Weibull} |
+| \textcolor[rgb]{0.0,0.5,0.0}{Weibull} | \textcolor[rgb]{0.0,0.5,0.0}{Gumbel} | \textcolor[rgb]{0.0,0.5,0.0}{Cola equivalente Gumbel} |
+| \textcolor{blue}{Weibull} | \textcolor{blue}{Fréchet} | \textcolor{blue}{Fréchet} |
+| \textcolor[rgb]{0.0,0.5,0.0}{Gumbel} | \textcolor[rgb]{0.0,0.5,0.0}{Weibull} | \textcolor[rgb]{0.0,0.5,0.0}{Cola equivalente Gumbel} |
+| \textcolor{red}{Gumbel} | \textcolor{red}{Gumbel} | \textcolor{red}{Gumbel} |
+| \textcolor{blue}{Gumbel} | \textcolor{blue}{Fréchet} | \textcolor{blue}{Cola equivalente Fréchet} |
+| \textcolor{blue}{Fréchet} | \textcolor{blue}{Weibull} | \textcolor{blue}{Fréchet} |
+| \textcolor{blue}{Fréchet} | \textcolor{blue}{Gumbel} | \textcolor{blue}{Cola equivalente Fréchet} |
+| \textcolor{red}{Fréchet} | \textcolor{red}{Fréchet}| \textcolor{red}{Fréchet} |
+
+
+\textcolor{red}{\rule{1em}{1em} Las extremales son max-estables: tomar máximos de dos del mismo tipo queda en el mismo tipo.}
+
+
+\textcolor[rgb]{0.0,0.5,0.0}{\rule{1em}{1em} Gumbel es más pesada que Weibull. En la cola, que es lo que cuenta para máximos, prima Gumbel.}
+
+
+\textcolor{blue}{\rule{1em}{1em} Fréchet es más pesada que Gumbel y mucho más pesada que Weibull.}
+
+Además conducen a otros resultados interesantes,
+como el siguiente, que se deduce de la tabla
+anterior.
+
+
+
+```{theorem, label="t9"}
+Si $X_1,\dots,X_n$ independientes y cada $X_i$
+tiene uno de los tres tipos de distribución extremal, entonces la distribución del $max(X_1,\dots,X_n)$ es:
+  
+a) Cola equivalente a Fréchet, si alguna de las
+variables es Fréchet y alguna otra es Gumbel.
+
+b) Fréchet, si alguna es Fréchet y ninguna es
+Gumbel.
+
+c) Cola equivalente Gumbel ninguna es Fréchet
+pero algunas son Gumbel y otras Weibull.
+
+d) Gumbel si todas son Gumbel.
+
+e) Weibull si todas son Weibull.  
+```
+
+Vamos ahora a ver el concepto de *Dominio de
+Atracción Maximal*.
+
+__Observación 20.__ Si $F$ es una distribución, se dice
+que tiene cola de variación regular de orden $-\alpha$,
+para $\alpha \geq 0$ si, $\forall t>0$, $(1-F(tx))/(1-F(x)) \rightarrow t
+^{-\alpha}$ si $x \rightarrow \infty$. Para abreviar se dirá que F es $R_{-\alpha}$. Por ejemplo, para $\alpha=3$, un caso de $F$ es $F(u)=1- 1/u^3$. 
+
+
+Por otra parte se dice que $L$ es una función de
+variación lenta si $\forall t>0, \;L(tx)/L(x) \rightarrow 1 \;\text{ cuando }\;  x\rightarrow \infty$. Un ejemplo es $L(u)=log(u)$.
+
+
+```{definition, label="d4", name="Dominio de Atracción Maximal"}
+Si $H$ es una distribución extremal (Gumbel,
+Weibull o Fréchet) su Dominio de Atracción
+Maximal ($DAM(H)$) está
+constituído por todas las distribuciones $F$ que
+tienen $DEA\;H$.
+```
+
+
+```{theorem, label="th9", name="DAM de la Fréchet"}
+$F$ pertenece a la $DAM$ de $\Phi_{\alpha}$ si y sólo si
+$1-F(x)=x^{-\alpha} L(x)$ para alguna $L$ de variación lenta,
+lo cual es equivalente a decir que $F$ es $R_{-\alpha}$. 
+Un ejemplo típico seria $1-F(x)= x^{-\alpha}$.
+Además puede tomarse $d_n=0$ y $c_n= n$.
+```
+
+__Ejercicio 2 :__ Recompruebe en función de lo
+anterior que la distribución de Cauchy tiene DEA
+Fréchet.
+
+
+<!--  aca me quede p 30 -->
+
+```{corollary, label="corollary1", name="DAM de la Fréchet"}
+Si $F$ es una distribución con densidad $f$ que cumple
+que $xf(x)/(1-F(x))$ tiende a $\alpha$ cuando $x \rightarrow \infty$, se dice que $F$ cumple la *Condición de Von Mises I*.
+En tal caso, $F$ pertenece a la DAM de $\Phi_{\alpha}$ y mas aún, la $DAM$ de $\Phi_{\alpha}$ son todas las distribuciones que tienen cola equivalente a alguna distribución que
+cumpla la Condición de Von Mises I.
+```
+
+
+Del $DAM$ Fréchet y Teorema 1, surge lo siguiente.
+
+
+```{theorem, label="th10", name="DAM de la Weibull"}
+a) $F$ pertenece a la $DAM$ de $\Psi_{\alpha}$ si y solo si $M_F$ es finito y además $1-F(M_F-1/x)=x^{-\alpha} L(x)$ para alguna $L$ de variación lenta, es decir que pertenece a $R_{-\alpha}$.
+
+Observar que con el cambio de variable $u=M_F-1/x$,
+resulta que $1-F(u)=(^{-}M_F-u)^{\alpha} L(1/(M_F-u)) para
+alguna $L$ de variación lenta, para $u< M_F$.
+
+Un ejemplo típico sería $1-F(u)=(^{-}M_F -u)^{\alpha} ,\; u< MF$.
+
+Además puede tomarse $d_n= M_F$ y $c_n= n-\alpha$.
+
+b) Si $F$ distribución con densidad $f$ positiva en
+$(a,M_F)$ para algun $a< M_F$ y $(M_F -x)f(x)/(1-F(x))$
+tiende a $\alpha$ cuando $x \rightarrow M_F$, se dice que $F$ cumple la *Condición de Von Mises II*. En tal caso, $F$ pertenece a la $DAM$ de $\Psi_{\alpha}$ y mas aún, la $DAM$ de $\Psi_{\alpha}$ son todas las distribuciones que tienen cola equivalente a alguna distribución que cumpla la Condición de
+Von Mises II.
+```
+
+
+__ Ejercicio 3 :__ 
+
+a) Recompruebe en función de lo
+anterior que la distribución uniforme tiene $DEA$
+Weibull. 
+
+b) Encuentre la fórmula explícita de
+alguna distribución que no sea la uniforme y tenga
+$DEA$ Weibull. Solo resta encontra la $DEA$ Gumbel, y eso lo
+aporta el próximo resultado.
+
+
+
+```{theorem, label="th11", name="DAM de la Gumbel"}
+Una distribución $F$ se dice una Función de Von
+Mises con función auxiliar $h$ si existe $a < M_F$ ($M_F$
+puede ser finito o infinito) tal que para algún $c>0$
+se tiene
+
+\begin{equation}
+1-F(x)= c\; \exp{- \int_{a}^{x} 1/h(t) dt}
+(\#eq:th11)
+\end{equation}
+
+Se tiene entonces que la $DAM$ de $\Lambda$ son todas las
+distribuciones que tienen cola equivalente a alguna
+distribución que sea una Función de Von Mises.
+```
+
+
+Básicamente, se trata de colas más livianas que
+cualquier expresión del tipo $1/x^k$, más aún, con
+decaimiento "del tipo exponencial", en el sentido
+preciso siguiente. Si, como en el \@ref(thm:th11), se tiene que 
+
+\begin{equation}
+1-F(x)= c\; \exp{- \int_{a}^{x} 1/h(t) dt},
+(\#eq:th11_eq)
+\end{equation}
+
+entonces se tiene
+$1-F(x)\leq c\; \exp\{-(x-a)/h(x)\}$, donde la función auxiliar
+$h$ es no-decreciente y con asíntota horizontal.
+
+
+Además, $d_n$ y $c_n$ suelen involucrar expresiones
+logarítmicas. Más concretamente, $dn = F^{-1}(1-1/n)$ y,
+$c_n = h(d_n)$, donde $F^{-1}$ es la inversa generalizada (o
+función cuantil), definida por
+$F^{-1}(p)= \inf\{t / F(t)\geq p\}$, para $0<p<1$.
+
+
+
+__ Ejercicio 4 :__
+Recompruebe en función de lo
+anterior que la distribución exponencial y la
+distribución normal tienen $DEA$ Gumbel.
+
+
+__ Ejercicio 5 :___
+
+a) Determinar si la distribución log-normal ($\log X$ es normal) tiene DEA y si la tiene,
+determinar cuál es su DEA. 
+
+b) Con la ayuda de **R**
+simular una muestra de 100 datos iid, cada uno de
+los cuales es el máximo de 500 log-normales
+standard $iid$. Intente ajustar la distribución de la
+muestra de 100 datos de acuerdo a lo obtenido en
+la parte a).
+
+```{r}
+set.seed(123)
+
+# Paso 1: Simular 100 máximos de muestras de tamaño 500 de log-normales estándar
+n_max <- 100
+block_size <- 500
+
+# Generar la matriz de datos: cada fila es una muestra de tamaño 500
+X <- matrix(rlnorm(n_max * block_size, meanlog = 0, sdlog = 1), nrow = n_max)
+
+# Tomar el máximo de cada fila
+block_maxima <- apply(X, 1, max)
+
+# Paso 2: Ajustar distribución de Gumbel
+# La función de densidad Gumbel (máximos) no está en base R, así que usamos evd::fgev
+
+library(evd)
+
+# Ajustar distribución GEV (caso general, incluye Gumbel si xi ~ 0)
+fit <- fgev(block_maxima)
+
+# Ajuste GEV
+fit <- fgev(block_maxima)
+
+# Extraer parámetros
+params <- fit$estimate
+names(params) <- c("loc", "scale", "shape")  # ubicación, escala y forma
+
+# Mostrar resultados
+print(params)
+
+# Interpretación del parámetro de forma (shape = ξ)
+if (abs(params["shape"]) < 0.05) {
+  cat("La forma estimada ξ ≈ 0, por lo tanto la distribución límite es Gumbel.\n")
+} else if (params["shape"] > 0) {
+  cat("La forma estimada ξ > 0 → cola pesada → dominio de Fréchet.\n")
+} else {
+  cat("La forma estimada ξ < 0 → cola fina → dominio de Weibull.\n")
+}
+
+```
+
+
+
+__ Ejercicio 6: Variable acotada en DAM Gumbel __
+
+Tomemos tres constantes estrictamente positivas $\alpha,\; M, \;K$ y definamos $F(x)= 1 – K \exp\{-\alpha /(M-x)\}$ para $x<M$. Mostrar que $F$ es una distribución y que $M_F= M$.
+
+Probar que $F$ es una función de Von Mises con
+función auxiliar $h(t)= (M-t)^2/\alpha$ y que por lo tanto
+está en el $DAM$ Gumbel. Finalmente, si $X_1,\dots,X_k$
+$iid$ con distribución $F$, calcular las sucesiones de
+reales, $d_n$ y $c_n>0$, tales que la distribución de
+$\frac{max(X_1,\dots,X_n)- d_n}{c_n}\rightarrow \Lambda$ cuando $n\rightarrow \infty$.
+
+
+```{corollary, label="coll2"}
+Si $F$ pertenece al $DAM$ Gumbel, $M_F$
+es infinito, y se considera $X$ con distribucion $F$,
+entonces $E(X+k)$ es finito para todo $k$ natural.
+```
+
+
+
+Los resultados antes vistos nos permiten reconocer
+que distribuciones tienen $DEA$ y si la tienen, cual
+es. Cierran el tema. Adicionalmente, permiten ver
+con mucha precision que el quid de esta teoría es el
+comportamiento de las colas de las distribuciones,
+que Fréchet corresponde a las colas más pesadas,
+luego la Gumbel y finalmente Weibull.
+Para terminar el capítulo presentaremos la
+distribución de valores extremos generalizada
+(GEV, por sus siglas en inglés), que es una forma
+de compactar en una unica fórmula las tres
+distribuciones extremales, debida a Jenkinson-Von
+Mises.
+
+<!---  comentarios -->
+
+```{definition, label="def5", name="Distribución Generalizada de valores extremos (GEV)"}
+
+
+Se define la GEV con parámetros de posición $\mu$, escala $\beta$ e índice $\xi$ como
+
+\begin{align}
+&G(x;\mu,\beta,\xi) = \left\{ \begin{array}{cl}
+exp\left\{\left( 1+\frac{\xi(t-\mu)}{\beta} \right)^{-\frac{1}{\xi}} \right\}, & \text{si}\;\xi \neq 0,\; \left( 1+\frac{\xi(t-\mu)}{\beta} \right)>0,\;\forall \;t\\
+\exp\left\{ -\exp\left( -\frac{(t-\mu)}{\beta} \right) \right\} & \text{si}\;\xi = 0,\; \forall \;t.
+\end{array} \right.
+\\
+\\
+&\text{Cuando} \left\{ \begin{array}{cl}
+\xi = 0 & \; :\text{corresponde a Gumbel}\\
+\xi < 0 & \; :\text{corresponde a Weibull y}\;\alpha=-1/\xi\\
+\xi > 0 & \; :\text{corresponde a Fréchet y}\;\alpha=1/\xi.
+\end{array} \right.  
+(\#eq:def5)
+\end{align}  
+```
+
+
+
+
+En __R__ existen rutinas para estimar $\xi$ con intervalos de confianza (por máxima verosimilitud, etc.) lo cual da formas de testear si una extremal es
+Gumbel, Weibull o Fréchet.
+
+__ Observación 21.__ En algunas situaciones los datos
+extremales pueden ajustarse a más de un modelo.
+Por ejemplo, puede ocurrir que tanto ajusten los
+datos una Gumbel como una Weibull. Frente a
+estas situaciones, no hay una receta única de cómo
+proceder sino que quien está modelando debe tener
+claro si corresponde volcarse hacia cálculos más
+pesimistas (que dan mayor probabilidad a eventos
+extremos muy severos) o más optimistas. 
+
+Usualmente la opción pesimista implica privilegiar
+la seguridad y la optimista la economía de
+recursos, pero insistimos en que la reflexión ante
+cada caso es indispensable. Un poquito más
+adelante veremos, al comparar un modelo Gumbel
+con un modelo Fréchet, que las diferencias pueden
+ser sumamente drásticas.
+
+__Observación 22.__ Antes de seguir adelante, demos
+la respuesta a la parte a) del Ejercicio 5. Es un
+ejercicio de Cálculo Diferencial sencillo mostrar
+que la cola de un $N(0,1)$, es decir $Q(t)=P(X>t)$,
+donde $X$ tiene distribución $N(0,1)$, es equivalente, para $t$ tendiendo a infinito, a la función $\phi(t)/t$,
+donde $\phi$ representa la densidad normal típica
+(campana de Gauss). Basándose en esto, si se
+considera ahora una variable log-normal $Y$, tal que
+$\log(Y)$ es una $N(0,1)$, puede probarse que su cola
+$R(t)=P(Y>t)$, es equivalente, para t tendiendo a
+infinito, a la función $\phi(\log(t))/\log(t)$. Con un poco más de Cálculo, esta última función puede
+escribirse para $a>e$ (por ejemplo $a=3$), como $c\;\exp\{-\int_a^{t} \frac{1}{h(s)}ds \}$  para $t>a$, donde $c$ se expresa
+en función de $a$ y $h(s)=\frac{s\log(s)}{(\log(s))^2}$, la cual cumple las hipótesis del Teo. \@ref(thm:th11).
+
+Se concluye entonces que la log-normal está en el DAM Gumbel, o, lo que es lo mismo, que la log-
+normal admite DEA Gumbel.
+
+__Observación 23.__ Tiempos y Valores de Retorno.
+
+En Ingeniería y Ciencias Ambientales, suele
+pensarse los eventos extremos (por ejemplo:
+observación por encima de cierto valor muy alto),
+en términos de tiempos de retorno (tiempo que se
+espera para que ocurra un evento). Bajo las
+hipótesis de datos $iid$, el tiempo de retorno $T$ tiene una distribución $Geo(p)$, con $p = P(evento)$, por lo cual el tiempo de retorno medio es $E(T)=1/p$ y pueden hacerse intervalos de confianza para $E(T)$,
+en la medida que exista información de $P(evento)$,
+lo cual puede obtenerse a partir de este capítulo o
+de los siguientes. Cabe observar que muchas veces
+se utiliza la expresión Tiempo de Retorno (TR)
+para $E(T)$. Más precisamente, $TR(u)$, el Tiempo de retorno del valor $u$, es el valor esperado ( o la media) del tiempo que se debe esperar para que la variable en estudio supere el valor $u$, es decir que $TR(u) =1/P(X>u)$, si $X$ es la variable en estudio.
+
+Por otro la lado, en una mirada inversa, el Valor de
+Retorno a tiempo $t$, $VR(t)$ es el valor de $u$ para el cual $TR(u)=t$, es decir que $TR(VR(t))=t$ (y también $VR(TR(u))=u$, es decir que TR y VR son, como
+funciones, inversas una de la otra).
+
+Para "bajar un poco a tierra" estos conceptos,
+vamos a calcularlos y compararlos cuando la
+variable $X$ es Gumbel y cuando (con los mismos
+valores de posición $\mu$ y escala $\beta>0$).
+
+Comencemos por la Gumbel, recordemos que $X$
+tiene distribución $L( \mu,\beta)$ si $X= \mu+\beta Y$, donde $Y$ tiene distribución $L$.
+
+Dado entonces un valor $u>0$, otro valor $t>0$\footnote{Cabe observar que si se supone que las observaciones son diarias (o enteras en la unidad que corresponda), los tiempos de retorno TR se redondean a enteros y los valores de $t$ en la última ecuación se toman enteros.}
+resulta que
+
+
+```{definition, label="defg", name="Ecuaciones G"}
+\begin{align}
+&P(X>u)=1-\exp\left\{ -\exp\left\{ \frac{(u-\mu)}{\beta} \right\} \right\} \\
+&TR(u)=1/P(X>u)\\ 
+&VR(t)= \mu+\beta \log\left\{ \frac{t}{t-1} \right\}
+\end{align}
+```
+
+
+
+
+Sigamos ahora por la Fréchet, recordemos que $X$
+tiene distribución $\Phi_{\alpha}^{\mu,\beta}$ si $x=\mu+\beta Y$, donde $Y$ tiene distribución $\Phi_{\alpha}$.
+
+Dado entonces un valor $u>0$, otro valor $t$ entero,
+resulta que
+
+```{definition, label="deff", name="Ecuaciones F"}
+\begin{align}
+&P(X>u)= 1-\exp\left\{ -\left\{ \frac{\left( u-\mu \right)}{\beta} \right\}^{-\alpha} \right\} \\
+& TR(u)=1/P(X>u)\\
+&VR(t)= \mu+\beta \left\{ \log\left\{\frac{t}{t-1} \right\} \right\}^{-1/\alpha}
+\end{align}
+```
+
+<!-- %%%% pagina 39 a 45 faltan los ejericions %%%
+Para visualizar claramente estos resultados,
+tabularemos y graficaremos los mismos usando en
+ambos casos $\mu=15$, $\beta=10$ y $\alpha= 2.5$ ($\xi =0.4$, no muy distante del $\xi =0$ de la Gumbel).
+-->
+
