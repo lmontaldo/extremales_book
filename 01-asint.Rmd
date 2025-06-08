@@ -1027,49 +1027,29 @@ distribución que $a_k X+ b_k$.
 :::
 
 
-
-
-
-
-
-
-
 El Teorema \@ref(thm:FTG) resulta de superponer los dos siguientes teoremas:
 
-__Teorema 7:__
+::: {.theorem #teo7}
+a. Si $F$ admite DEA $H$ entonces $H$ es max-estable.
 
-a) Si $F$ admite DEA $H$, entonces $H$ es max-estable.
-
-b) Si $H$ es max-estable, es la DEA de sí misma.
-
-__Teorema 8:__
+b. Si $H$ es max-estable, es la DEA de sí misma.
+:::
 
 
+::: {.theorem #teo8}
 Una distribución es max-estable si y solo si es extremal: Gumbel, Weibull, Fréchet.
+:::
 
-El Teorema 7 es bastante intuitivo y análogo a los
-teoremas de Lévy sobre distribuciones estables en
-aproximaciones asintóticas de las distribuciones de
-sumas. Para el Teorema 8 haremos enseguida un
-ejercicio sencillo que nos ayudará a hacerlo creíble.
+El Teorema \@ref(thm:teo7) es bastante intuitivo y análogo a los Teoremas de Lévy sobre distribuciones estables en
+aproximaciones asintóticas de las distribuciones de sumas. Para el Teorema \@ref(thm:teo8) haremos enseguida un ejercicio sencillo que nos ayudará a hacerlo creíble.
 
-Luego precisaremos, para terminar con esta parte,
-cómo son las distribuciones que tienen por DEA
-cada uno de los tres tipos de distribuciones
-extremales. Para eso precisamos recordar algunas
-definiciones, como la siguiente.
+Luego precisaremos, para terminar con esta parte, cómo son las distribuciones que tienen por DEA cada uno de los tres tipos de distribuciones extremales. Para eso recordamos algunas definiciones, como la siguiente.
 
-__Observación 19.__ Si $F$ y $G$ son dos distribuciones,
-tienen colas equivalentes si $M_F=M_G$ y cuando $t$
-tiende a $M_F$ por izquierda, $(1-F(t))/(1-G(t))$ tiende a
-un valor $c>0$.
+__Observación 19.__ Si $F$ y $G$ son dos distribuciones, van a tener colas equivalentes si $M_F=M_G$, y cuando $t$
+tiende a $M_F$ por izquierda entonces $(1-F(t))/(1-G(t))$ tiende a un valor $c>0$.
 
-Recordando ahora cómo se calcula la distribución
-del máximo de dos variables independientes, es
-muy sencillo calcular la distribución del $max\left\{ X,Y \right\}$,
-cuando $X$ e $Y$ son independientes y cada una de
-ellas es una distribución extremal. Se tiene el
-siguiente resultado.
+Recordando ahora cómo se calcula la distribución del máximo de dos variables independientes, es
+muy sencillo calcular la distribución del $max\left\{ X,Y \right\}$, cuando $X$ e $Y$ son independientes y cada una de ellas es una distribución extremal. Considerando lo anterior, se lleg al siguiente resultado.
 
 
 
@@ -1094,32 +1074,27 @@ siguiente resultado.
 
 \textcolor{blue}{\rule{1em}{1em} Fréchet es más pesada que Gumbel y mucho más pesada que Weibull.}
 
-Además conducen a otros resultados interesantes,
-como el siguiente, que se deduce de la tabla
-anterior.
+Además de la tabla anterior, se deduce lo siguiente.
 
 
 
-```{theorem, label="t9"}
-Si $X_1,\dots,X_n$ independientes y cada $X_i$
-tiene uno de los tres tipos de distribución extremal, entonces la distribución del $max(X_1,\dots,X_n)$ es:
+
+::: {.theorem #teo9}
+Si $X_1,\dots,X_n$ independientes y cada $X_i$ tiene uno de los tres tipos de distribución extremal, entonces la distribución del $max(X_1,\dots,X_n)$ es:
   
-a) Cola equivalente a Fréchet, si alguna de las
-variables es Fréchet y alguna otra es Gumbel.
+a. Cola equivalente a Fréchet, si alguna de las variables es Fréchet y alguna otra es Gumbel.
 
-b) Fréchet, si alguna es Fréchet y ninguna es
-Gumbel.
+b. Fréchet, si alguna es Fréchet y ninguna es Gumbel.
 
-c) Cola equivalente Gumbel ninguna es Fréchet
-pero algunas son Gumbel y otras Weibull.
+c. Cola equivalente Gumbel ninguna es Fréchet pero algunas son Gumbel y otras Weibull.
 
-d) Gumbel si todas son Gumbel.
+d. Gumbel si todas son Gumbel.
 
-e) Weibull si todas son Weibull.  
-```
+e. Weibull si todas son Weibull.  
+:::
 
-Vamos ahora a ver el concepto de *Dominio de
-Atracción Maximal*.
+### Dominio de Atracción Maximal
+Vamos ahora a ver el concepto de *Dominio de Atracción Maximal*.
 
 __Observación 20.__ Si $F$ es una distribución, se dice
 que tiene cola de variación regular de orden $-\alpha$,
