@@ -834,17 +834,6 @@ Esto sugiere que la distribución Fréchet ajustada podría no estar capturando 
 -->
 
 
-
-```{r echo=FALSE}
-# Histograma con la curva de densidad ajustada
-hist(data$X_i, breaks = 20, prob = TRUE, main = "Histograma y Densidad Ajustada (Fréchet)",
-     xlab = "X_i", col = "lightblue", border = "white")
-curve(dgev(x, loc = loc_libro, scale = scale_libro, shape = shape_libro), 
-      add = TRUE, col = "red", lwd = 2)
-legend("topright", legend = "Fréchet ajustada", col = "red", lwd = 2)
-
-```
-
 <!-- Análisis del Histograma con Densidad Ajustada (Fréchet)
 
 - Ajuste General:La curva de densidad Fréchet (línea roja) sigue la tendencia general del histograma.
@@ -883,30 +872,38 @@ prevee que cerca de la mitad de los puntos estén
 afectados). 
 <!--- FIN EJEMPLO DEL LIBRO A REVEER -->
 
-__Observación 10.__ Una distribución $H$ se dice degenerada si $H(t)=0 \text{ ó } 1$ para todo valor de $t$. Representan a variables que no son tales, si la distribución de $X$ es degenerada, entonces $X$ es una constante, y no tiene sentido
-hacer estadística sobre $X$, por lo tanto sólo tienen
+__Observación 10.__ Una distribución \( H \) se dice __degenerada__ si \( H(t) = 0 \) o \( H(t) = 1 \) para todo \( t \in \mathbb{R}\). Este tipo de distribuciones representan variables aleatorias constantes. Es decir, si la distribución de \( X \) es degenerada, entonces \( X = c \) con probabilidad uno, para alguna constante \( c \). En tal caso, no tiene sentido realizar inferencia sobre \( X \), por lo que sólo consideramos de interés las distribuciones no degeneradas.
+
+
+
+<!---
+Una distribución $H$ se dice degenerada si $H(t)=0 \text{ ó } 1$ para todo valor de $t$. Representan a variables que no son tales, si la distribución de $X$ es degenerada, entonces $X$ es una constante, y no tiene sentido hacer estadística sobre $X$, por lo tanto sólo tienen
 interés para nosotros las distribuciones no-degeneradas.
+-->
 
-
-## Distribución Extremal Asintótica
-
-Si $X_1,\dots,X_n$ es iid con distribución $F$ diremos que $H$ no-degenerada es la Distribución Extremal Asintótica
-(DEA) de $F$^[De manera equivalente, que $F$ tiene DEA $H$.], si existen dos sucesiones de números reales, $d_n$ y $c_n>0$, tales que la distribución de
+\newpage
+## Distribución extremal asintótica (DEA)
+::: {.definition #dea name="Distribución extremal asintótica (DEA)"}
+Si $X_1,\dots,X_n$ es $iid$ con distribución $F$, diremos que $H$ no-degenerada es la Distribución Extremal Asintótica (DEA) de $F$, si existen dos sucesiones de números reales, $d_n$ y $c_n>0$, tales que la distribución de
 \begin{equation}
 \frac{max(X_1,\dots,X_n)- d_n}{c_n}\;\text{ tiende a } H \text{ cuando } n \text{ tiende a infinito.}
 \end{equation}
 
-## Supremo esencial de una variable aleatoria o distribución
+De manera equivalente, diremos que $F$ tiene DEA $H$.
+:::
 
+
+::: {.definition #supremo name="Supremo esencial de una variable aleatoria o distribución"}
 Si $X$ tiene distribución $F$,
 se llama  $M_X$ al supremo esencial de $X$ o,
 indistintamente, supremo esencial de $F$ (denotado
 $M_F$) a
 
-
 \begin{equation}
 M_X = M_F = \sup\{t \; / \; F(t) < 1\}
 \end{equation}
+:::
+
 
 __Observación 11.__
 
@@ -914,76 +911,73 @@ __Observación 11.__
 - Si $F$  es $Bin(m,p)$, $M_F=m$.
 - Si $F$  es Normal, Exponencial, Cauchy o Poisson entonces $M_F$ es infinito.
 
-__Teorema 4:__ Si $X_1,\dots,X_n$ iid con distribución $F$ cualquiera, entonces, para $n \rightarrow \infty$,
+
+
+::: {.theorem #th4}
+Si $X_1,\dots,X_n$ es $iid$ con distribución $F$ cualquiera, entonces, para $n \rightarrow \infty$,
 
 \begin{equation}
 X_n^{\ast} =max(X_1,\dots,X_n) \rightarrow M_F
 \end{equation}
+:::
 
 
-__Observación 12.__ El resultado anterior vale
-incluso si $M_F$ es infinito, pero si $M_F$ es finito, como
-$Xn* - Mf$ tiende a cero, por analogía con el Teorema
-Central del Límite para promedios, buscaríamos
-una sucesión $c_n>0$ y que tienda a cero de modo tal
-que $(X_n^{\ast}- M_F )/ c_n$ tienda a una distribución no-
-degenerada y de allí surge buscar la DEA.
+
+__Observación 12.__ El resultado anterior vale incluso si $M_F$ es infinito, pero si $M_F$ es finito, como
+$Xn* - Mf$ tiende a cero, por analogía con el Teorema Central del Límite para promedios, buscaríamos
+una sucesión $c_n>0$ y que tienda a cero de modo tal que $(X_n^{\ast}- M_F )/ c_n$ tienda a una distribución no-degenerada y de allí surge buscar la DEA.
 
 
-__Teorema 5:__  Si $F$ es una distribución con $M_F$ finito, y para $X$ con distribución $F$ se cumple que
+::: {.theorem #th5}
+Si $F$ es una distribución con $M_F$ finito, y para $X$ con distribución $F$ se cumple que
 \begin{equation}
 P(X=M_F)>0
 \end{equation}
 entonces $F$ no admite DEA.
+:::
 
-__Observación 13.__ Si $F$ es $Bin(m,p) \Rightarrow M_F=m$. Si $X$
-tiene distribución $F$, entonces
-$P( X=M_F)= P( X=m)= p^m>0$,
-asi que la distribucion $Bin(m,p)$ NO admite DEA,
-no se puede aproximar la distribución del máximo
+ 
+
+__Observación 13.__ Si $F$ es $Bin(m,p) \Rightarrow M_F=m$. Si $X$ tiene distribución $F$, entonces
+$P( X=M_F)= P( X=m)= p^m>0$, asi que la distribucion $Bin(m,p)$ no admite DEA, no se puede aproximar la distribución del máximo
 de una muestra iid de variables $Bin(m,p)$.
 
-El Teorema anterior es un caso particular del
-próximo.
+El Teorema anterior es un caso particular del próximo.
 
-__Teorema 6:__ Si $F$ es una distribución con $M_F$ finito o infinito que
+
+::: {.theorem #th6}
+Si $F$ es una distribución con $M_F$ finito o infinito que
 admite DEA, y $X$ tiene distribución $F$, entonces el
 limite cuando $t$ tiende a $M_F$ por izquierda de
 
 \begin{equation}
-P(X>t)/P(X \leq t)
+P(X>t)/P(X \geq t) \;\text{debe ser}\;1.
 \end{equation}
+:::
 
-debe ser 1.
 
-__Observación 13.__ Si $F$ es una distribución de
-Poisson de parámetro $\lambda >0$, $M_F$ es infinito. Si $k$ es un
-natural, entonces
+
+
+__Observación 13.__ Si $F$ es una distribución de Poisson de parámetro $\lambda >0$, $M_F$ es infinito. Si $k$ es un natural, entonces
 
 \begin{align}
-P(X>t)/P(X \leq t)& = P(X \leq k+1)/P(X \leq k)\\
-& = 1-\left\{ P(X=k)/P(X \leq k) \right\} \approx 1-(1- \lambda/k)
+P(X>t)/P(X \geq t)& = P(X \geq k+1)/P(X \geq k)\\
+& = 1-\left\{ P(X=k)/P(X \geq k) \right\} \approx 1-(1- \lambda/k)
 \end{align}
 
-que tiende a 0 cuando $k$ tiende a infinito, por lo
-cual $F$ NO admite DEA, o sea que no se puede aproximar el máximo de una sucesión iid de variables de Poisson.
+que tiende a 0 cuando $k$ tiende a infinito, por lo cual $F$ __no__ admite DEA, o sea que no se puede aproximar el máximo de una sucesión $iid$ de variables de Poisson.
 
-__Observación 14.__ El Teorema 6 brinda una
-condición NECESARIA pero NO SUFICIENTE
-para DEA. Un ejemplo de ello lo aportó Von Mises,
-mostrando que la distribución
+__Observación 14.__ El Teorema \@ref(thm:th6) brinda una condición __necesaria__ pero __no suficiente__
+para DEA. Un ejemplo de ello lo aportó @vonmises1954, mostrando que la distribución
 
 \begin{equation}
 F(x)= 1- e^{(-x-\sin(x))}
 \end{equation}
 
-cumple con la condicion del Teorema 6 pero no
-admite DEA. El tema será cerrado al estudiar los
+cumple con la condicion del Teorema \@ref(thm:th6) pero no admite DEA. El tema será cerrado al estudiar los
 dominios de atracción maximal, en breve.
 
-Veamos ahora ejemplos donde la DEA resulta
-aplicable y que ratifican algunos hechos que
-anticipáramos.
+Veamos ahora ejemplos donde la DEA resulta aplicable y que ratifican algunos hechos que anticipáramos.
 
 __Observación 15.__  Si $F$ es $U(0,1)$ y consideramos
 $X_1,\dots,X_n$ iid con distribución $F$, resulta que
@@ -1015,23 +1009,32 @@ __Observación 18.__ Si $F$ es Cauchy standard que se expresa como $C(0,1)$
 y consideramos $X_1,\dots,X_n$ iid con distribución $F$, se tiene que
 la distribución de $\pi X_n^{\ast}/n$ tiende a $F_1$ por lo cual la distribución Cauchy tiene DEA Fréchet.
 
-Los ejemplos anteriores no son sorprendentes, en el sentido
-que aunque presentamos FTG en una versión simplificada,
-dicho teorema sugiere que cuando $F$ admite DEA, la
-distribución $H$ deberá ser una distribución extremal. De hecho
-FTG resulta de combinar dos teoremas, basadas en una nueva
-definición, la de distribución __max-estable__.
+Los ejemplos anteriores no son sorprendentes, en el sentido que aunque presentamos el Teorema \@ref(thm:FTG) en una versión simplificada,
+dicho teorema sugiere que cuando $F$ admite DEA, la distribución $H$ deberá ser una distribución extremal. De hecho, el Teorema \@ref(thm:FTG)
+ resulta de combinar dos teoremas, basadas en una nueva definición: la de distribución __max-estable__.
  
-### Distribución max-estables
+## Distribución max-estables
 
-Si dada $F$ distribución, $X$ con distribución $F$, $k$ natural
-arbitrario y $X_1,\dots,X_k$ iid con distribución $F$, existen
-reales $a_k, b_k$ tales que $max(X_1,\dots,X_k)$ tiene la misma
-distribución que $a_k X+ b_k$, $F$ se dice max-estable.
+::: {.definition #def3}
+Se dice que una distribución $F$ es __max-estable__ si, para todo natural \( k \geq 2 \), existen las constantes \( a_k > 0 \) y \( b_k \in \mathbb{R} \) tales que:
+
+\[
+F^k(a_k x + b_k) = F(x), \quad \text{para todo } x \in \mathbb{R}.
+\]
+
+Dado que \( F^n \) es la función de distribución de \( M_n = \max\{X_1, \dots, X_k\} \), donde las variables \( X_i \) son $iid$ con distribución \( F\), la máx-estabilidad es una propiedad que caracteriza a aquellas distribuciones que se mantienen invariantes (salvo cambio de escala y traslación) bajo la operación de tomar máximos muestrales [@coles2001introduction]. Esto que implica que, bajo estas condiciones, $max(X_1,...,X_k)$ tiene la misma
+distribución que $a_k X+ b_k$.
+:::
 
 
-El Teorema FTG resulta de superponer los dos
-siguientes teoremas.
+
+
+
+
+
+
+
+El Teorema \@ref(thm:FTG) resulta de superponer los dos siguientes teoremas:
 
 __Teorema 7:__
 
