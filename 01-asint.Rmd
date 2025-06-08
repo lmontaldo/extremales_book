@@ -311,8 +311,11 @@ theme_minimal() +
 
 \newpage
 
-Estos fenómenos se visualizarán con mayor claridad al presentar el Teorema \@ref(thm:foo1) del curso. Además, observar las funciones de densidad correspondientes puede ayudar a comprender mejor el peso relativo de las colas de cada distribución. En la Figura \@ref(fig:distributions), se presentan las funciones de densidad de probabilidad (PDF) extremales. Las PDF permiten visualizar de forma clara las diferencias en la forma, simetría y comportamiento en las colas^[En el Apéndice \@ref(sec:ap) se explica la diferencia entre PDF y CDF.].
+Estos fenómenos se visualizarán con mayor claridad al presentar el Teorema \@ref(thm:foo1) del curso. Además, observar las funciones de densidad correspondientes puede ayudar a comprender mejor el peso relativo de las colas de cada distribución. En la Figura \@ref(fig:distributions), se presentan las funciones de densidad de probabilidad (PDF) extremales. Las PDF permiten visualizar de forma clara las diferencias en la forma, simetría y comportamiento en las colas^[En el Apéndice \@ref(sec:pdf) se explica la diferencia entre PDF y CDF.].
 \vspace{0.5cm}
+
+
+
 
 <!--
 Como los máximos en general son valores grandes, importa particularmente observar el comportamiento de estas distribuciones para $x$ tendiendo a infinito. En toda distribución, el límite es $1$. Tiende más rápido a 1 la Weibull, luego la Gumbel y luego la Fréchet. Esto es indica que la distribución Fréchet modela datos *más extremos*, es decir, máximos de datos de colas más pesadas que la Gumbel y ésta que la Weibull. 
@@ -379,20 +382,16 @@ En general, es en este sentido que diremos que una variable es Gumbel, Weibull o
 El siguiente teorema vincula las distribuciones extremales en sus formatos standard (ver Apéndice \@ref(sec:gev)) que resulta de gran utilidad práctica, sobre todo al hacer tests de ajustes, etc.
 
 
-```{theorem, label="foo1", name="Relaciones entre las versiones standard de las distribuciones extremales"}
 
+::: {.theorem #foo1 name="Relaciones entre las versiones standard de las distribuciones extremales"}
 $X$ tiene distribución Fréchet $\Phi_{\alpha}$ $\Leftrightarrow$  $(-1/X)$ tiene distribución Weibull $\Psi_{\alpha}$ $\Leftrightarrow$ $\log(X^{\alpha})$ tiene distribución Gumbel $\Lambda$.
-```
-
-
-
-
+:::
 
 
 Nota: en otros contextos de la Estadística (en particular enalguna rutinas de R), se le llama Weibull a una variable que corresponde a $-X$, con $X$ Weibull como definimos nosotros.
 
 __Observación 5:__  Recordamos que la función Gamma ($\Gamma$ ), que extiende a la función factorial
-($\;\Gamma(n)=n-1!\quad \forall n\;$ natural) definida por
+($\;\Gamma(n)=n-1!\quad \forall n\;$ natural)^[La función Gamma permite expresar la media, la varianza y otras propiedades estadísticas de la GEV (ver Apéndice \@ref(sec:gev)) en función de su parámetro de forma $\xi$.] definida por
 
 
 \begin{equation}
@@ -401,7 +400,8 @@ __Observación 5:__  Recordamos que la función Gamma ($\Gamma$ ), que extiende 
 
 es una función disponible tanto en el software R como en planillas de cálculo, etc.
 
-```{theorem, label="foo2", name="Algunos datos de las distribuciones extremales"}
+
+::: {.theorem #foo2 name="Algunos datos de las distribuciones extremales"}
 Tres partes:
   
 __Parte 1__
@@ -418,7 +418,7 @@ c)  __Mediana__: $\text{med}(X)=\mu - \beta \log(\log 2) \approx \mu - 0.36651 \
 
 d)  __Desviación estándar__: $\sigma(X)=\frac{\beta \pi}{\sqrt{6}}   \approx 1.2825 \beta$
 
-e) Si $X^+ = \max(X,0)$, entonces $E(X+k)$ es finito para todo valor de $k$ natural
+e) Si $X^+ = \max(X,0)$, entonces $E(X^{+k})$ es finito para todo valor de $k$ natural
 
 f) Para simular computacionalmente $X$, se puede tomar $U$ uniforme en $(0,1)$ y hacer $X = \mu - \beta \log(-\log U)$.
 
@@ -459,64 +459,52 @@ c) $\text{med}(X)=\mu + \beta \;\left( \log 2 \right)^{\left( -1/\alpha \right)}
 d) \begin{equation*}
 \sigma(x) =
 \begin{cases} 
-    \mu + \left| \Gamma \left( 1 - \frac{2}{\alpha} \right) - \Gamma \left(  1 - \frac{1}{\alpha}\right)\right|  & \text{si } \; \alpha>2 \\
+    \beta \left| \Gamma \left( 1 - \frac{2}{\alpha} \right) - \Gamma \left(  1 - \frac{1}{\alpha}\right)^2\right|  & \text{si } \; \alpha>2 \\
     \infty & \text{si } \; 1<\alpha \leq 2
 \end{cases}
 \end{equation*}
-
-
-```
-
+:::
 
 
 
 
-
-__Observación 6:__ El item e) de la Parte 1 es
-trivialmente cierto para Weibull y tomando en
+__Observación 6:__ El item e) de la Parte 1 es trivialmente cierto para Weibull y tomando en
 cuenta el item a) de la Parte 3, es claramente falso
 para Fréchet.
 
-__Observación 7:__ El item f) de la Parte 1 en
-conjunto con el Teorema \@ref(thm:foo1) brinda fórmulas
-sencillas para simular computacionalmente
-distribuciones Weibull o Fréchet.
+__Observación 7:__ El item f) de la Parte 1 en conjunto con el Teorema \@ref(thm:foo1) brinda fórmulas
+sencillas para simular computacionalmente distribuciones Weibull o Fréchet.
 
-__Observación 8:__ Se generaron mil números aleatorios y aplicando el
-item f) de la Parte 1: se simularon mil variables
-Gumbel standard $iid$, calculándose su promedio, su
-desviación standard empírica y su mediana
+__Observación 8:__ Se generaron mil números aleatorios y aplicando el item f) de la Parte 1: se simularon mil variables Gumbel standard $iid$, calculándose su promedio, su desviación standard empírica y su mediana
 empírica. 
+\newpage
 
 ```{r echo=TRUE}
+## Observación 8:
 # Fijar semilla para reproducibilidad
 set.seed(123)
-
 # Definir parámetros
 mu <- 0       # Centro
 beta <- 1     # Escala
 gamma <- 0.5772156649  # Constante de Euler-Mascheroni
-
 # Número de simulaciones
 n <- 1000
-
 # Generar 1000 valores de una variable uniforme en (0,1)
 U <- runif(n)
-
 # Simular la variable Gumbel con parámetros (mu, beta)
 X_gumbel <- mu - beta * log(-log(U))
-
 # Calcular estadísticas
 esperanza <- mu + beta * gamma
 moda <- mu
 mediana_teorica <- mu - beta * log(log(2))
 desviacion_std_teorica <- beta * pi / sqrt(6)
-
 # Calcular estadísticas empíricas
 promedio_empirico <- mean(X_gumbel)
 desviacion_std_empirica <- sd(X_gumbel)
 mediana_empirica <- median(X_gumbel)
 ```
+
+\vspace{0.5cm}
 
 Los resultados fueron los siguientes:
 
@@ -531,35 +519,36 @@ cat("Desviación estándar teórica:", desviacion_std_teorica, "\n\n")
 # Mostrar resultados empíricos
 cat("----- Resultados empíricos (simulación con n =", n, "): -----\n")
 cat("Promedio empírico:", promedio_empirico, "\n")
-cat("Desviación estándar empírica:", desviacion_std_empirica, "\n")
 cat("Mediana empírica:", mediana_empirica, "\n")
+cat("Desviación estándar empírica:", desviacion_std_empirica, "\n")
 ```
 
 Observar que los resultados empíricos están cerca del valor esperado, desvío standard y mediana de la Gumbel standard.
 
+\newpage
 
-A continuación presentaremos el Teorema medular de esta primera parte, expresado de la manera más llana posible. Veremos posteriormente algunos detalles con más cuidado. En particular, veremos que la continuidad de la distribución $F$ no
-es una hipótesis real (ni es necesaria ni es suficiente, por eso la
+A continuación presentaremos el Teorema medular de esta primera parte, expresado de la manera más simple posible. Veremos posteriormente algunos detalles con más cuidado. En particular, veremos que la continuidad de la distribución $F$ no es una hipótesis real (ni es necesaria ni es suficiente, por eso la
 entrecomillamos), pero ayuda a visualizar que no vale el teorema para toda distribución $F$, así como veremos con cierto detalle más adelante...
 
 
-__Teorema 3: de Fischer-Tippet-Gnedenko (FTG)__ 
-
-Si $X_1,\dots,X_n$ es $iid$ con distribución $F$ 'continua',
-llamamos $F^{\ast}_n$ a la distribución de $max(X_1,\dots,X_n)$ y $n$
+::: {.theorem #FTG name="De Fischer-Tippet-Gnedenko (FTG)"}
+Si $X_1,\dots,X_n$ es $iid$ con distribución $F$ continua,
+llamamos $F^{\ast}_n$ a la distribución de $max(X_1,\dots,X_n)$. Si $n$
 es grande, entonces existen $\mu$ real y $\beta > 0$ tales que
 alguna de las siguientes tres afirmaciones es
 correcta:
 
-a) $F^{\ast}_n$ se puede aproximar por la distribución
-de $\mu+\beta Y$, con $Y$ variable con distribución $\Lambda$.
-b) Existe $\alpha>0$ tal que $F_n^{\ast}$ se puede aproximar por la distribución de $\mu+\beta Y$ con $Y$ variable con distribución $\Phi_{\alpha}$. 
-c) Existe $\alpha>0$ tal que $F_n^{\ast}$ se puede aproximar por la distribución de $\mu+\beta Y$ con $Y$ variable con distribución $\Phi_{\alpha}$. 
+a. $F^{\ast}_n$ se puede aproximar por la distribución de $\mu+\beta Y$, con $Y$ variable con distribución $\Lambda$.
+
+b. Existe $\alpha>0$ tal que $F_n^{\ast}$ se puede aproximar por la distribución de $\mu+\beta Y$ con $Y$ variable con distribución $\Phi_{\alpha}$. 
+
+c. Existe $\alpha>0$ tal que $F_n^{\ast}$ se puede aproximar por la distribución de $\mu+\beta Y$ con $Y$ variable con distribución $\Phi_{\alpha}$. 
+:::
 
 
 Lo anterior equivale a decir que la distribución del máximo de datos _continuos_ e $iid$, si $n$ es grande, puede aproximarse por una Gumbel, una Fréchet o una Weibull. 
 
-__Observación 9:__ Como veremos con cierto detalle, cuál de las tres aproximaciones es la válida depende de cómo sea la distribución $F$.
+__Observación 9:__ Cuál de las tres aproximaciones es la válida depende de cómo sea la distribución $F$.
 
 Por ejemplo, veremos que:
 
@@ -567,42 +556,33 @@ Por ejemplo, veremos que:
 - Si $F$ es uniforme, vale para $F_n^{\ast}$ la aproximación por una Weibull.
 - Si $F$ es Cauchy, la aproximación válida para $F_n^{\ast}$ es por una Fréchet.
 
-Más precisamente, cuál de las tres aproximaciones es la aplicable depende de la cola de $F$^[Los valores de $F(t)$ para valores grandes de $t$.].
+Más precisamente, cuál de las tres aproximaciones es la aplicable depende de la cola de $F$: los valores de $F(t)$ para valores grandes de $t$.
 
-En concreto, Weibull aparece cuando $F$ es la
-distribución de una variable acotada por arriba
-(como la Uniforme), Gumbel para distribuciones
-de variables no acotadas por arriba pero con colas muy livianas (caso Exponencial y Normal) y Fréchet para colas pesadas (caso Cauchy).
-Finalmente, si bien aclaramos que la hipótesis de continuidad de $F$ no es esencial, veremos que si $F$ es la distribución Binomial o Poisson, por mencionar
-dos ejemplos muy conocidos y sencillos, NO se
-puede aplicar ninguna de las tres aproximaciones
-anteriores.
+En concreto, Weibull aparece cuando $F$ es la distribución de una variable acotada por arriba
+(como la Uniforme), Gumbel para distribuciones de variables no acotadas por arriba pero con colas muy livianas (caso Exponencial y Normal) y Fréchet para colas pesadas (caso Cauchy).
+
+Finalmente, si bien aclaramos que la hipótesis de continuidad de $F$ no es esencial, veremos que si $F$ es la distribución Binomial o Poisson, por mencionar dos ejemplos muy conocidos y sencillos, NO se
+puede aplicar ninguna de las tres aproximaciones anteriores.
 
 
-__Observación 10.__ Como consecuencia del $FTG$ si se tienen datos de máximos, las distribuciones extremales son “candidatas” razonables para proponer en un ajuste.
-Sin embargo no debe pensarse que siempre se va a lograr ajustar a una de las tres distribuciones extremales, ya que hay al menos dos causas evidentes que podrían desbaratar la aplicación del FTG:
+__Observación 10.__ Como consecuencia del Teorema \@ref(thm:FTG) si se tienen datos de máximos, las distribuciones extremales son _candidatas_ razonables para proponer en un ajuste.
+Sin embargo no debe pensarse que siempre se va a lograr ajustar a una de las tres distribuciones extremales, ya que hay al menos dos causas evidentes que podrían desbaratar la aplicación del Teorema \@ref(thm:FTG):
 
-1) Que la cantidad de registros que se consideran al
-calcular cada máximo no sea suficientemente
+1) Que la cantidad de registros que se consideran al calcular cada máximo no sea suficientemente
 grande. 
 
-2) Que los registros que se consideran al calcular cada máximo no sean $iid$^[Al final del capítulo 2 se verá que esto puede subsanarse con versiones más generales del FTG.].
+2) Que los registros que se consideran al calcular cada máximo no sean $iid$^[Al final del capítulo 2 se verá que esto puede subsanarse con versiones más generales del Teorema \@ref(thm:FTG).].
 
-Por consiguiente el $FTG$ alienta a intentar ajustar datos
-extremales a una de las tres distribuciones extremales, pero no
-siempre un tal ajuste dará un resultado afirmativo.
+Por consiguiente el \@ref(thm:FTG) alienta a intentar ajustar datos extremales a una de las tres distribuciones extremales, pero no siempre un tal ajuste dará un resultado afirmativo.
 
 <!--- EJEMPLO DEL LIBRO A REVEER -->
 
-__Ejemplo 1.__ Veamos un ejemplo de ajuste. Los
-siguientes datos corresponden a los valores, en $80$ puntos geográficos distintos de la región parisina, del máximo estival del contaminante atmosférico $O_3$ (no perceptible sensorialmente y con impacto
-sanitario serio). Cada dato es el máximo registro en cada sensor a lo largo de todo un verano; el contaminante se mide diariamente, por lo cual, cada uno de nuestros $80$ datos es el máximo de unas $100$ lecturas diarias.
+__Ejemplo 1.__ Veamos un ejemplo de ajuste. Los siguientes datos corresponden a los valores, en $80$ puntos geográficos distintos de la región parisina, del máximo estival del contaminante atmosférico $O_3$ (no perceptible sensorialmente y con impacto sanitario serio). Cada dato es el máximo registro en cada sensor a lo largo de todo un verano; el contaminante se mide diariamente, por lo cual, cada uno de nuestros $80$ datos es el máximo de unas $100$ lecturas diarias (Figura \@ref(fig:parismax)).
 
 
 
 ```{r echo=FALSE, paged.print=TRUE}
 data <- data.frame(
-#  i = 1:80,
   X_i = c(430.3, 115.7, 4.48, 26.95, 72.27, 206.4, 22.79, 25.03, 226.8, 11.1,
         1572, 100, 104.5, 37.1, 20.22, 106.9, 47.2, 62.82, 39.3, 18.52,
         41.47, 429.5, 1228, 127.6, 9.93, 90.4, 201.7, 295.1, 20.62, 20.58,
@@ -613,202 +593,236 @@ data <- data.frame(
         164.2, 52.06, 54.13, 15.53, 29, 14.35, 1675, 15.01, 72.07, 22.99))
 ```
 
-```{r echo=FALSE, paged.print=FALSE}
-print("Primeros 6 datos:")
-head(data)
+```{r echo=FALSE, paged.print=TRUE}
+n <- length(X_i)
 ```
-Los valores se miden en unidades de referencia
-standarizadas que, en particular, permiten
-comparar las medidas de lugares diferentes,
-independientemente de variables relevantes como
-altura e incidencia solar, por trabajo previo de
-calibración.
 
-El objetivo del estudio en esta etapa es conocer la
-distribución de estos datos y en particular estimar
-la probabilidad de que el máximo estival en los 80
-puntos supere el valor 50 (correspondiente a
+
+\vspace{0.3cm}
+
+```{r parismax, fig.cap="Máximos diarios durante el verano", fig.height=3, fig.width=6, echo=FALSE, message=FALSE, warning=FALSE}
+# Agregar variable día (índice de 1 a 80)
+data$dia <- 1:nrow(data)
+
+# Gráfico
+plot(data$dia, data$X_i, type = "o", pch = 16, col = "darkblue",
+     xlab = "Día", ylab = "Máximo diario (03)")
+grid()
+```
+
+
+
+Los valores se miden en unidades de referencia standarizadas que, en particular, permiten comparar las medidas de lugares diferentes, independientemente de variables relevantes como altura e incidencia solar, por trabajo previo de calibración.
+
+El __objetivo__ del estudio en esta etapa es conocer la distribución de estos datos y en particular estimar la probabilidad de que el máximo estival en los 80 puntos supere el valor 50 (correspondiente a
 existencia de riesgo moderado).
 
 Veamos los datos que tenemos:
 
-
-  
-  
   
 ```{r echo=FALSE}  
 print('Cálculo de estadísticos básicos')
 summary(data$X_i)
 ```
-Como la mayoría de tests de ajustes suponen datos
-$iid$, realizaremos dos tests de aleatoriedad^[En inglés es 
-_randomness_.]:
+
+Como la mayoría de tests de ajustes suponen datos $iid$, realizaremos dos tests de aleatoriedad^[En inglés es _randomness_.]: 
 
 - Runs test (Up & Down)
 - Spearman correlation of ranks
 
-
-Para realizar el ajuste utilizaremos el test $\chi^2$ de
-ajuste^[Una excelente referencia para la temática de los
-test $\chi^2$ de ajuste es la introducción del trabajo
-Pearsonian Tests and Modifications (Jorge Graneri,
-CMAT, Facultad de Ciencias, 2002).]. 
-Este test requiere elegir una partición más o
-menos arbitraria de la recta real en intervalos; sin
-embargo es importante que en cada intervalo caiga
-una cantidad suficiente de datos de la muestra; en
-este caso hemos tomado como extremos de los
-intervalos los quintiles empíricos de nuestra
-muestra. 
-
-Una aclaración mucho más importante es
-que este test requiere estimar parámetros por el
-método de Máxima Verosimilitud Categórica, que da
-resultado distintos al método de Máxima
-Verosimilitud a secas^[Este hecho es frecuentemente
-ignorado y presentado erróneamente en los textos y
+Para realizar el ajuste utilizaremos el test $\chi^2$ de ajuste^[Una excelente referencia para la temática de los test $\chi^2$ de ajuste es la introducción del trabajo Pearsonian Tests and Modifications (Jorge Graneri, CMAT, Facultad de Ciencias, 2002).].  Este test requiere elegir una partición más o menos arbitraria de la recta real en intervalos; sin embargo es importante que en cada intervalo caiga una cantidad suficiente de datos de la muestra; en este caso hemos tomado como extremos de los intervalos los quintiles empíricos de nuestra muestra.  Una aclaración mucho más importante es que este test requiere estimar parámetros por el
+método de Máxima Verosimilitud Categórica, que da resultado distintos al método de Máxima Verosimilitud a secas^[Este hecho es frecuentemente ignorado y presentado erróneamente en los textos y
 cursos básicos de Estadística.].
 
+\vspace{0.3cm}
+
+Aplicamos los tests:
+```{r echo=TRUE, warning=FALSE}
+library(tseries)
+# ------------------------------
+# 1. Tests de aleatoriedad
+# ------------------------------
+# (a) Runs up and down
+runs_test_result <- runs.test(factor(X_i > median(X_i)))
+# (b) Spearman
+spearman_pval <- cor.test(X_i[-n], X_i[-1], method = "spearman")$p.value
+```
+\vspace{0.3cm}
+
+Resultados de los tests: 
+
 ```{r echo=FALSE}
-# Cargar librería necesaria para el Runs Test
-library(tseries)  
-
-# Crear una secuencia de diferencias consecutivas
-differences <- diff(data$X_i)
-
-# Convertir en una secuencia de signos (+1 si aumenta, -1 si disminuye)
-runs_sequence <- ifelse(differences > 0, 1, -1)
-
-# Aplicar Runs Test correctamente
-runs_test_result <- runs.test(as.factor(runs_sequence))
-print(runs_test_result)
+cat("p-valor (runs up and down):", runs_test_result$p.value, "\n")
+cat("p-valor (Spearman):", spearman_pval, "\n")
 ```
 
-```{r echo=FALSE, warning=FALSE}
-# Asegurar que data$Xi sea un vector numérico
-data$X_i <- as.numeric(data$X_i)
+\vspace{0.3cm}
+Interpretación de tus resultados:
 
-# Test de correlación de Spearman (comparando con los índices)
-spearman_test_result <- cor.test(data$X_i, seq_along(data$X_i), method = "spearman")
+ - Runs up and down:  No se rechaza la hipótesis nula de aleatoriedad. La secuencia de datos no presenta un patrón sistemático de subidas o bajadas.
 
-# Mostrar resultado
-print(spearman_test_result)
-```
+- Spearman: No hay evidencia de correlación entre observaciones sucesivas. De hecho, este valor sugiere una independencia aún más clara que la del test de corridas.
+
+Ambos tests son coherentes con la hipótesis de que los datos se comportan como independientes e idénticamente distribuidos (iid), lo cual justifica el uso de modelos estadísticos que requieren esta suposición.
+
+
+
+
 
 <!--El p-valor en runs up and down es 0,868 y en
 Spearman es 0,474.-->
 
-Como cada dato de los 80 que disponemos es un
-máximo de un centenar de observaciones,
-intentaremos ajustarlos a una distribución
-extremal sabiendo que no necesariamente
-tendremos éxito. 
+Como cada dato de los 80 que disponemos es un máximo de un centenar de observaciones, intentaremos ajustarlos a una distribución extremal sabiendo que no necesariamente tendremos éxito.  Observemos en particular que lo que pasamos por dos tests de aleatoriedad son los 80 máximos, pero no el centenar de lecturas que forman cada uno de los 80 máximos (ni siquiera tenemos esos datos originales). 
 
-Observemos en particular que lo
-que pasamos por dos tests de aleatoriedad son los
-80 máximos, pero no el centenar de lecturas que
-forman cada uno de los 80 máximos (ni siquiera
-tenemos esos datos originales). 
+Dado que visualmente se aprecian valores muy apartados (Figura \@ref(fig:parishist)), se
+presume una distribución de colas pesadas y por ese motivo se intenta un ajuste a una Fréchet.
 
-Dado que visualmente se aprecian valores muy apartados, se
-presume una distribución de colas pesadas y por
-ese motivo se intenta un ajuste a una Fréchet.
+```{r parishist, fig.cap="Histograma de los máximos diarios", fig.height=3, fig.width=6, echo=FALSE, message=FALSE, warning=FALSE}
+hist(data$X_i, breaks = 30, main="",
+     xlab = "Valor observado", ylab="frecuencia", col = "lightblue", border = "white")
+```
+
+
+
+Ajuste a una Fréchet:
+
+```{r echo=TRUE, warning=TRUE}
+# ----------------------------
+# 1. CDF de Fréchet
+# ----------------------------
+frechet_cdf <- function(x, alpha, mu, beta) {
+  ifelse(x > mu,
+         exp(-((x - mu) / beta)^(-alpha)),
+         0)
+}
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+# ----------------------------
+# 2. Datos y cortes (quintiles)
+# ----------------------------
+X_i <- data$X_i
+n <- length(X_i)
+breaks <- quantile(X_i, probs = seq(0, 1, 0.2))
+observed <- hist(X_i, breaks = breaks, plot = FALSE)$counts
+```
+
+
+```{r echo=TRUE}
+# ----------------------------
+# 3. Log-verosimilitud categórica
+# ----------------------------
+loglik_cat <- function(par) {
+  alpha <- par[1]
+  mu <- par[2]
+  beta <- par[3]
+  if (alpha <= 0 || beta <= 0) return(1e10)  # penalizar fuera del dominio
+  p <- diff(frechet_cdf(breaks, alpha, mu, beta))
+  p <- pmax(p, 1e-10)  # evitar log(0)
+  -sum(observed * log(p))  # log-verosimilitud categórica negativa
+}
+```
+
+
+
+```{r echo=TRUE}
+# ----------------------------
+# 4. Optimización de parámetros
+# ----------------------------
+# Valores iniciales: manual
+start_par <- c(alpha = 1.04, mu = -6.5, beta = 44)
+fit <- optim(par = start_par, fn = loglik_cat, method = "L-BFGS-B",
+             lower = c(0.01, -100, 1), upper = c(10, 100, 1000))
+```
+
+\vspace{0.3cm}
+Estos son los parámetros estimados por MVC:
 
 ```{r echo=FALSE}
-# Histograma de los datos
-ggplot(data, aes(x = X_i)) +
-  geom_histogram(binwidth = 50, fill = "blue", alpha = 0.5, color = "black") +
-  labs(title = "Distribución de los datos", x = "X_i", y = "Frecuencia")
+fit$par  # parámetros estimados por MVC
 ```
+
+
+\vspace{0.3cm}
+
+Ahora con los parámetros estimados, se realiza el test $\chi^2$:
+
+```{r echo=TRUE}
+# Parámetros estimados por MVC
+alpha <- 0.9095118
+mu    <- 0.1325914
+beta  <- 35.9094567
+
+# Probabilidades teóricas en cada intervalo (quintiles)
+p_expected <- diff(frechet_cdf(breaks, alpha, mu, beta))
+expected <- p_expected * n
+
+# Recalcular test Chi2
+chi_sq <- sum((observed - expected)^2 / expected)
+df <- length(observed) - 1 - 3
+p_val_chi <- 1 - pchisq(chi_sq, df)
+```
+
+\vspace{0.3cm}
+
+Se obtiene como resultados:
+
+```{r echo=FALSE, warning=FALSE}
+cat("Chi2:", chi_sq, "gl:", df, "p-valor:", p_val_chi, "\n")
+```
+
+
+Con los parámetros estimados por Máxima Verosimilitud Categórica ($\alpha = 0{,}91$, $\mu = 0{,}13$, $\beta = 35{,}91$), el test $\chi^2$ de ajuste arroja un valor de $2{,}96$ con $1$ grado de libertad, lo que da un valor-$p$ de $0{,}085$. Esto implica que:
+
+
+- Para un nivel de significancia del $10\%$ ($\alpha = 0{,}10$), no se rechaza la hipótesis nula, por lo tanto el modelo Fréchet es considerado adecuado.
+- Para un nivel más estricto del $5\%$ ($\alpha = 0{,}05$), tampoco se rechaza  la hipótesis, sin embargo el valor-$p$ se encuentra muy cerca del umbral.
+
+
+Por lo tanto, adoptaremos el modelo Fréchet ajustado por MVC como razonable para describir estos datos.
+
+
+\newpage
+
+```{r echo=TRUE, warning=FALSE}
+# -------------------------------------
+# Excedencia del nivel 50
+# -------------------------------------
+# 1. Proporción empírica de valores que superan 50
+empirical_prop <- mean(X_i > 50)
+# 2. Intervalo de confianza para proporción (binomial)
+exceed_count <- sum(X_i > 50)
+CI <- prop.test(exceed_count, n)$conf.int  # IC del 95%
+# 3. Parámetros estimados previamente por Máxima Verosimilitud Categórica
+alpha <- fit$par[1]
+mu    <- fit$par[2]
+beta  <- fit$par[3]
+# 4. Cálculo de la probabilidad de exceder 50 bajo Fréchet ajustada
+p_frechet <- 1 - frechet_cdf(50, alpha, mu, beta)
+```
+
+\vspace{0.3cm}
+Resultados: 
+
+```{r echo=FALSE}
+# 5. Mostrar resultados
+cat("Proporción empírica de X_i > 50:", round(empirical_prop, 4), "\n")
+cat("IC (95%) para la proporción empírica: [", round(CI[1], 4), ",", round(CI[2], 4), "]\n")
+cat("Probabilidad bajo el modelo Fréchet ajustado:", round(p_frechet, 4), "\n")
+```
+
+La proporción empírica de excedencias del nivel 50 es $\hat{p} = 0{,}5125$, con un intervalo de confianza del 95\% igual a $[0{,}3989,\ 0{,}6248]$.  Bajo el modelo Fréchet ajustado por máxima verosimilitud categórica, se estima una probabilidad de excedencia $\mathbb{P}(X > 50) = 0{,}5238$. Ambos valores son coherentes, lo que apoya la adecuación del modelo propuesto.
 
 <!--
-El test de ajuste $\chi^2$ da un $p-$valor de 0,467 para
-una Fréchet de α=1.04, μ= -6.5, β=44.
+Adoptando pues este modelo, un sencillo cálculo
+muestra que la probabilidad de que el máximo
+exceda 50 es 0.455, lo cual es absolutamente
+consistente con lo observado en la muestra, donde
+la proporción empírica de excedencia del nivel 50
+es 0.5125 con un intervalo de confianza al 95%
+para esta proporción de (0.403, 0.622).
 -->
-
-
-```{r}
-# Parámetros del libro
-loc_libro <- -6.5    # μ
-scale_libro <- 44     # β
-shape_libro <- 1.04   # α (parámetro de forma positivo, Fréchet)
-
-# Cálculo de la probabilidad de exceder el valor 50
-prob_excede_50 <- 1 - pgev(50, loc = loc_libro, scale = scale_libro, shape = shape_libro)
-
-# Mostrar la probabilidad de excedencia
-print(paste("Probabilidad de excedencia del nivel 50:", round(prob_excede_50, 4)))
-
-```
-
-
-```{r}
-# Proporción empírica de excedencia del nivel 50
-prop_empirica <- mean(data$X_i > 50)
-print(paste("Proporción empírica de excedencia del nivel 50:", round(prop_empirica, 4)))
-
-# Intervalo de confianza para la proporción empírica
-prop_ci <- prop.test(sum(data$X_i > 50), length(data$X_i))$conf.int
-print(paste("Intervalo de confianza al 95%:", round(prop_ci[1], 3), "-", round(prop_ci[2], 3)))
-```
-
-```{r}
-print(paste("Probabilidad de excedencia del nivel 50:", round(prob_excede_50, 4)))
-
-```
-```{r}
-# Parámetros del libro
-loc_libro <- -6.5    # μ
-scale_libro <- 44     # β
-shape_libro <- 1.04   # α (parámetro de forma positivo, Fréchet)
-
-# Cálculo de la probabilidad de exceder el valor 50
-prob_excede_50 <- 1 - pgev(50, loc = loc_libro, scale = scale_libro, shape = shape_libro)
-print(paste("Probabilidad de excedencia del nivel 50:", round(prob_excede_50, 4)))
-
-```
-
-```{r}
-# Parámetros del libro
-loc_libro <- -6.5    # μ
-scale_libro <- 44     # β
-shape_libro <- 1.04   # α (parámetro de forma positivo, Fréchet)
-
-# Definir intervalos usando los quintiles empíricos
-breaks <- quantile(data$X_i, probs = seq(0, 1, length.out = 6))  # 5 intervalos
-
-# Calcular las frecuencias observadas en cada intervalo
-observed_counts <- hist(data$X_i, breaks = breaks, plot = FALSE)$counts
-
-# Calcular las probabilidades teóricas en cada intervalo usando la distribución Fréchet ajustada
-probs <- diff(pgev(breaks, loc = loc_libro, scale = scale_libro, shape = shape_libro))
-
-# Convertir probabilidades en frecuencias esperadas
-expected_counts <- probs * length(data$X_i)
-
-# Realizar el test de ajuste Chi-cuadrado
-chi_sq_test <- chisq.test(observed_counts, p = probs, rescale.p = TRUE)
-
-# Mostrar los resultados del test
-print("Resultados del test Chi-cuadrado con los parámetros del libro:")
-print(chi_sq_test)
-```
-
-
-```{r echo=FALSE}
-# Comparar gráficamente con un Q-Q plot
-theoretical_quantiles <- qgev(ppoints(length(data$X_i)), 
-                              loc = loc_libro, 
-                              scale = scale_libro, 
-                              shape = shape_libro)
-
-# Gráfico Q-Q
-qqplot(theoretical_quantiles, sort(data$X_i), 
-       main = "Q-Q Plot para la Distribución Fréchet Ajustada",
-       xlab = "Cuantiles Teóricos (Fréchet)",
-       ylab = "Datos Observados")
-abline(0, 1, col = "red")
-```
 
 <!-- Análisis del Q-Q Plot
 
