@@ -223,10 +223,10 @@ df <- data.frame(
 )
 
 # Reorganizar para ggplot
-df_long <- pivot_longer(df, cols = -x, names_to = "Distribución", values_to = "CDF")
+df_long <- pivot_longer(df, cols = -x, names_to = "cdf", values_to = "CDF")
 
 # Gráfico
-ggplot(df_long, aes(x = x, y = CDF, color = Distribución)) +
+ggplot(df_long, aes(x = x, y = CDF, color = cdf)) +
   geom_line(size = 1.2) +
   coord_cartesian(xlim = c(-10, 100), ylim = c(0.85, 1)) +
   labs(
@@ -244,7 +244,7 @@ theme_minimal() +
 
 En la distribución Fréchet, cuanto menor es el parámetro de forma \( \alpha \), más pesada es la cola y más lenta la convergencia a 1 (Figura \@ref(fig:frcolas)). En cambio, la Weibull tiene soporte acotado superior y el parámetro \( \alpha \) afecta principalmente la forma de la cola izquierda^[Porque la Wibull tiene soporte en $(-\infty, 0]$.], hacia \( -\infty \) (Figura \@ref(fig:weicolas)). 
 
-```{r frcolas, fig.cap="Distribución Fréchet para dististos parámetros de forma" ,echo=FALSE, fig.height=3, fig.width=3, message=FALSE, warning=FALSE}
+```{r frcolas, fig.cap="Distribución Fréchet para distintos parámetros de forma" ,echo=FALSE, fig.height=3, fig.width=3, message=FALSE, warning=FALSE}
 # Valores de x y alphas
 x <- seq(0.01, 50, length.out = 10000)
 alphas <- c(0.8, 2.5, 5)
@@ -362,8 +362,7 @@ theme(
 ```
 
 \newpage
-A estas versiones standard se las puede extender
-agregando un parámetro de recentramiento $(\mu)$ y
+A estas versiones standard se las puede extender agregando un parámetro de recentramiento $(\mu)$ y
 un parámetro de escala $(\beta)$. 
 
 Se dice que $X$ tiene distribución: 
@@ -374,22 +373,15 @@ Se dice que $X$ tiene distribución:
 - __Fréchet__: $\;\Phi^{(\mu, \beta)}\;$ si $X=\mu + \beta Y$, donde $Y$ tiene distribución $\Phi_{\alpha}$.
 
 
-En general, es en este sentido que diremos que una
-variable es Gumbel, Weibull o Fréchet (incluyendo
-recentramiento y reescalamiento), pero en cálculos
-donde los parámetros $\mu$ y $\beta$ no sean relevantes, por
-simplicidad, usaremos las versiones standard. 
+En general, es en este sentido que diremos que una variable es Gumbel, Weibull o Fréchet (incluyendo recentramiento y reescalamiento), pero en cálculos donde los parámetros $\mu$ y $\beta$ no sean relevantes, por simplicidad, usaremos las versiones standard. 
 
 
-El siguiente teorema vincula las distribuciones
-extremales en sus formatos standard y resulta de
-gran utilidad práctica sobre todo al hacer tests de
-ajustes, etc.
+El siguiente teorema vincula las distribuciones extremales en sus formatos standard (ver Apéndice \@ref(sec:gev)) que resulta de gran utilidad práctica, sobre todo al hacer tests de ajustes, etc.
 
 
 ```{theorem, label="foo1", name="Relaciones entre las versiones standard de las distribuciones extremales"}
 
-$X$ tiene distribución $\Phi_{\alpha}$ $\Leftrightarrow$  $(-1/X)$ tiene distribución $\Psi_{\alpha}$ $\Leftrightarrow$ $\log(X^{\alpha})$ tiene distribución $\Lambda$.
+$X$ tiene distribución Fréchet $\Phi_{\alpha}$ $\Leftrightarrow$  $(-1/X)$ tiene distribución Weibull $\Psi_{\alpha}$ $\Leftrightarrow$ $\log(X^{\alpha})$ tiene distribución Gumbel $\Lambda$.
 ```
 
 
@@ -397,21 +389,17 @@ $X$ tiene distribución $\Phi_{\alpha}$ $\Leftrightarrow$  $(-1/X)$ tiene distri
 
 
 
-Nota: en otros contextos de la Estadística (en particular en
-alguna rutinas del R), se le llama Weibull a una variable que
-corresponde a -X, con X Weibull como definimos nosotros.
+Nota: en otros contextos de la Estadística (en particular enalguna rutinas de R), se le llama Weibull a una variable que corresponde a $-X$, con $X$ Weibull como definimos nosotros.
 
-__Observación 5:__  Recordamos que la función
-Gamma ($\Gamma$ ), que extiende a la función factorial
-($\Gamma(n)=n-1!\quad \forall n$ natural) definida por
+__Observación 5:__  Recordamos que la función Gamma ($\Gamma$ ), que extiende a la función factorial
+($\;\Gamma(n)=n-1!\quad \forall n\;$ natural) definida por
 
 
 \begin{equation}
 \Gamma(x)=\int_{0}^{\infty} t^{u-1}e^{-t}dt
 \end{equation}
 
-es una función disponible tanto en el software R
-como en planillas de cálculo, etc.
+es una función disponible tanto en el software R como en planillas de cálculo, etc.
 
 ```{theorem, label="foo2", name="Algunos datos de las distribuciones extremales"}
 Tres partes:

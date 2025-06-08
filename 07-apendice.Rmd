@@ -1,6 +1,6 @@
-# Apéndice  {#sec:ap .unnumbered}
+# Apéndice  {#sec:ap}
 
-## Teorema Central del Límite {#sec:tcl .unnumbered}
+## Teorema Central del Límite {#sec:tcl}
 
 
 
@@ -47,7 +47,7 @@ Sea \( S_n = X_1 + \dots + X_n \), donde las \( X_i \) son variables aleatorias 
  Esta aproximación es válida cuando \( n \) es suficientemente grande y se cumplen las condiciones del Teorema Central del Límite.
 
 
-## Teorema de los tipos de extremales {#sec:teoext .unnumbered}
+## Teorema de los tipos de extremales {#sec:teoext}
 
 Las tres distribuciones de valores extremos son Gumbel, Frechet y Weibull, como se expresan en el siguiente Teorema \@ref(thm:thap1).
 
@@ -82,14 +82,14 @@ siendo $G$ una función de distribución no degenerada, entonces $G$ pertenece a
 para parámetros $a>0$, $b$, y en los casos 2) y 3) para $\alpha >0$. $\square$
 ::: 
 
-
+Cada familia tiene un parámetro de localización \( b \) y un parámetro de escala \( a \); además, las familias Fréchet y Weibull tienen un parámetro de forma \( \alpha \).
 
 El Teorema \@ref(thm:thap1) establece que los máximos muestrales reescalados $\frac{M_n - b_n}{a_n}$
 convergen en distribución hacia una variable cuya distribución pertenece a una de las tres familias mencionadas. Lo notable de este resultado es que los tres tipos de distribuciones extremales son los únicos límites posibles para las distribuciones de \( M_n \), independientemente de la distribución \( F \) de la población. En este sentido, el teorema proporciona un análogo del teorema central del límite para valores extremos. Es decir, no importa cuál sea la distribución original de los datos, cuando tomás muchos máximos muestrales ( valores máximos), y los reescalás de forma adecuada, su distribución siempre va a parecerse a una de tres formas posibles: Gumbel, Fréchet o Weibull [@coles2001introduction].
 
 \clearpage
 
-## Función de densidad (PDF) vs Función de distribución acumulada (CDF) {#sec:densdistr .unnumbered}
+## Función de densidad (PDF) vs Función de distribución acumulada (CDF) {#sec:pdf}
 
 
 \begin{table}[h!]
@@ -115,3 +115,54 @@ convergen en distribución hacia una variable cuya distribución pertenece a una
 \hline
 \end{tabularx}
 \end{table}
+
+## Familia de distribuciones generalizadas de valores extremos (GEV) {#sec:gev}
+
+Las familias de Gumbel, Fréchet y Weibull pueden combinarse en una única familia de modelos con funciones de distribución de la forma
+
+\begin{equation}
+G\left( z \right)=\exp\left\{ -\left[ 1+\xi\left( \frac{z-\mu}{\beta} \right)^{-1/\xi} \right] \right\}
+\end{equation}
+
+definida en el conjunto $\left\{ z:1+\xi\left( z-\mu \right)/\beta>0 \right\}$ donde $-\infty<\mu<\infty$, $\beta>0$ y $-\infty<\xi<\infty$ son los parámetros de recentramiento, escala y forma, respectivamente.
+
+Las clases de distribución de valores extremos de tipo 2) y tipo 3) corresponden, respectivamente, a los casos \( \xi > 0 \) y \( \xi < 0 \). El subconjunto de la familia GEV con \( \xi = 0 \) se interpreta como el límite de \@ref(eq:gev) cuando \( \xi \to 0 \), lo que conduce a la familia Gumbel, cuya función de distribución es:
+
+\begin{equation}
+G(z) = \exp\left\{ -\exp\left[ -\left( \frac{z - \mu}{\sigma} \right) \right] \right\}, \quad z \in \mathbb{R}
+(\#eq:gev)
+\end{equation}
+
+La unificación de las tres familias clásicas de distribuciones extremales en una sola familia (GEV) simplifica el análisis estadístico. Al inferir el parámetro \( \xi \), los datos determinan el tipo de cola más adecuado, evitando decisiones subjetivas previas. La incertidumbre en \( \xi \) refleja cuán claro es ese comportamiento extremo en el conjunto de datos. Aunque los parámetros $a_n$ y $b_n$ son desconocidos, la distribución de los máximos puede aproximarse por una GEV [@coles2001introduction].
+
+
+## Modelado práctico de extremos y niveles de retorno {#sec:practico}
+
+A partir del Teorema de Fisher--Tippett--Gnedenko, se justifica el uso de la familia GEV para modelar los máximos de una secuencia larga de observaciones independientes. Como los parámetros de normalización \( a_n \) y \( b_n \) suelen ser desconocidos, una estrategia práctica consiste en dividir los datos en bloques de tamaño \( n \) (por ejemplo, un año), y considerar los máximos por bloque \( M_{n,1}, \dots, M_{n,m} \).
+
+A esta nueva muestra de máximos por bloque se le ajusta una distribución GEV, y a partir de este modelo se estiman los \textbf{cuantiles extremos} (también llamados __niveles de retorno__). El cuantil \( z_p \) se define como el valor tal que
+
+\[
+\Pr(M_n > z_p) = p,
+\]
+
+es decir, el valor que se espera superar con probabilidad \( p \). A \( z_p \) se lo interpreta como el nivel de retorno asociado al período \( 1/p \). Por ejemplo, si \( p = 0.01 \), entonces \( z_p \) representa un evento que ocurre, en promedio, una vez cada 100 años.
+
+Para visualizar esta relación, se grafican (Figura  \@ref(fig:gevparams)) los valores \( z_p \) contra \( \log Y_p \), donde \( Y_p = -\log(1 - p) \). El comportamiento de esta curva depende del parámetro de forma \( \xi \):
+
+
+- Si \( \xi = 0 \) (Gumbel): el gráfico es lineal.
+- Si \( \xi > 0 \) (Fréchet): el gráfico es cóncavo (cola pesada, sin límite superior).
+- Si \( \xi < 0 \) (Weibull): el gráfico es convexo y tiene un límite superior finito.
+
+
+
+```{r gevparams, fig.cap="Niveles de retorno de la distribución GEV con parámetros de forma" ,echo=FALSE, fig.height=3, fig.width=3, message=FALSE, warning=FALSE}
+knitr::include_graphics("images/gev_params.png")
+```
+
+
+
+
+Este tipo de gráfico se conoce como _return level plot_, y es útil tanto para comunicar el modelo como para validar su ajuste [@coles2001introduction].
+
