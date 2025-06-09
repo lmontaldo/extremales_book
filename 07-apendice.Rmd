@@ -161,8 +161,65 @@ Para visualizar esta relación, se grafican (Figura  \@ref(fig:gevparams)) los v
 knitr::include_graphics("images/gev_params.png")
 ```
 
-
-
-
 Este tipo de gráfico se conoce como _return level plot_, y es útil tanto para comunicar el modelo como para validar su ajuste [@coles2001introduction].
+
+
+## Solución Ejercicios {#sec:ejercicios}
+
+__Ejercicio 2:__ Compruebe que la distribución de Cauchy tiene dominio de atracción máximo (DAM) de la distribución de Fréchet.
+
+Recordemos que una distribución \( F \) pertenece al \( DAM(\Phi_\alpha) \) si
+\[
+1 - F(x) = x^{-\alpha} L(x),
+\]
+para alguna función de variación lenta \( L(x) \), y entonces \( F \in R_{-\alpha} \).
+
+La función de distribución acumulada (FDA) de la Cauchy estándar es
+\[
+F(x) = \frac{1}{\pi} \arctan(x) + \frac{1}{2}, \quad x \in \mathbb{R}.
+\]
+
+Entonces
+\[
+1 - F(x) = \frac{1}{2} - \frac{1}{\pi} \arctan(x), \quad \text{para } x > 0.
+\]
+
+Cuando \( x \to \infty \), se tiene
+\[
+\arctan(x) \sim \frac{\pi}{2} - \frac{1}{x}, \quad \Rightarrow \quad 1 - F(x) \sim \frac{1}{\pi x}.
+\]
+
+Es decir
+\[
+1 - F(x) \sim x^{-1} \cdot \left( \frac{1}{\pi} \right),
+\]
+donde \( L(x) = 1/\pi \) es constante (y por tanto, de variación lenta).
+
+__Conclusión :__
+
+La cola de la distribución de Cauchy es de la forma \( x^{-1} L(x) \), con \( L(x) \) de variación lenta. Por lo tanto:
+\[
+F \in \mathcal{R}_{-1} \quad \Rightarrow \quad F \in DAM(\Phi_1),
+\]
+es decir, la distribución de Cauchy pertenece al dominio de atracción de la distribución de Fréchet con parámetro \( \alpha = 1 \).
+
+## Condición de Von Mises I {#sec:vonmises}
+
+::: {.definition name="Condición de Von Mises I"} 
+
+Sea \( F \) una distribución con densidad \( f \). Se dice que \( F \) cumple la __Condición de Von Mises I__ [@falk1993vonmises] si
+
+\[
+\lim_{x \to \infty} \frac{x f(x)}{1 - F(x)} = \alpha > 0.
+\]
+:::
+
+Esta condición describe el comportamiento asintótico de la cola de la distribución \( F \), y permite garantizar que \( F \) pertenece al dominio de atracción máximo de Fréchet con parámetro \( \alpha \), es decir
+
+\[
+F \in DAM(\Phi_\alpha).
+\]
+
+
+
 

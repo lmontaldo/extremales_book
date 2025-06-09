@@ -1093,42 +1093,107 @@ d. Gumbel si todas son Gumbel.
 e. Weibull si todas son Weibull.  
 :::
 
-### Dominio de Atracción Maximal
+## Dominio de Atracción Maximal
+
 Vamos ahora a ver el concepto de *Dominio de Atracción Maximal*.
 
-__Observación 20.__ Si $F$ es una distribución, se dice
-que tiene cola de variación regular de orden $-\alpha$,
-para $\alpha \geq 0$ si, $\forall t>0$, $(1-F(tx))/(1-F(x)) \rightarrow t
-^{-\alpha}$ si $x \rightarrow \infty$. Para abreviar se dirá que F es $R_{-\alpha}$. Por ejemplo, para $\alpha=3$, un caso de $F$ es $F(u)=1- 1/u^3$. 
+__Observación 20.__  Se dice que una distribución \( F \) tiene cola de __variación regular__ de orden \( -\alpha \) (con \( \alpha \geq 0 \)) si, para todo \( t > 0 \),
+\[
+\lim_{x \to \infty} \frac{1 - F(tx)}{1 - F(x)} = t^{-\alpha}.
+\]
+En tal caso se escribe que \( F \in R_{-\alpha} \). 
+
+::: {.example #varregular}
+Sea $F(u) = 1 - \frac{1}{u^3}, \quad u \geq 1$.
+
+Entonces
+\[
+1 - F(u) = \frac{1}{u^3}, \quad \text{y} \quad
+\frac{1 - F(tu)}{1 - F(u)} = \frac{1/(t^3 u^3)}{1/u^3} = \frac{1}{t^3}.
+\]
+Por lo tanto
+\[
+\lim_{u \to \infty} \frac{1 - F(tu)}{1 - F(u)} = t^{-3},
+\]
+lo que muestra que \( F \in \mathcal{R}_{-3} \), es decir, tiene cola de variación regular de orden \( -3 \).
+:::
 
 
-Por otra parte se dice que $L$ es una función de
-variación lenta si $\forall t>0, \;L(tx)/L(x) \rightarrow 1 \;\text{ cuando }\;  x\rightarrow \infty$. Un ejemplo es $L(u)=log(u)$.
+Por otra parte, se dice que $L$ es una función de __variación lenta__ si $\forall t>0$
+
+$$
+\lim_{x \to \infty} \frac{L(tx)}{L(u)} = 1.
+$$
 
 
-```{definition, label="d4", name="Dominio de Atracción Maximal"}
-Si $H$ es una distribución extremal (Gumbel,
-Weibull o Fréchet) su Dominio de Atracción
-Maximal ($DAM(H)$) está
-constituído por todas las distribuciones $F$ que
-tienen $DEA\;H$.
-```
+
+::: {.example}
+La función \( L(u) = \log u \) es de variación lenta, ya que cumple
+$$\frac{\log(tu)}{\log(u)} = \frac{\log t + \log u}{\log u} = 1 + \frac{\log t}{\log u} \longrightarrow 1 \quad \text{cuando } u \to \infty.$$
+:::
 
 
-```{theorem, label="th9", name="DAM de la Fréchet"}
-$F$ pertenece a la $DAM$ de $\Phi_{\alpha}$ si y sólo si
-$1-F(x)=x^{-\alpha} L(x)$ para alguna $L$ de variación lenta,
-lo cual es equivalente a decir que $F$ es $R_{-\alpha}$. 
-Un ejemplo típico seria $1-F(x)= x^{-\alpha}$.
-Además puede tomarse $d_n=0$ y $c_n= n$.
-```
-
-__Ejercicio 2 :__ Recompruebe en función de lo
-anterior que la distribución de Cauchy tiene DEA
-Fréchet.
+::: {.definition #d4 name="Dominio de Atracción Maximal"}
+Si $H$ es una distribución extremal (Gumbel, Weibull o Fréchet) su Dominio de Atracción Maximal ($DAM(H)$) está constituído por todas las distribuciones $F$ que tienen $DEA\;H$.
+::: 
 
 
-<!--  aca me quede p 30 -->
+
+::: {.theorem #th9 name="DAM de la Fréchet"}
+
+Sea \( F \) una función de distribución. Entonces:
+
+$$
+F \in DAM(\Phi_{\alpha}) \quad \Leftrightarrow \quad 1 - F(x) = x^{-\alpha} L(x),
+$$
+
+para alguna \( \alpha > 0 \) y alguna función \( L(x) \) de variación lenta.
+
+Esto es equivalente a decir que \( F \in R_{-\alpha} \), es decir, que \( F \) tiene cola de variación regular de orden \( -\alpha \).
+:::
+
+
+<!-- Un ejemplo típico es $1 - F(x) = x^{-\alpha}, \quad x \geq 1$. En este caso, puede tomarse $d_n = 0, \quad c_n = n^{1/\alpha}$. -->
+
+
+::: {.example name="Ejemplo típico del DAM de Fréchet"}
+
+Un caso típico donde se aplica el Teorema \@ref(thm:th9) es cuando la cola de la distribución tiene la forma 
+$$
+1 - F(x) = x^{-\alpha}, \quad x \geq 1,
+$$
+para algún \( \alpha > 0 \). En este caso, la función \( L(x) \equiv 1 \) es constante, y por lo tanto, de variación lenta.
+
+Esta distribución pertenece claramente al dominio de atracción de la Fréchet de parámetro \( \alpha \), es decir, \( F \in DAM(\Phi_{\alpha}) \).
+
+Además, para normalizar el máximo \( M_n = \max(X_1, \dots, X_n) \), se puede tomar
+$$
+d_n = 0, \quad c_n = n^{1/\alpha}.
+$$
+En particular, si \( \alpha = 1 \), entonces \( c_n = n \).
+
+:::
+
+<!-- __Ejercicio 2 :__ Recompruebe en función de lo anterior que la distribución de Cauchy tiene DEA Fréchet. -->
+
+
+__Ejercicio 2:__ Compruebe, en función de lo anterior, que la distribución de Cauchy tiene dominio de atracción máximo (DAM) de la distribución de Fréchet (Solución en el Apéndice \@ref(sec:ejercicios)).
+
+
+::: {.corollary name="DAM de la Fréchet" #damfrechet}
+Sea \( F \) una distribución con densidad \( f \). Si se verifica que
+$$
+\lim_{x \to \infty} \frac{x f(x)}{1 - F(x)} = \alpha,
+$$
+se dice que \( F \) cumple la __Condición de Von Mises I__.
+
+En tal caso, \( F \in DAM(\Phi_\alpha) \). Más aún, el dominio de atracción de Fréchet de orden \( \alpha \) ($\Phi_{\alpha}$) está formado por todas las distribuciones cuya cola es equivalente a la de alguna distribución que satisface la Condición de Von Mises I (ver Apéndice \@ref(sec:vonmises)).
+:::
+
+
+
+
+<!--
 
 ```{corollary, label="corollary1", name="DAM de la Fréchet"}
 Si $F$ es una distribución con densidad $f$ que cumple
@@ -1136,9 +1201,9 @@ que $xf(x)/(1-F(x))$ tiende a $\alpha$ cuando $x \rightarrow \infty$, se dice qu
 En tal caso, $F$ pertenece a la DAM de $\Phi_{\alpha}$ y mas aún, la $DAM$ de $\Phi_{\alpha}$ son todas las distribuciones que tienen cola equivalente a alguna distribución que
 cumpla la Condición de Von Mises I.
 ```
+-->
 
-
-Del $DAM$ Fréchet y Teorema 1, surge lo siguiente.
+Del Colorario \@ref(cor:damfrechet) y del Teorema \@ref(thm:foo1) surge lo siguiente.
 
 
 ```{theorem, label="th10", name="DAM de la Weibull"}
