@@ -52,9 +52,9 @@ fecales sobre agua costeras al cabo de quince días.
 
 Son un caso particular de evento raro o gran desviación respecto a la media. En resumen, para una gran variedad de dominios disciplinares suele ser de gran interés el trabajo con datos extremos, por ejemplo, medioambiente, telecomunicaciones, portafolio y riesgo, entre otros.
 
-El comienzo del curso se centra en la teoría más clásica de estadística de datos extremos, basada en los trabajos de @frechet1927, @gumbel1958statistics, @weibull1951, @fisher1928, @gnedenko1943, entre otros. En este marco, los argumentos que manejamos son de tipo __asintóticos__^[El análisis asintótico es un método de descripción del comportamiento en el límite.] y podríamos decir que nos ubicamos en lo que se conoce en la literatura como _paradigma de los valores extremos_ [@coles2001introduction].
+El comienzo del curso se centra en la teoría más clásica de estadística de datos extremos, basada en los trabajos de @frechet1927, @gumbel1958statistics, @weibull1951, @fisher1928limiting, @gnedenko1943, entre otros. En este marco, los argumentos que manejamos son de tipo __asintóticos__^[El análisis asintótico es un método de descripción del comportamiento en el límite.] y podríamos decir que nos ubicamos en lo que se conoce en la literatura como _paradigma de los valores extremos_ [@coles2001introduction].
 
- 
+
 
 __Observación 1.1__ (Distribución del máximo de dos variables independientes).
 Se recuerda que si \( X \) e \( Y \) son variables aleatorias independientes, con funciones de distribución acumulada (cdf) \( F \) y \( G \), respectivamente. Entonces, la función de distribución acumulada de la variable aleatoria
@@ -98,8 +98,7 @@ tiene distribución $F_n^\ast$ dada por
 F_n^\ast (t) = F_n(t)
 \end{equation}
 
-Si conocemos la distribución $F$ conoceríamos la distribución $F_n^\ast$, pero en algunos casos la lectura que queda registrada es la del dato máximo, y no la de cada observación que dio lugar al mismo, por lo que a veces ni siquiera es viable estimar $F$. Pero aún en los casos en que $F$ es conocida o estimable, si $n$ es grande, la fórmula de $F_n^\ast$ puede resultar prácticamente inmanejable. En una línea de trabajo similar a la que aporta el *Teorema
-Central del Límite* (TCL) [@bertsekas2008introduction] en la estadística de valores medios (ver Apéndice  \@ref(sec:ap), un teorema nos va a permitir aproximar $F_n^\ast$ por distribuciones más sencillas. Este es el *Teorema de Fischer-Tippet-Gnedenko* (FTG) que presentaremos en breve (@fisher1928limiting,  @gnedenko1943).
+Si conocemos la distribución $F$ conoceríamos la distribución $F_n^\ast$, pero en algunos casos la lectura que queda registrada es la del dato máximo, y no la de cada observación que dio lugar al mismo, por lo que a veces ni siquiera es viable estimar $F$. Pero aún en los casos en que $F$ es conocida o estimable, si $n$ es grande, la fórmula de $F_n^\ast$ puede resultar prácticamente inmanejable. En una línea de trabajo similar a la que aporta el Teorema Central del Límite (TCL) [@bertsekas2008introduction] en la estadística de valores medios (ver Apéndice  \@ref(sec:ap)), vamos a ver un teorema que nos va a permitir aproximar $F_n^\ast$ por distribuciones más sencillas. Este es el Teorema de Fischer-Tippet-Gnedenko (FTG) que presentaremos en breve (@fisher1928limiting,  @gnedenko1943).
 
 
 
@@ -527,8 +526,9 @@ Observar que los resultados empíricos están cerca del valor esperado, desvío 
 
 \newpage
 
-A continuación presentaremos el Teorema medular de esta primera parte, expresado de la manera más simple posible. Veremos posteriormente algunos detalles con más cuidado. En particular, veremos que la continuidad de la distribución $F$ no es una hipótesis real (ni es necesaria ni es suficiente, por eso la
+A continuación presentaremos el Teorema medular de esta primera parte, expresado de la manera más simple posible (@fisher1928limiting, @gnedenko1943). Veremos posteriormente algunos detalles con más cuidado. En particular, veremos que la continuidad de la distribución $F$ no es una hipótesis real (ni es necesaria ni es suficiente, por eso la
 entrecomillamos), pero ayuda a visualizar que no vale el teorema para toda distribución $F$, así como veremos con cierto detalle más adelante...
+
 
 
 ::: {.theorem #FTG name="De Fischer-Tippet-Gnedenko (FTG)"}
@@ -1013,7 +1013,7 @@ Los ejemplos anteriores no son sorprendentes, en el sentido que aunque presentam
 dicho teorema sugiere que cuando $F$ admite DEA, la distribución $H$ deberá ser una distribución extremal. De hecho, el Teorema \@ref(thm:FTG)
  resulta de combinar dos teoremas, basadas en una nueva definición: la de distribución __max-estable__.
  
-## Distribución max-estables
+## Distribuciones max-estables
 
 ::: {.definition #def3}
 Se dice que una distribución $F$ es __max-estable__ si, para todo natural \( k \geq 2 \), existen las constantes \( a_k > 0 \) y \( b_k \in \mathbb{R} \) tales que:
@@ -1093,7 +1093,12 @@ d. Gumbel si todas son Gumbel.
 e. Weibull si todas son Weibull.  
 :::
 
-## Dominio de Atracción Maximal
+## Dominio de Atracción Maximal (DAM)
+
+
+__¿Qué es el dominio de atracción máximal (DAM)?__ El dominio de atracción máximal de una distribución límite es el conjunto de todas las distribuciones cuyos valores extremos, como los máximos de muestras grandes, muestran un comportamiento similar en el límite. Esto ocurre después de aplicar un cambio adecuado de escala y ubicación. Aunque las distribuciones originales pueden ser muy distintas, si sus valores extremos se parecen en el límite, decimos que pertenecen al mismo dominio de atracción. Esta idea permite clasificar fenómenos extremos en solo tres tipos posibles (Weibull, Fréchet y Gumbel), según la forma de su cola: con tope, pesada o ligera [@deHaanFerreira2006].
+
+
 
 Vamos ahora a ver el concepto de *Dominio de Atracción Maximal*.
 
@@ -1205,23 +1210,78 @@ cumpla la Condición de Von Mises I.
 
 Del Colorario \@ref(cor:damfrechet) y del Teorema \@ref(thm:foo1) surge lo siguiente.
 
+::: {.theorem #th10 name="DAM de la Weibull"}
 
-```{theorem, label="th10", name="DAM de la Weibull"}
-a) $F$ pertenece a la $DAM$ de $\Psi_{\alpha}$ si y solo si $M_F$ es finito y además $1-F(M_F-1/x)=x^{-\alpha} L(x)$ para alguna $L$ de variación lenta, es decir que pertenece a $R_{-\alpha}$.
+a. $F$ pertenece a la $DAM$ de $\Psi_{\alpha}$ si y solo si $M_F$ es finito y además $1-F(M_F-1/x)=x^{-\alpha} L(x)$ para alguna $L$ de variación lenta, es decir que pertenece a $R_{-\alpha}$.
 
-Observar que con el cambio de variable $u=M_F-1/x$,
-resulta que $1-F(u)=(^{-}M_F-u)^{\alpha} L(1/(M_F-u)) para
+Observar que con el cambio de variable $u=M_F-1/x$, resulta que $1-F(u)=(^{-}M_F-u)^{\alpha} L(1/(M_F-u)) para
 alguna $L$ de variación lenta, para $u< M_F$.
 
 Un ejemplo típico sería $1-F(u)=(^{-}M_F -u)^{\alpha} ,\; u< MF$.
 
 Además puede tomarse $d_n= M_F$ y $c_n= n-\alpha$.
 
-b) Si $F$ distribución con densidad $f$ positiva en
+b. Si $F$ distribución con densidad $f$ positiva en
 $(a,M_F)$ para algun $a< M_F$ y $(M_F -x)f(x)/(1-F(x))$
 tiende a $\alpha$ cuando $x \rightarrow M_F$, se dice que $F$ cumple la *Condición de Von Mises II*. En tal caso, $F$ pertenece a la $DAM$ de $\Psi_{\alpha}$ y mas aún, la $DAM$ de $\Psi_{\alpha}$ son todas las distribuciones que tienen cola equivalente a alguna distribución que cumpla la Condición de
 Von Mises II.
-```
+:::
+
+
+::: {.theorem #th101 name="Dominio de Atracción Máxima (DAM) de la Weibull"}
+
+**a.** Sea \( F \) una función de distribución con extremo superior finito \( M_F := \sup\{x : F(x) < 1\} < \infty \).  
+Entonces \( F \) pertenece al dominio de atracción máxima de la distribución de **Weibull**, denotada \( \Psi_{\alpha} \), si y solo si existe una función de **variación lenta** \( L \in \mathcal{R}_0 \) tal que:
+
+\[
+1 - F\left(M_F - \frac{1}{x} \right) = x^{-\alpha} L(x), \quad \text{para } x \to \infty.
+\]
+
+Es decir, la cola izquierda de la distribución decrece como una **potencia del gap hasta \( M_F \)**.
+
+Con el cambio de variable \( u = M_F - \frac{1}{x} \), esta condición puede escribirse también como:
+
+\[
+1 - F(u) = (M_F - u)^{\alpha} \cdot L\left( \frac{1}{M_F - u} \right), \quad u < M_F,
+\]
+
+donde \( L \) sigue siendo una función de variación lenta.
+
+Un ejemplo típico es:
+
+\[
+1 - F(u) = (M_F - u)^{\alpha}, \quad u < M_F,
+\]
+
+que corresponde al caso en que \( L(x) \equiv 1 \).
+
+En este caso, se puede tomar como normalización:
+- \( d_n = M_F \),
+- \( c_n = M_F - U(n) \),  
+donde \( U(n) = F^{\leftarrow}(1 - 1/n) \) es la **cuantil de orden extremo**, y se cumple:
+
+\[
+\lim_{n \to \infty} F^n(d_n - c_n x) = \Psi_{\alpha}(x) := \exp\left( -x^{\alpha} \right), \quad x > 0.
+\]
+
+---
+
+**b.** (*Condición de Von Mises II*)  
+Si \( F \) es una distribución con densidad \( f \) positiva en un intervalo \( (a, M_F) \), para algún \( a < M_F \), y además se cumple que:
+
+\[
+\lim_{x \to M_F^-} \frac{(M_F - x) f(x)}{1 - F(x)} = \alpha,
+\]
+
+entonces \( F \in DAM(\Psi_{\alpha}) \).  
+Esta condición garantiza que la función de distribución se comporta como una potencia cerca del extremo superior, y por tanto pertenece al dominio de atracción de Weibull.
+
+Más aún, **toda distribución cuya cola izquierda sea equivalente a una que cumpla esta condición también pertenece al \( DAM(\Psi_{\alpha}) \)**.
+
+:::
+
+
+
 
 
 __ Ejercicio 3 :__ 
@@ -1437,7 +1497,9 @@ en función de $a$ y $h(s)=\frac{s\log(s)}{(\log(s))^2}$, la cual cumple las hip
 Se concluye entonces que la log-normal está en el DAM Gumbel, o, lo que es lo mismo, que la log-
 normal admite DEA Gumbel.
 
-__Observación 23.__ Tiempos y Valores de Retorno.
+<!-- __Observación 23.__ Tiempos y Valores de Retorno. --> 
+
+## Tiempos y Valores de Retorno
 
 En Ingeniería y Ciencias Ambientales, suele
 pensarse los eventos extremos (por ejemplo:

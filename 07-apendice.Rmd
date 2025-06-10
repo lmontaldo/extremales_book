@@ -220,6 +220,122 @@ Esta condición describe el comportamiento asintótico de la cola de la distribu
 F \in DAM(\Phi_\alpha).
 \]
 
+## Dominio de Atracción de la Ley de Weibull
+
+Sea $F$ una función de distribución con extremo superior finito, es decir, 
+
+$$
+M_F := \sup \{x : F(x) < 1\} < \infty.
+$$
+
+Diremos que $F$ pertenece al **dominio de atracción máxima** de la distribución de Weibull con parámetro $\alpha > 0$, denotada $\Psi_\alpha$, si existe una función de variación lenta $L$ tal que:
+
+$$
+1 - F\left(M_F - \frac{1}{x}\right) = x^{-\alpha} L(x), \quad \text{para } x \text{ grande}.
+$$
+
+Esto se denota como $F \in DAM(\Psi_\alpha)$ y equivale a decir que hay secuencias de normalización $c_n > 0$, $d_n \in \mathbb{R}$ tales que:
+
+$$
+\lim_{n \to \infty} F^n(c_n x + d_n) = \Psi_\alpha(x),
+$$
+
+donde la función límite $\Psi_\alpha$ es:
+
+$$
+\Psi_\alpha(x) = 
+\begin{cases}
+\exp\left( - (M_F - x)^\alpha \right), & x < M_F, \\
+1, & x \geq M_F.
+\end{cases}
+$$
+
+La condición anterior se puede reinterpretar haciendo el cambio de variable $u = M_F - \frac{1}{x}$, que implica $x = \frac{1}{M_F - u}$. Entonces:
+
+$$
+1 - F(u) = (M_F - u)^\alpha \cdot L\left( \frac{1}{M_F - u} \right), \quad \text{para } u < M_F.
+$$
+
+Un ejemplo típico es cuando:
+
+$$
+1 - F(u) = (M_F - u)^\alpha, \quad \text{para } u < M_F,
+$$
+
+lo cual corresponde al caso en que la función de variación lenta es constante: $L(x) \equiv 1$.
+
+Para que la convergencia de $F^n$ hacia $\Psi_\alpha$ ocurra, una elección válida de secuencias de normalización es:
+
+- $d_n = M_F$ (centra los datos en el extremo superior),
+- $c_n = n^{-1/\alpha}$ (ajusta la escala para que la cola "se vea").
+
+
+
+
+## Funciones de variación regular y lenta
+
+Siguiendo a @deHaanFerreira2006, las funciones de **variación regular** y en particular las de **variación lenta** son herramientas esenciales para describir cómo se comporta la cola de una distribución \( F \). Este comportamiento determina a qué DAM pertenece, es decir, hacia qué tipo de ley de extremos convergen los máximos muestrales de \( F \) cuando el tamaño de la muestra crece.
+
+Sea una función \( f: (0, \infty) \to (0, \infty) \) de **variación regular** con índice \( \rho \in \mathbb{R} \), denotada \( f \in RV_\rho \), si
+
+\[
+\lim_{t \to \infty} \frac{f(tx)}{f(t)} = x^\rho, \quad \forall x > 0.
+\]
+
+<!-- (p. 281, Apéndice B) -->
+
+Cuando \( \rho = 0 \), se dice que \( f \) es de **variación lenta**, y escribimos \( f \in RV_0 \). En ese caso
+\[
+\lim_{t \to \infty} \frac{f(tx)}{f(t)} = 1.
+\]
+
+
+<!--  (p. 281, Apéndice B) -->
+
+Estas funciones se usan para expresar cómo decae la cola de \( F \), y con eso caracterizar su pertenencia a los distintos dominios de atracción:
+
+
+
+a. DAM de Fréchet (\( \gamma > 0 \)) : Una distribución \( F \) pertenece al DAM de Fréchet si su cola cumple:
+\[
+1 - F(x) = x^{-1/\gamma} L(x), \quad x \to \infty,
+\]
+donde \( L \in RV_0 \) es de variación lenta.
+
+<!--(p. 20, Teorema 1.2.1) -->
+
+Esto describe una **cola pesada**, decreciendo como una potencia, modulada por una función lenta.
+
+
+
+b. DAM de Weibull (\( \gamma < 0 \)): Si \( x^* = \sup\{x : F(x) < 1\} < \infty \), entonces \( F \in DAM(G_\gamma) \) si
+\[
+1 - F(x^* - 1/x) = x^{-1/\gamma} L(x), \quad x \to \infty,
+\]
+con \( L \in RV_0 \).
+
+<!-- (p. 22, Teorema 1.2.1)-->
+
+Aquí, la **cola izquierda** de la distribución se aproxima suavemente al extremo superior \( x^* \), reflejando un **comportamiento acotado**.
+
+
+
+c. DAM de Gumbel (\( \gamma = 0 \)): Este caso no se caracteriza por variación regular directamente. En su lugar, se requiere una **función auxiliar** \( a(t) > 0 \) tal que
+\[
+\lim_{t \to x^*} \frac{1 - F(t + a(t)x)}{1 - F(t)} = e^{-x}, \quad \forall x \in \mathbb{R}.
+\]
+
+<!--(p. 21–22, Teorema 1.2.1) -->
+
+Este tipo de condición modela **colas ligeras**, como las de las distribuciones normal, exponencial o logística.
+
+__Conclusión:__ 
+
+- En los casos **Fréchet** y **Weibull**, la cola debe ser una función **regularmente variante**, con un término principal de tipo potencia y una función de **variación lenta**.
+
+- En el caso **Gumbel**, se requiere una descripción más fina mediante funciones auxiliares.
+
+Estas condiciones son fundamentales para determinar hacia qué ley de extremos convergerán los máximos de una muestra grande.
 
 
 
