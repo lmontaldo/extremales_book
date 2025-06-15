@@ -1,0 +1,379 @@
+# Soluciones Ejercicios  {#sec:soluciones}
+
+
+## Solución del ejercicio \@ref(exr:ejercicio2) {.unnumbered .unlisted}
+
+Compruebe que la distribución de Cauchy tiene dominio de atracción máximo (DAM) de la distribución de Fréchet.
+
+Recordemos que una distribución \( F \) pertenece al \( DAM(\Phi_\alpha) \) si
+\[
+1 - F(x) = x^{-\alpha} L(x),
+\]
+para alguna función de variación lenta \( L(x) \), y entonces \( F \in R_{-\alpha} \).
+
+La función de distribución acumulada (FDA) de la Cauchy estándar es
+\[
+F(x) = \frac{1}{\pi} \arctan(x) + \frac{1}{2}, \quad x \in \mathbb{R}.
+\]
+
+Entonces
+\[
+1 - F(x) = \frac{1}{2} - \frac{1}{\pi} \arctan(x), \quad \text{para } x > 0.
+\]
+
+Cuando \( x \to \infty \), se tiene
+\[
+\arctan(x) \sim \frac{\pi}{2} - \frac{1}{x}, \quad \Rightarrow \quad 1 - F(x) \sim \frac{1}{\pi x}.
+\]
+
+Es decir
+\[
+1 - F(x) \sim x^{-1} \cdot \left( \frac{1}{\pi} \right),
+\]
+donde \( L(x) = 1/\pi \) es constante (y por tanto, de variación lenta).
+
+__Conclusión :__
+
+La cola de la distribución de Cauchy es de la forma \( x^{-1} L(x) \), con \( L(x) \) de variación lenta. Por lo tanto:
+\[
+F \in \mathcal{R}_{-1} \quad \Rightarrow \quad F \in DAM(\Phi_1),
+\]
+es decir, la distribución de Cauchy pertenece al dominio de atracción de la distribución de Fréchet con parámetro \( \alpha = 1 \).
+
+
+
+
+
+
+## Solución Ejercicio \@ref(exr:Ejercicio3) {.unnumbered .unlisted}
+
+a. Verificación: la distribución Uniforme tiene DEA Weibull
+
+Sea \( F(x) \) la función de distribución de una Uniforme sobre \([0,1]\):
+
+\[
+F(x) = 
+\begin{cases}
+0 & x < 0 \\
+x & 0 \leq x \leq 1 \\
+1 & x > 1
+\end{cases}
+\]
+
+Observamos que su soporte está acotado superiormente por \( M_F = 1 \). Entonces, para \( x \to 1^{-} \):
+
+\[
+1 - F(x) = 1 - x = (1 - x)^1
+\]
+
+Comparando con la forma general de una cola Weibull:
+
+\[
+1 - F(x) \sim (M_F - x)^{\alpha} \cdot L\left( \frac{1}{M_F - x} \right)
+\]
+
+vemos que se cumple con:
+
+- \( \alpha = 1 \)
+- \( L(u) \equiv 1 \), que es de variación lenta
+
+Por tanto, la Uniforme[0,1] pertenece al Dominio de Atracción Extremo de Weibull con parámetro \( \alpha = 1 \).
+
+
+b. Ejemplo de otra distribución con DEA Weibull
+
+Definimos:
+
+\[
+F(x) = 
+\begin{cases}
+0 & x < 0 \\
+1 - (1 - x)^3 & 0 \leq x < 1 \\
+1 & x \geq 1
+\end{cases}
+\]
+
+Esta es una distribución con soporte en \([0,1]\), y densidad:
+
+\[
+f(x) = 3(1 - x)^2, \quad 0 \leq x < 1
+\]
+
+Para \( x \to 1^{-} \), se tiene:
+
+\[
+1 - F(x) = (1 - x)^3
+\]
+
+Que nuevamente se ajusta a la forma de una cola Weibull, con:
+
+- \( \alpha = 3 \)
+- \( L(u) \equiv 1 \)
+
+Luego, esta distribución no uniforme también pertenece al DEA de Weibull, con parámetro \( \alpha = 3 \).
+
+
+
+## Solución Ejercicio \@ref(exr:Ejercicio4) {.unnumbered .unlisted}
+
+a. Verificación de que la distribución Exponencial pertenece al DEA de Gumbel:
+
+Sea \( F(x) = 1 - e^{-\lambda x} \), con \( x \geq 0 \), la función de distribución de una exponencial con parámetro \( \lambda > 0 \).
+
+Tenemos:
+
+\[
+1 - F(x) = e^{-\lambda x}
+\]
+
+Esta cola es de tipo exponencial pura. Para determinar si pertenece al dominio de atracción de Gumbel, usamos la condición de Von Mises tipo I:
+
+Existe una función auxiliar \( h(x) \to c > 0 \), tal que:
+
+\[
+1 - F(x) = c \cdot \exp\left( -\int_a^x \frac{1}{h(t)}\,dt \right)
+\]
+
+Para la exponencial:
+
+\[
+1 - F(x) = e^{-\lambda x} = \exp\left( -\int_0^x \lambda\,dt \right)
+\]
+
+Entonces \( h(t) = \frac{1}{\lambda} \) (constante) → es no decreciente y con asíntota horizontal.
+
+Por lo tanto, la distribución exponencial pertenece al DEA de Gumbel.
+
+
+
+b. Verificación de que la distribución Normal pertenece al DEA de Gumbel: 
+
+Sea \( F(x) \) la función de distribución de una normal estándar \( \mathcal{N}(0,1) \). Su cola:
+
+\[
+1 - F(x) \sim \frac{1}{x\sqrt{2\pi}} e^{-x^2/2}, \quad x \to \infty
+\]
+
+Esta expresión tiene la forma:
+
+\[
+1 - F(x) \sim L(x) \cdot \exp\left(-x^2/2\right)
+\]
+
+con \( L(x) = \frac{1}{x\sqrt{2\pi}} \), que es de variación lenta en \( \infty \).
+
+Además, se puede definir una función auxiliar:
+
+\[
+h(x) = \frac{1}{\phi(x)/(1 - F(x))} \sim \frac{1}{x}, \quad \text{donde } \phi(x) = \text{densidad normal}
+\]
+
+Y se cumple:
+
+\[
+\lim_{x \to \infty} \frac{1 - F(x + t h(x))}{1 - F(x)} = e^{-t}
+\]
+
+Por tanto, la distribución normal también pertenece al DEA de Gumbel.
+
+## Solución Ejercicio \@ref(exr:Ejercicio5) {.unnumbered .unlisted}
+
+a. Dominio de Atracción de la Log-normal:
+
+Sea \( X \sim \text{Lognormal}(0,1) \), es decir, \( \log X \sim \mathcal{N}(0,1) \).
+
+Recordemos que el DEA depende del comportamiento de la cola de la distribución. En este caso, para \( x \to \infty \):
+
+\[
+1 - F(x) \sim \frac{1}{x \log x} \cdot e^{ - \frac{(\log x)^2}{2} }
+\]
+
+Este decaimiento es:
+
+- más rápido que cualquier potencia \( x^{-\alpha} \)
+- más lento que una exponencial pura \( e^{-x} \)
+
+Es decir, tiene una cola subexponencial.
+
+Según la teoría clásica de valores extremos (ver @gnedenko1943; @deHaanFerreira2006), este tipo de comportamiento corresponde al:
+
+\[
+\textbf{Dominio de Atracción de Gumbel} \quad \Lambda(x) = \exp(-e^{-x})
+\]
+
+Entonces, la distribución log-normal pertenece al DEA de Gumbel.
+
+b. Simulación en __R__:
+
+```{r echo=TRUE}
+# Cargar paquetes necesarios
+library(evd)       # para ajuste Gumbel
+library(ggplot2)   # para visualización
+
+set.seed(123)
+
+# Simulación: 100 máximos de 500 log-normales cada uno
+n <- 100
+m <- 500
+maximos <- replicate(n, max(rlnorm(m)))
+
+# Ajustar distribución Gumbel (máximos típicos)
+ajuste <- fgev(maximos, shape = 0)  # fijamos shape = 0 → Gumbel
+
+# Mostrar parámetros estimados
+ajuste$estimate
+
+```
+
+\vspace{1cm}
+
+```{r ejb, echo=FALSE, fig.height=3, fig.width=6}
+ggplot(data.frame(x = maximos), aes(x)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30, fill = "lightblue", color = "black") +
+  stat_function(
+    fun = function(x) dgev(x, loc = ajuste$estimate["loc"], scale = ajuste$estimate["scale"], shape = 0),
+    color = "red", size = 1
+  ) +
+  labs(title = "Distribución ajustada: Gumbel", x = "Máximos de log-normales", y = "Densidad")
+
+```
+
+
+
+
+
+
+
+## Solución Ejercicio \@ref(exr:Ejercicio6) {.unnumbered .unlisted}
+
+
+1. Verificar que \( F(x) = 1 - K \exp\left\{-\frac{\alpha}{M - x} \right\} \) es una distribución:
+
+__Dominio:__
+
+La función está definida para \( x < M \). Como \( M - x > 0 \), la función exponencial es válida en ese dominio.
+
+_Límite inferior:__
+
+\[
+\lim_{x \to -\infty} F(x) = 1 - K \exp\left\{ -\frac{\alpha}{M - (-\infty)} \right\} = 1 - K \cdot \exp(0) = 1 - K
+\]
+
+Entonces, para que \( F \) sea una función de distribución, debe empezar en 0. Así que imponemos \( K = 1 \), lo que implica:
+
+\[
+F(x) = 1 - \exp\left\{ -\frac{\alpha}{M - x} \right\}
+\]
+
+__Límite superior:__
+
+\[
+\lim_{x \to M^-} F(x) = 1 - \exp\left\{ -\infty \right\} = 1
+\]
+
+
+Entonces \( F \) cumple \( \lim_{x \to -\infty} F(x) = 0 \) y \( \lim_{x \to M^-} F(x) = 1 \), y es estrictamente creciente → **es una función de distribución**.
+
+También,
+
+\[
+M_F = \sup \{ x : F(x) < 1 \} = M
+\]
+
+Por lo tanto, el soporte está acotado superiormente en \( M \).
+
+
+
+2. Verificar que \( F \) es una función de Von Mises:
+
+Recordamos que una función \( F \) es de **Von Mises** si cumple:
+
+\[
+1 - F(x) = c \cdot \exp\left( -\int_a^x \frac{1}{h(t)} dt \right)
+\]
+
+Dado
+
+\[
+1 - F(x) = \exp\left( -\frac{\alpha}{M - x} \right)
+\]
+
+Queremos escribir
+
+\[
+\exp\left( -\int_a^x \frac{1}{h(t)} dt \right) = \exp\left( -\frac{\alpha}{M - x} \right)
+\]
+
+Entonces igualando exponentes
+
+\[
+\int_a^x \frac{1}{h(t)} dt = \frac{\alpha}{M - x}
+\]
+
+Derivando ambos lados con respecto a \( x \)
+
+\[
+\frac{1}{h(x)} = \frac{d}{dx} \left( \frac{\alpha}{M - x} \right) = \frac{\alpha}{(M - x)^2}
+\quad \Rightarrow \quad
+h(x) = \frac{(M - x)^2}{\alpha}
+\]
+
+Con esto, \( F \) es una función de Von Mises con **función auxiliar**:
+
+\[
+h(x) = \frac{(M - x)^2}{\alpha}
+\]
+
+y por lo tanto, pertenece al **DEA de Gumbel**.
+
+
+
+3. Determinar las sucesiones \( d_n \) y \( c_n \):
+
+Sabemos que para funciones de Von Mises con extremo superior \( M \), las normalizaciones se definen como:
+
+\[
+d_n = F^{-1}\left(1 - \frac{1}{n} \right), \quad c_n = h(d_n)
+\]
+
+__Cálculo de \( d_n \):__
+
+Tenemos
+
+\[
+1 - \frac{1}{n} = F(d_n) = 1 - \exp\left( -\frac{\alpha}{M - d_n} \right)
+\]
+
+Entonces
+
+\[
+\frac{1}{n} = \exp\left( -\frac{\alpha}{M - d_n} \right)
+\Rightarrow \log n = \frac{\alpha}{M - d_n}
+\Rightarrow M - d_n = \frac{\alpha}{\log n}
+\Rightarrow d_n = M - \frac{\alpha}{\log n}
+\]
+
+__Cálculo de \( c_n \):__
+
+\[
+c_n = h(d_n) = \frac{(M - d_n)^2}{\alpha} = \frac{1}{\alpha} \left( \frac{\alpha}{\log n} \right)^2 = \frac{\alpha}{(\log n)^2}
+\]
+
+
+
+Entonces, la normalización es
+
+\[
+\frac{\max(X_1, \dots, X_n) - d_n}{c_n} \xrightarrow{d} \Lambda(x)
+\]
+
+con
+
+\[
+d_n = M - \frac{\alpha}{\log n}, \quad c_n = \frac{\alpha}{(\log n)^2}
+\]
+
+Así se verifica que \( F \) pertenece al **DAM de Gumbel**, y se determinan explícitamente las sucesiones de normalización.
+
+
+

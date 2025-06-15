@@ -1098,9 +1098,11 @@ e. Weibull si todas son Weibull.
 
 __¿Qué es el dominio de atracción máximal (DAM)?__ El dominio de atracción máximal de una distribución límite es el conjunto de todas las distribuciones cuyos valores extremos, como los máximos de muestras grandes, muestran un comportamiento similar en el límite. Esto ocurre después de aplicar un cambio adecuado de escala y ubicación. Aunque las distribuciones originales pueden ser muy distintas, si sus valores extremos se parecen en el límite, decimos que pertenecen al mismo dominio de atracción. Esta idea permite clasificar fenómenos extremos en solo tres tipos posibles (Weibull, Fréchet y Gumbel), según la forma de su cola: con tope, pesada o ligera [@deHaanFerreira2006].
 
+El artículo de @gnedenko1943 es un trabajo fundacional de la teoría de valores extremos: establece de forma rigurosa los tres dominios de atracción posibles para los máximos de variables aleatorias independientes e idénticamente distribuidas $(iid)$.
 
 
-Vamos ahora a ver el concepto de *Dominio de Atracción Maximal*.
+
+Vamos ahora a ver el concepto de *Dominio de Atracción Maximal*. Las funciones de variación lenta y regular permiten cuantificar cómo se comporta la cola de una distribución. Ese comportamiento de la cola es lo que define a qué tipo de ley límite (Weibull, Fréchet, Gumbel) convergerán los máximos. Por eso, la teoría del valor extremo y la teoría de funciones de variación están profundamente conectadas.
 
 __Observación 20.__  Se dice que una distribución \( F \) tiene cola de __variación regular__ de orden \( -\alpha \) (con \( \alpha \geq 0 \)) si, para todo \( t > 0 \),
 \[
@@ -1182,8 +1184,12 @@ En particular, si \( \alpha = 1 \), entonces \( c_n = n \).
 <!-- __Ejercicio 2 :__ Recompruebe en función de lo anterior que la distribución de Cauchy tiene DEA Fréchet. -->
 
 
-__Ejercicio 2:__ Compruebe, en función de lo anterior, que la distribución de Cauchy tiene dominio de atracción máximo (DAM) de la distribución de Fréchet (Solución en el Apéndice \@ref(sec:ejercicios)).
 
+::: {.exercise #ejercicio2}
+Compruebe, en función de lo anterior, que la distribución de Cauchy tiene dominio de atracción máximo (DAM) de la distribución de Fréchet.
+:::
+
+La solución del Ej. \@ref(exr:ejercicio2)  se encuentra en el Apéndice \@ref(sec:soluciones).
 
 ::: {.corollary name="DAM de la Fréchet" #damfrechet}
 Sea \( F \) una distribución con densidad \( f \). Si se verifica que
@@ -1212,203 +1218,54 @@ Del Colorario \@ref(cor:damfrechet) y del Teorema \@ref(thm:foo1) surge lo sigui
 
 ::: {.theorem #th10 name="DAM de la Weibull"}
 
-a. $F$ pertenece a la $DAM$ de $\Psi_{\alpha}$ si y solo si $M_F$ es finito y además $1-F(M_F-1/x)=x^{-\alpha} L(x)$ para alguna $L$ de variación lenta, es decir que pertenece a $R_{-\alpha}$.
-
-Observar que con el cambio de variable $u=M_F-1/x$, resulta que $1-F(u)=(^{-}M_F-u)^{\alpha} L(1/(M_F-u)) para
-alguna $L$ de variación lenta, para $u< M_F$.
-
-Un ejemplo típico sería $1-F(u)=(^{-}M_F -u)^{\alpha} ,\; u< MF$.
-
-Además puede tomarse $d_n= M_F$ y $c_n= n-\alpha$.
+a. $F$ pertenece a la $DAM$ de $\Psi_{\alpha}$ si y solo si $M_F$ es finito y además $1-F(M_F-1/x)=x^{-\alpha} L(x)$ para alguna $L$ de variación lenta, es decir que pertenece a $R_{-\alpha}$. Observar que con el cambio de variable $u=M_F-1/x$, resulta que $1-F(u)=(M_F-u)^{\alpha} L(1/(M_F-u))$ para
+alguna $L$ de variación lenta, para $u< M_F$. Un ejemplo típico sería $1-F(u)=(M_F -u)^{\alpha} ,\; u< MF$. Además puede tomarse $d_n= M_F$ y $c_n= n^{-\alpha}$.
 
 b. Si $F$ distribución con densidad $f$ positiva en
 $(a,M_F)$ para algun $a< M_F$ y $(M_F -x)f(x)/(1-F(x))$
-tiende a $\alpha$ cuando $x \rightarrow M_F$, se dice que $F$ cumple la *Condición de Von Mises II*. En tal caso, $F$ pertenece a la $DAM$ de $\Psi_{\alpha}$ y mas aún, la $DAM$ de $\Psi_{\alpha}$ son todas las distribuciones que tienen cola equivalente a alguna distribución que cumpla la Condición de
-Von Mises II.
-:::
-
-
-::: {.theorem #th101 name="Dominio de Atracción Máxima (DAM) de la Weibull"}
-
-**a.** Sea \( F \) una función de distribución con extremo superior finito \( M_F := \sup\{x : F(x) < 1\} < \infty \).  
-Entonces \( F \) pertenece al dominio de atracción máxima de la distribución de **Weibull**, denotada \( \Psi_{\alpha} \), si y solo si existe una función de **variación lenta** \( L \in \mathcal{R}_0 \) tal que:
-
-\[
-1 - F\left(M_F - \frac{1}{x} \right) = x^{-\alpha} L(x), \quad \text{para } x \to \infty.
-\]
-
-Es decir, la cola izquierda de la distribución decrece como una **potencia del gap hasta \( M_F \)**.
-
-Con el cambio de variable \( u = M_F - \frac{1}{x} \), esta condición puede escribirse también como:
-
-\[
-1 - F(u) = (M_F - u)^{\alpha} \cdot L\left( \frac{1}{M_F - u} \right), \quad u < M_F,
-\]
-
-donde \( L \) sigue siendo una función de variación lenta.
-
-Un ejemplo típico es:
-
-\[
-1 - F(u) = (M_F - u)^{\alpha}, \quad u < M_F,
-\]
-
-que corresponde al caso en que \( L(x) \equiv 1 \).
-
-En este caso, se puede tomar como normalización:
-- \( d_n = M_F \),
-- \( c_n = M_F - U(n) \),  
-donde \( U(n) = F^{\leftarrow}(1 - 1/n) \) es la **cuantil de orden extremo**, y se cumple:
-
-\[
-\lim_{n \to \infty} F^n(d_n - c_n x) = \Psi_{\alpha}(x) := \exp\left( -x^{\alpha} \right), \quad x > 0.
-\]
-
----
-
-**b.** (*Condición de Von Mises II*)  
-Si \( F \) es una distribución con densidad \( f \) positiva en un intervalo \( (a, M_F) \), para algún \( a < M_F \), y además se cumple que:
+tiende a $\alpha$ cuando $x \rightarrow M_F$, se dice que $F$ cumple la *Condición de Von Mises II*. 
+Esto implica que si \( F \) es una distribución con densidad \( f \) positiva en un intervalo \( (a, M_F) \), para algún \( a < M_F \), y además se cumple que:
 
 \[
 \lim_{x \to M_F^-} \frac{(M_F - x) f(x)}{1 - F(x)} = \alpha,
 \]
 
-entonces \( F \in DAM(\Psi_{\alpha}) \).  
-Esta condición garantiza que la función de distribución se comporta como una potencia cerca del extremo superior, y por tanto pertenece al dominio de atracción de Weibull.
+entonces \( F \in DAM(\Psi_{\alpha}) \).   Esta condición garantiza que la función de distribución se comporta como una potencia cerca del extremo superior, y por tanto pertenece al dominio de atracción de Weibull. Más aún, toda distribución cuya cola izquierda sea equivalente a una que cumpla esta condición también pertenece al \( DAM(\Psi_{\alpha}) \) [@deHaanFerreira2006]
 
-Más aún, **toda distribución cuya cola izquierda sea equivalente a una que cumpla esta condición también pertenece al \( DAM(\Psi_{\alpha}) \)**.
-
+<!--En tal caso, $F$ pertenece a la $DAM$ de $\Psi_{\alpha}$ y mas aún, la $DAM$ de $\Psi_{\alpha}$ son todas las distribuciones que tienen cola equivalente a alguna distribución que cumpla la Condición de
+Von Mises II. -->
 :::
 
 
 
-
-
-__ Ejercicio 3 :__ 
-
-a) Recompruebe en función de lo
-anterior que la distribución uniforme tiene $DEA$
-Weibull. 
-
-b) Encuentre la fórmula explícita de
-alguna distribución que no sea la uniforme y tenga
-$DEA$ Weibull. Solo resta encontra la $DEA$ Gumbel, y eso lo
-aporta el próximo resultado.
-
-
-
-```{theorem, label="th11", name="DAM de la Gumbel"}
-Una distribución $F$ se dice una Función de Von
-Mises con función auxiliar $h$ si existe $a < M_F$ ($M_F$
-puede ser finito o infinito) tal que para algún $c>0$
-se tiene
+::: {.theorem #th11 name="DAM de la Gumbel"}
+Una distribución $F$ se dice una Función de Von Mises con función auxiliar $h$ si existe $a < M_F$ ($M_F$ puede ser finito o infinito) tal que para algún $c>0$ se tiene
 
 \begin{equation}
 1-F(x)= c\; \exp{- \int_{a}^{x} 1/h(t) dt}
 (\#eq:th11)
 \end{equation}
 
-Se tiene entonces que la $DAM$ de $\Lambda$ son todas las
-distribuciones que tienen cola equivalente a alguna
-distribución que sea una Función de Von Mises.
-```
+Se tiene entonces que la $DAM$ de $\Lambda$ son todas las distribuciones que tienen cola equivalente a alguna distribución que sea una Función de Von Mises.
+::: 
 
 
-Básicamente, se trata de colas más livianas que
-cualquier expresión del tipo $1/x^k$, más aún, con
-decaimiento "del tipo exponencial", en el sentido
-preciso siguiente. Si, como en el \@ref(thm:th11), se tiene que 
+Básicamente, se trata de colas más livianas que cualquier expresión del tipo $1/x^k$, más aún, con decaimiento "del tipo exponencial", en el sentido preciso siguiente. Si, como en el \@ref(thm:th11), se tiene que 
 
 \begin{equation}
-1-F(x)= c\; \exp{- \int_{a}^{x} 1/h(t) dt},
+1-F(x)= c\; \exp{- \int_{a}^{x} \frac{1}{h(t)} dt},
 (\#eq:th11_eq)
 \end{equation}
 
-entonces se tiene
-$1-F(x)\leq c\; \exp\{-(x-a)/h(x)\}$, donde la función auxiliar
+entonces se tiene $1-F(x)\leq c\; \exp\{-(x-a)/h(x)\}$, donde la función auxiliar
 $h$ es no-decreciente y con asíntota horizontal.
 
 
-Además, $d_n$ y $c_n$ suelen involucrar expresiones
-logarítmicas. Más concretamente, $dn = F^{-1}(1-1/n)$ y,
-$c_n = h(d_n)$, donde $F^{-1}$ es la inversa generalizada (o
-función cuantil), definida por
+Además, $d_n$ y $c_n$ suelen involucrar expresiones logarítmicas. Más concretamente, $dn = F^{-1}(1-1/n)$ y,
+$c_n = h(d_n)$, donde $F^{-1}$ es la inversa generalizada (o función cuantil), definida por
 $F^{-1}(p)= \inf\{t / F(t)\geq p\}$, para $0<p<1$.
 
 
-
-__ Ejercicio 4 :__
-Recompruebe en función de lo
-anterior que la distribución exponencial y la
-distribución normal tienen $DEA$ Gumbel.
-
-
-__ Ejercicio 5 :___
-
-a) Determinar si la distribución log-normal ($\log X$ es normal) tiene DEA y si la tiene,
-determinar cuál es su DEA. 
-
-b) Con la ayuda de **R**
-simular una muestra de 100 datos iid, cada uno de
-los cuales es el máximo de 500 log-normales
-standard $iid$. Intente ajustar la distribución de la
-muestra de 100 datos de acuerdo a lo obtenido en
-la parte a).
-
-```{r}
-set.seed(123)
-
-# Paso 1: Simular 100 máximos de muestras de tamaño 500 de log-normales estándar
-n_max <- 100
-block_size <- 500
-
-# Generar la matriz de datos: cada fila es una muestra de tamaño 500
-X <- matrix(rlnorm(n_max * block_size, meanlog = 0, sdlog = 1), nrow = n_max)
-
-# Tomar el máximo de cada fila
-block_maxima <- apply(X, 1, max)
-
-# Paso 2: Ajustar distribución de Gumbel
-# La función de densidad Gumbel (máximos) no está en base R, así que usamos evd::fgev
-
-library(evd)
-
-# Ajustar distribución GEV (caso general, incluye Gumbel si xi ~ 0)
-fit <- fgev(block_maxima)
-
-# Ajuste GEV
-fit <- fgev(block_maxima)
-
-# Extraer parámetros
-params <- fit$estimate
-names(params) <- c("loc", "scale", "shape")  # ubicación, escala y forma
-
-# Mostrar resultados
-print(params)
-
-# Interpretación del parámetro de forma (shape = ξ)
-if (abs(params["shape"]) < 0.05) {
-  cat("La forma estimada ξ ≈ 0, por lo tanto la distribución límite es Gumbel.\n")
-} else if (params["shape"] > 0) {
-  cat("La forma estimada ξ > 0 → cola pesada → dominio de Fréchet.\n")
-} else {
-  cat("La forma estimada ξ < 0 → cola fina → dominio de Weibull.\n")
-}
-
-```
-
-
-
-__ Ejercicio 6: Variable acotada en DAM Gumbel __
-
-Tomemos tres constantes estrictamente positivas $\alpha,\; M, \;K$ y definamos $F(x)= 1 – K \exp\{-\alpha /(M-x)\}$ para $x<M$. Mostrar que $F$ es una distribución y que $M_F= M$.
-
-Probar que $F$ es una función de Von Mises con
-función auxiliar $h(t)= (M-t)^2/\alpha$ y que por lo tanto
-está en el $DAM$ Gumbel. Finalmente, si $X_1,\dots,X_k$
-$iid$ con distribución $F$, calcular las sucesiones de
-reales, $d_n$ y $c_n>0$, tales que la distribución de
-$\frac{max(X_1,\dots,X_n)- d_n}{c_n}\rightarrow \Lambda$ cuando $n\rightarrow \infty$.
 
 
 ```{corollary, label="coll2"}
@@ -1420,18 +1277,9 @@ entonces $E(X+k)$ es finito para todo $k$ natural.
 
 
 Los resultados antes vistos nos permiten reconocer
-que distribuciones tienen $DEA$ y si la tienen, cual
-es. Cierran el tema. Adicionalmente, permiten ver
-con mucha precision que el quid de esta teoría es el
-comportamiento de las colas de las distribuciones,
-que Fréchet corresponde a las colas más pesadas,
-luego la Gumbel y finalmente Weibull.
-Para terminar el capítulo presentaremos la
-distribución de valores extremos generalizada
-(GEV, por sus siglas en inglés), que es una forma
-de compactar en una unica fórmula las tres
-distribuciones extremales, debida a Jenkinson-Von
-Mises.
+qué distribuciones tienen $DEA$ y si la tienen, cual es. Cierran el tema. Adicionalmente, permiten ver con mucha precisión que el quid de esta teoría es el comportamiento de las colas de las distribuciones, que Fréchet corresponde a las colas más pesadas, luego la Gumbel y finalmente Weibull. Para terminar el capítulo presentaremos la distribución de valores extremos generalizada
+(GEV, por sus siglas en inglés), que es una forma de compactar en una unica fórmula las tres
+distribuciones extremales, debida a Jenkinson-Von Mises.
 
 <!---  comentarios -->
 
@@ -1442,18 +1290,18 @@ Se define la GEV con parámetros de posición $\mu$, escala $\beta$ e índice $\
 
 \begin{align}
 &G(x;\mu,\beta,\xi) = \left\{ \begin{array}{cl}
-exp\left\{\left( 1+\frac{\xi(t-\mu)}{\beta} \right)^{-\frac{1}{\xi}} \right\}, & \text{si}\;\xi \neq 0,\; \left( 1+\frac{\xi(t-\mu)}{\beta} \right)>0,\;\forall \;t\\
+\exp\left\{\left( 1+\frac{\xi(t-\mu)}{\beta} \right)^{-\frac{1}{\xi}} \right\}, & \text{si}\;\xi \neq 0,\; \left( 1+\frac{\xi(t-\mu)}{\beta} \right)>0,\;\forall \;t\\
 \exp\left\{ -\exp\left( -\frac{(t-\mu)}{\beta} \right) \right\} & \text{si}\;\xi = 0,\; \forall \;t.
 \end{array} \right.
-\\
-\\
-&\text{Cuando} \left\{ \begin{array}{cl}
+\end{align} 
+
+\begin{align*}
+\text{Cuando} \left\{ \begin{array}{cl}
 \xi = 0 & \; :\text{corresponde a Gumbel}\\
 \xi < 0 & \; :\text{corresponde a Weibull y}\;\alpha=-1/\xi\\
 \xi > 0 & \; :\text{corresponde a Fréchet y}\;\alpha=1/\xi.
 \end{array} \right.  
-(\#eq:def5)
-\end{align}  
+\end{align*}
 ```
 
 
@@ -1462,22 +1310,9 @@ exp\left\{\left( 1+\frac{\xi(t-\mu)}{\beta} \right)^{-\frac{1}{\xi}} \right\}, &
 En __R__ existen rutinas para estimar $\xi$ con intervalos de confianza (por máxima verosimilitud, etc.) lo cual da formas de testear si una extremal es
 Gumbel, Weibull o Fréchet.
 
-__ Observación 21.__ En algunas situaciones los datos
-extremales pueden ajustarse a más de un modelo.
-Por ejemplo, puede ocurrir que tanto ajusten los
-datos una Gumbel como una Weibull. Frente a
-estas situaciones, no hay una receta única de cómo
-proceder sino que quien está modelando debe tener
-claro si corresponde volcarse hacia cálculos más
-pesimistas (que dan mayor probabilidad a eventos
-extremos muy severos) o más optimistas. 
+__Observación 21.__ En algunas situaciones los datos extremales pueden ajustarse a más de un modelo. Por ejemplo, puede ocurrir que tanto ajusten los datos una Gumbel como una Weibull. Frente a estas situaciones, no hay una receta única de cómo proceder sino que quien está modelando debe tener claro si corresponde volcarse hacia cálculos más pesimistas (que dan mayor probabilidad a eventos extremos muy severos) o más optimistas. 
 
-Usualmente la opción pesimista implica privilegiar
-la seguridad y la optimista la economía de
-recursos, pero insistimos en que la reflexión ante
-cada caso es indispensable. Un poquito más
-adelante veremos, al comparar un modelo Gumbel
-con un modelo Fréchet, que las diferencias pueden
+Usualmente la opción pesimista implica privilegiar la seguridad y la optimista la economía de recursos, pero insistimos en que la reflexión ante cada caso es indispensable. Un poquito más delante veremos, al comparar un modelo Gumbel con un modelo Fréchet, que las diferencias pueden
 ser sumamente drásticas.
 
 __Observación 22.__ Antes de seguir adelante, demos
@@ -1499,31 +1334,65 @@ normal admite DEA Gumbel.
 
 <!-- __Observación 23.__ Tiempos y Valores de Retorno. --> 
 
+::: {.exercise #Ejercicio3}
+a. Recompruebe en función de lo
+anterior que la distribución uniforme tiene $DEA$ Weibull. 
+
+b. Encuentre la fórmula explícita de
+alguna distribución que no sea la uniforme y tenga
+$DEA$ Weibull. Solo resta encontrar la $DEA$ Gumbel, y eso lo
+aporta el próximo resultado.
+:::
+
+
+::: {.exercise #Ejercicio4}
+Recompruebe en función de lo anterior que la distribución exponencial y la
+distribución normal tienen $DEA$ Gumbel.
+:::
+
+
+::: {.exercise #Ejercicio5}
+a. Determinar si la distribución log-normal ($\log X$ es normal) tiene DEA y si la tiene,
+determinar cuál es su DEA. 
+
+b. Con la ayuda de **R**
+simular una muestra de 100 datos iid, cada uno de
+los cuales es el máximo de 500 log-normales
+standard $iid$. Intente ajustar la distribución de la
+muestra de 100 datos de acuerdo a lo obtenido en
+la parte a).
+:::
+
+
+
+::: {.exercise #Ejercicio6 name="Variable acotada en DAM Gumbel"}
+Tomemos tres constantes estrictamente positivas $\alpha,\; M, \;K$ y definamos $F(x)= 1 – K \exp\{-\alpha /(M-x)\}$ para $x<M$. Mostrar que $F$ es una distribución y que $M_F= M$.
+
+Probar que $F$ es una función de Von Mises con
+función auxiliar $h(t)= (M-t)^2/\alpha$ y que por lo tanto
+está en el $DAM$ Gumbel. Finalmente, si $X_1,\dots,X_k$
+$iid$ con distribución $F$, calcular las sucesiones de
+reales, $d_n$ y $c_n>0$, tales que la distribución de
+$\frac{max(X_1,\dots,X_n)- d_n}{c_n}\rightarrow \Lambda$ cuando $n\rightarrow \infty$.
+:::
+
+
+Las soluciones de todos los ejercicios se encuentran en el Capítulo \@ref(sec:soluciones).
+
+
 ## Tiempos y Valores de Retorno
 
-En Ingeniería y Ciencias Ambientales, suele
-pensarse los eventos extremos (por ejemplo:
-observación por encima de cierto valor muy alto),
-en términos de tiempos de retorno (tiempo que se
-espera para que ocurra un evento). Bajo las
-hipótesis de datos $iid$, el tiempo de retorno $T$ tiene una distribución $Geo(p)$, con $p = P(evento)$, por lo cual el tiempo de retorno medio es $E(T)=1/p$ y pueden hacerse intervalos de confianza para $E(T)$,
-en la medida que exista información de $P(evento)$,
-lo cual puede obtenerse a partir de este capítulo o
-de los siguientes. Cabe observar que muchas veces
-se utiliza la expresión Tiempo de Retorno (TR)
-para $E(T)$. Más precisamente, $TR(u)$, el Tiempo de retorno del valor $u$, es el valor esperado ( o la media) del tiempo que se debe esperar para que la variable en estudio supere el valor $u$, es decir que $TR(u) =1/P(X>u)$, si $X$ es la variable en estudio.
+En Ingeniería y Ciencias Ambientales, suele pensarse a los eventos extremos,
+en términos de tiempos de retorno (tiempo que se espera para que ocurra un evento). En este sentido, bajo las hipótesis de datos $iid$, se dice que el tiempo de retorno $T$ tiene una distribución $Geo(p)$, con $p = P(evento)$. Por lo tanto, el tiempo de retorno medio es $E(T)=1/p$ y pueden hacerse intervalos de confianza para $E(T)$, en la medida que exista información de $P(evento)$.
 
-Por otro la lado, en una mirada inversa, el Valor de
-Retorno a tiempo $t$, $VR(t)$ es el valor de $u$ para el cual $TR(u)=t$, es decir que $TR(VR(t))=t$ (y también $VR(TR(u))=u$, es decir que TR y VR son, como
-funciones, inversas una de la otra).
+Cabe observar que muchas veces se utiliza la expresión Tiempo de Retorno (TR) para $E(T)$. Más precisamente, $TR(u)$, el Tiempo de retorno del valor $u$, es el valor esperado ( o la media) del tiempo que se debe esperar para que la variable en estudio supere el valor $u$, es decir que $TR(u) =1/P(X>u)$, si $X$ es la variable en estudio.
 
-Para "bajar un poco a tierra" estos conceptos,
-vamos a calcularlos y compararlos cuando la
-variable $X$ es Gumbel y cuando (con los mismos
-valores de posición $\mu$ y escala $\beta>0$).
+Por otro lado, de manera inversa, el Valor de Retorno a tiempo $t$, $VR(t)$ es el valor de $u$ para el cual $TR(u)=t$, es decir que $TR(VR(t))=t$ (y también $VR(TR(u))=u$, es decir que TR y VR son, como funciones inversas una de la otra.
 
-Comencemos por la Gumbel, recordemos que $X$
-tiene distribución $L( \mu,\beta)$ si $X= \mu+\beta Y$, donde $Y$ tiene distribución $L$.
+Para "bajar un poco a tierra" estos conceptos, vamos a calcularlos y compararlos cuando la
+variable $X$ es Gumbel y cuando (con los mismos valores de posición $\mu$ y escala $\beta>0$).
+
+Comencemos por la Gumbel, recordemos que $X$ tiene distribución $L( \mu,\beta)$ si $X= \mu+\beta Y$, donde $Y$ tiene distribución $L$.
 
 Dado entonces un valor $u>0$, otro valor $t>0$\footnote{Cabe observar que si se supone que las observaciones son diarias (o enteras en la unidad que corresponda), los tiempos de retorno TR se redondean a enteros y los valores de $t$ en la última ecuación se toman enteros.}
 resulta que

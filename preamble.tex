@@ -67,4 +67,64 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% --- Paquetes necesarios ---
+\usepackage{amsthm}
+\usepackage[most]{tcolorbox}
+% --- Entornos tipo teorema en español ---
+% --- Entornos matemáticos en español ---
+\newtheorem{theorem}{Teorema}[chapter]
+\newtheorem{definition}[theorem]{Definición}
+\newtheorem{proposition}[theorem]{Proposición}
+\newtheorem{lemma}[theorem]{Lema}
+\newtheorem{corollary}[theorem]{Corolario}
+\newtheorem{example}[theorem]{Ejemplo}
+\newtheorem{exercise}[theorem]{Ejercicio}
+\newtheorem{remark}[theorem]{Observación}
+\newtheorem{solution}[theorem]{Solución}
+% --- Estilos visuales para cada entorno ---
+\tcolorboxenvironment{theorem}{
+  colback=blue!5!white,
+  colframe=blue!75!black,
+  coltitle=black,
+  fonttitle=\bfseries,
+  breakable
+}
+
+\tcolorboxenvironment{definition}{
+  colback=green!5!white,
+  colframe=green!50!black,
+  coltitle=black,
+  fonttitle=\bfseries,
+  breakable
+}
+
+\tcolorboxenvironment{proposition}{
+  colback=cyan!5!white,
+  colframe=cyan!60!black,
+  coltitle=black,
+  fonttitle=\bfseries,
+  breakable
+}
+
+
+
+
+
+\tcolorboxenvironment{remark}{
+  colback=gray!10!white,
+  colframe=gray!60!black,
+  coltitle=black,
+  fonttitle=\bfseries,
+  breakable
+}
+
+\tcolorboxenvironment{corollary}{
+  colback=violet!10!white,
+  colframe=violet!80!black,
+  coltitle=black,
+  fonttitle=\bfseries,
+  breakable
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
 

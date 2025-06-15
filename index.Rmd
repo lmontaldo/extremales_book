@@ -11,8 +11,15 @@ output:
     config:
       toolbar:
         position: static
+        
   bookdown::pdf_book:
+    latex_engine: xelatex
     keep_tex: true
+    toc: true
+    number_sections: true
+    includes:
+      in_header: preamble.tex  
+    
   bookdown::html_book:
     css: toc.css
 documentclass: report
@@ -24,6 +31,8 @@ github-repo: rstudio/bookdown-demo
 description: "Este es un libro de posgrado."
 lang: es-u-co-trad
 ---
+
+   
 
 # Prefacio {.unnumbered .unlisted}
 
@@ -63,12 +72,23 @@ lang: es
 -->
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  fig.width = 6,     # ancho en pulgadas
-  fig.height = 6,    # alto en pulgadas
-  fig.align = "center",  # centrado
-  dev.args = list(pointsize = 10)  # opcional: tamaño de letra en plots
+	echo = FALSE,
+	fig.align = "center",
+	fig.height = 6,
+	fig.width = 6,
+	dev.args = list(pointsize = 10)
 )
 ```
+
+
+
+```{r}
+# Para usar automáticamente imágenes PDF en salida LaTeX
+options(knitr.graphics.auto_pdf = TRUE)
+```
+
+
+
 
 ```{r fig.align='center', include=FALSE}
 knitr::include_graphics("images/logo.png")

@@ -164,44 +164,7 @@ knitr::include_graphics("images/gev_params.png")
 Este tipo de gráfico se conoce como _return level plot_, y es útil tanto para comunicar el modelo como para validar su ajuste [@coles2001introduction].
 
 
-## Solución Ejercicios {#sec:ejercicios}
 
-__Ejercicio 2:__ Compruebe que la distribución de Cauchy tiene dominio de atracción máximo (DAM) de la distribución de Fréchet.
-
-Recordemos que una distribución \( F \) pertenece al \( DAM(\Phi_\alpha) \) si
-\[
-1 - F(x) = x^{-\alpha} L(x),
-\]
-para alguna función de variación lenta \( L(x) \), y entonces \( F \in R_{-\alpha} \).
-
-La función de distribución acumulada (FDA) de la Cauchy estándar es
-\[
-F(x) = \frac{1}{\pi} \arctan(x) + \frac{1}{2}, \quad x \in \mathbb{R}.
-\]
-
-Entonces
-\[
-1 - F(x) = \frac{1}{2} - \frac{1}{\pi} \arctan(x), \quad \text{para } x > 0.
-\]
-
-Cuando \( x \to \infty \), se tiene
-\[
-\arctan(x) \sim \frac{\pi}{2} - \frac{1}{x}, \quad \Rightarrow \quad 1 - F(x) \sim \frac{1}{\pi x}.
-\]
-
-Es decir
-\[
-1 - F(x) \sim x^{-1} \cdot \left( \frac{1}{\pi} \right),
-\]
-donde \( L(x) = 1/\pi \) es constante (y por tanto, de variación lenta).
-
-__Conclusión :__
-
-La cola de la distribución de Cauchy es de la forma \( x^{-1} L(x) \), con \( L(x) \) de variación lenta. Por lo tanto:
-\[
-F \in \mathcal{R}_{-1} \quad \Rightarrow \quad F \in DAM(\Phi_1),
-\]
-es decir, la distribución de Cauchy pertenece al dominio de atracción de la distribución de Fréchet con parámetro \( \alpha = 1 \).
 
 ## Condición de Von Mises I {#sec:vonmises}
 
@@ -219,6 +182,8 @@ Esta condición describe el comportamiento asintótico de la cola de la distribu
 \[
 F \in DAM(\Phi_\alpha).
 \]
+
+<!--
 
 ## Dominio de Atracción de la Ley de Weibull
 
@@ -270,7 +235,7 @@ Para que la convergencia de $F^n$ hacia $\Psi_\alpha$ ocurra, una elección vál
 - $c_n = n^{-1/\alpha}$ (ajusta la escala para que la cola "se vea").
 
 
-
+-->
 
 ## Funciones de variación regular y lenta
 
@@ -338,4 +303,124 @@ __Conclusión:__
 Estas condiciones son fundamentales para determinar hacia qué ley de extremos convergerán los máximos de una muestra grande.
 
 
+<!--
+## Teorema de Gnedenko (1943)
+
+En este apartado se presenta el resultado fundamental de la teoría clásica de extremos [@gnedenko1943]. Este teorema caracteriza todas las posibles distribuciones límite para los máximos de variables aleatorias $iid$ bajo normalización adecuada.
+
+
+
+::: {.theorem #th_gnedenko name="Teorema de Gnedenko (1943)"}
+
+Sean \( X_1, X_2, \dots, X_n \) variables aleatorias independientes e idénticamente distribuidas con función de distribución \( F \). Sea \( M_n = \max\{X_1, \dots, X_n\} \). Existen \( a_n > 0 \), \( b_n \in \mathbb{R} \) y una función de distribución no degenerada \( G \) tal que:
+\[
+\lim_{n \to \infty} \mathbb{P}\left( \frac{M_n - b_n}{a_n} \leq x \right) = G(x),
+\]
+si y solo si \( G \) pertenece a una de las siguientes tres familias:
+
+1. **Fréchet (\( \Phi_\alpha \))**, con \( \alpha > 0 \): distribución con cola pesada,
+\[
+\Phi_\alpha(x) = 
+\begin{cases}
+0, & x \leq 0, \\
+\exp(-x^{-\alpha}), & x > 0.
+\end{cases}
+\]
+
+2. **Weibull (\( \Psi_\alpha \))**, con \( \alpha > 0 \): distribución con soporte superior acotado,
+\[
+\Psi_\alpha(x) = 
+\begin{cases}
+\exp(-(-x)^{\alpha}), & x < 0, \\
+1, & x \geq 0.
+\end{cases}
+\]
+
+3. **Gumbel (\( \Lambda \))**: distribución con cola “exponencial”,
+\[
+\Lambda(x) = \exp(-e^{-x}), \quad x \in \mathbb{R}.
+\]
+
+:::
+
+
+
+### Condiciones para pertenecer a cada dominio de atracción
+
+Las condiciones necesarias y suficientes para que \( F \) pertenezca al dominio de atracción de cada tipo límite son:
+
+#### a. Dominio de atracción de Fréchet \( \Phi_\alpha \)
+
+::: {.definition}
+\( F \in \mathrm{DAM}(\Phi_\alpha) \) si
+\[
+1 - F(x) = x^{-\alpha} L(x), \quad x \to \infty,
+\]
+donde \( L \) es una función de variación lenta. Es decir, \( F \) tiene cola pesada.
+:::
+
+#### b. Dominio de atracción de Weibull \( \Psi_\alpha \)
+
+::: {.definition}
+\( F \in \mathrm{DAM}(\Psi_\alpha) \) si:
+\[
+M_F := \sup\{x: F(x) < 1\} < \infty,
+\]
+y
+\[
+1 - F(M_F - 1/x) = x^{-\alpha} L(x), \quad x \to \infty,
+\]
+para alguna \( L \in \mathcal{R}_0 \).
+:::
+
+Equivalente:
+\[
+1 - F(u) = (M_F - u)^{\alpha} \cdot L\left( \frac{1}{M_F - u} \right), \quad u < M_F.
+\]
+
+#### c. Dominio de atracción de Gumbel \( \Lambda \)
+
+::: {.definition}
+\( F \in \mathrm{DAM}(\Lambda) \) si existe una función auxiliar \( a(x) > 0 \) tal que
+\[
+\lim_{x \to \infty} \frac{1 - F(x + t a(x))}{1 - F(x)} = e^{-t}, \quad \text{para todo } t \in \mathbb{R}.
+\]
+:::
+
+Esta condición se puede expresar también en términos de funciones de tipo Von Mises.
+
+
+## Dominio de Atracción de la Gumbel
+
+::: {.theorem #th_dam_gumbel name="DAM de la Gumbel (Gnedenko, 1943)"}
+
+Una distribución \( F \) pertenece al **Dominio de Atracción Máxima** de la ley de **Gumbel** \( \Lambda(x) = \exp(-e^{-x}) \), si existen funciones de normalización \( a_n > 0 \), \( b_n \in \mathbb{R} \), tales que:
+\[
+\lim_{n \to \infty} \mathbb{P}\left( \frac{M_n - b_n}{a_n} \leq x \right) = \Lambda(x).
+\]
+
+Una condición suficiente (Condición de Von Mises tipo I) para que esto ocurra es:
+
+- \( F \) tiene densidad positiva \( f \) en una vecindad del extremo superior \( M_F \in \mathbb{R} \cup \{+\infty\} \), y
+
+- existe una función auxiliar \( a(x) > 0 \) tal que:
+\[
+\lim_{x \to M_F^-} \frac{1 - F(x + t a(x))}{1 - F(x)} = e^{-t}, \quad \forall t \in \mathbb{R}.
+\]
+
+Esta propiedad implica que la cola de \( F \) decae más rápidamente que cualquier potencia (es decir, *cola ligera*), pero más lentamente que una distribución con soporte finito.
+
+**Ejemplos clásicos**: distribución normal, exponencial, gamma, log-normal, Weibull con parámetro \( <1 \), etc.
+
+:::
+
+### Caracterización equivalente (Gnedenko, 1943)
+
+Sea \( U(x) := \frac{1}{1 - F(x)} \). Si existe una función auxiliar \( A(x) > 0 \) tal que:
+\[
+\lim_{x \to x_F^-} \frac{U(x + t A(x))}{U(x)} = e^{t}, \quad \forall t \in \mathbb{R},
+\]
+entonces \( F \in \mathrm{DAM}(\Lambda) \).
+
+-->
 
