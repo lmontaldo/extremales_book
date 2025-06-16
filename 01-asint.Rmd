@@ -1375,48 +1375,112 @@ En __R__ existen rutinas para estimar $\xi$ con intervalos de confianza (por má
 
 __Observación 21.__ En algunas situaciones los datos extremales pueden ajustarse a más de un modelo. Por ejemplo, puede ocurrir que tanto ajusten los datos una Gumbel como una Weibull. Frente a estas situaciones, no hay una receta única de cómo proceder sino que quien está modelando debe tener claro si corresponde volcarse hacia cálculos más pesimistas (que dan mayor probabilidad a eventos extremos muy severos) o más optimistas. 
 
-Usualmente la opción pesimista implica privilegiar la seguridad y la optimista la economía de recursos, pero insistimos en que la reflexión ante cada caso es indispensable. Un poquito más delante veremos, al comparar un modelo Gumbel con un modelo Fréchet, que las diferencias pueden
-ser sumamente drásticas.
+Usualmente la opción pesimista implica privilegiar la seguridad y la optimista la economía de recursos, pero insistimos en que la reflexión ante cada caso es indispensable. Un poquito más delante veremos, al comparar un modelo Gumbel con un modelo Fréchet, que las diferencias pueden ser sumamente drásticas.
 
-__Observación 22.__ Antes de seguir adelante, demos
-la respuesta a la parte a) del Ejercicio 5. Es un
-ejercicio de Cálculo Diferencial sencillo mostrar
-que la cola de un $N(0,1)$, es decir $Q(t)=P(X>t)$,
-donde $X$ tiene distribución $N(0,1)$, es equivalente, para $t$ tendiendo a infinito, a la función $\phi(t)/t$,
-donde $\phi$ representa la densidad normal típica
-(campana de Gauss). Basándose en esto, si se
-considera ahora una variable log-normal $Y$, tal que
-$\log(Y)$ es una $N(0,1)$, puede probarse que su cola
-$R(t)=P(Y>t)$, es equivalente, para t tendiendo a
+__Observación 22.__ Antes de seguir adelante, demos la respuesta a la parte a) del Ejercicio 5. Es un
+ejercicio de Cálculo Diferencial sencillo mostrar que la cola de un $N(0,1)$, es decir $Q(t)=P(X>t)$,
+donde $X$ tiene distribución $N(0,1)$, es equivalente, para $t$ tendiendo a infinito, a la función $\phi(t)/t$, donde $\phi$ representa la densidad normal típica (campana de Gauss). Basándose en esto, si se considera ahora una variable log-normal $Y$, tal que $\log(Y)$ es una $N(0,1)$, puede probarse que su cola $R(t)=P(Y>t)$, es equivalente, para t tendiendo a
 infinito, a la función $\phi(\log(t))/\log(t)$. Con un poco más de Cálculo, esta última función puede
 escribirse para $a>e$ (por ejemplo $a=3$), como $c\;\exp\{-\int_a^{t} \frac{1}{h(s)}ds \}$  para $t>a$, donde $c$ se expresa
 en función de $a$ y $h(s)=\frac{s\log(s)}{(\log(s))^2}$, la cual cumple las hipótesis del Teo. \@ref(thm:th11).
 
-Se concluye entonces que la log-normal está en el DAM Gumbel, o, lo que es lo mismo, que la log-
-normal admite DEA Gumbel.
+Se concluye entonces que la log-normal está en el DAM Gumbel, o, lo que es lo mismo, que la log-normal admite DEA Gumbel.
 
 <!---  transicion a  Tiempos y Valores de Retorno --->
 
-La Definición \@ref(def:def5) implica que se puede aproximar a la Eq.\@ref(eq:Mnr) como una integrante de la familia de GEV cuando $n$ es grande. Este argumento conlleva al siguiente enfoque para modelar las observaciones de datos extremos $X_1,X_2,\dots$. Se forman bloques de observaciones de largo $n$ (para $n$ grande) lo que permite crear bloques de máximos $M_{n,1},\dots, M_{n,m}$. Con esto va a ser posible ajustar una distibución GEV.  A menudo, los bloques se eligen para que correspondan a un período de tiempo de un año de duración, en cuyo caso $n$ es el número de observaciones en un año y los máximos por bloque son máximos anuales. Las estimaciones de los cuantiles extremos de la distribución del máximo anual se obtienen entonces invirtiendo la Ec. \@ref(eq:Gz): 
-
-
-
-[@coles2001introduction].
-
-<!---  comentarios 
-\newpage
-
 ## Tiempos y Valores de Retorno
 
-En Ingeniería y Ciencias Ambientales, suele pensarse a los eventos extremos,
-en términos de tiempos de retorno, es decir, el tiempo que se espera para que ocurra un evento. En este sentido, bajo las hipótesis de datos $iid$, se dice que el tiempo de retorno $T$ tiene una distribución $Geo(p)$, con $p = P(evento)$. Por lo tanto, el tiempo de retorno medio es $E(T)=1/p$ y pueden hacerse intervalos de confianza para $E(T)$, en la medida que exista información de $P(evento)$.
+Siguiendo a @coles2001introduction, vamos a ver la relación que existe entre GEV y los conceptos de __valor de retorno__ (VR) y __tiempo de retorno__ (T) de la presente sección. La Definición \@ref(def:def5) implica que se puede aproximar a la Eq.\@ref(eq:Mnr) como una integrante de la familia de GEV cuando $n$ es grande. Esto conlleva al siguiente enfoque para modelar las observaciones de datos extremos $X_1,X_2,\dots$. Se forman bloques de observaciones de largo $n$ (para $n$ grande) lo que permite crear bloques de máximos $M_{n,1},\dots, M_{n,m}$. Con esto va a ser posible ajustar una distibución GEV.  A menudo, los bloques se eligen para que correspondan a un período de tiempo de un año de duración, en cuyo caso $n$ es el número de observaciones en un año y los máximos por bloque son máximos anuales. Las estimaciones de los cuantiles extremos de la distribución del máximo anual se obtienen entonces invirtiendo la Ec. \@ref(eq:Gz): 
 
-Cabe observar que muchas veces se utiliza la expresión Tiempo de Retorno (TR) para $E(T)$. Más precisamente, $TR(u)$, el Tiempo de retorno del valor $u$, es el valor esperado ( o la media) del tiempo que se debe esperar para que la variable en estudio supere el valor $u$, es decir que $TR(u) =1/P(X>u)$, si $X$ es la variable en estudio.
+\begin{equation}
+z_p=\left\{ \begin{array}{cl}
+\mu-\frac{\beta}{\xi}\left[ 1-\left\{ -\log\left( 1-p \right) \right\}^{-\xi} \right], &  \xi \neq 0 \\
+\mu-\beta\log\left\{ -\log\left( 1-p \right) \right\}, &  \xi = 0
+\end{array} \right.
+ (\#eq:rv)
+\end{equation}
 
-Por otro lado, de manera inversa, el Valor de Retorno a tiempo $t$, $VR(t)$ es el valor de $u$ para el cual $TR(u)=t$, es decir que $TR(VR(t))=t$ (y también $VR(TR(u))=u$, es decir que TR y VR son, como funciones inversas una de la otra.
+donde $G(z_p)=1-p$. 
 
-Para "bajar un poco a tierra" estos conceptos, vamos a calcularlos y compararlos cuando la
-variable $X$ es Gumbel y cuando (con los mismos valores de posición $\mu$ y escala $\beta>0$).
+Decimos que $z_p$ es el valor de retorno ($VR$) asociado al tiempo de retorno ($T$) expresado como $1/p$ y se espera que el valor $z_p$ sea excedido en media una vez cada $1/p$ años. Es decir, para un año cualquiera, existe una probabilidad $p$ de que el valor máximo supere el nivel $z_p$.
+
+Como los cuantiles permiten trabajar en la misma escala que los datos, es más fácil entender cómo los parámetros del modelo GEV afectan al modelo usando las fórmulas de los cuantiles \@ref(eq:rv). En particular, si $y_p=-\log\left(1-p\right)$, entonces 
+
+\begin{equation}
+z_p=\left\{ \begin{array}{cl}
+\mu-\frac{\beta}{\xi}\left[ 1-y_p^{-\xi} \right], &  \xi \neq 0 \\
+\mu-\beta\log y_p, &  \xi = 0
+\end{array} \right.
+\end{equation}
+
+
+Si se grafica $z_p$ contra $\log y_p$:
+
+- si $\xi = 0$ entonces se tiene una recta;
+
+- si $\xi <0$, la curva es convexa con límite asintótico a medida que  $p \to 0$ en $\mu - \beta / \xi$; 
+
+- si $\xi <0$, la curva es cóncava y no tiene un límite finito.
+
+Debido a la simplicidad en su interpretación, y a que la elección de la escala comprime la cola de la distribución, resaltando así el efecto de la extrapolación, las gráficas de niveles de retorno son especialmente útiles para presentar los datos y para validar. En la siguiente Figura \@ref(fig:nr) se presentan las curvas de valores de retorno para distintos valores de $\xi$.
+ 
+
+
+```{r nr, fig.cap="Curvas de VR para distintos valores del parámetro de forma", fig.height=3, fig.width=6, echo=FALSE, message=FALSE, warning=FALSE}
+# Parámetros
+mu <- 0
+beta <- 1
+xi_vals <- c(-0.2, 0, 0.2)
+
+
+# Dominio: log y de -2 a 6
+log_y <- seq(-2, 6, length.out = 500)
+y <- exp(log_y)
+
+# Forma correcta de z_p en función de y_p
+zp_function <- function(xi, mu, beta, y) {
+  if (xi == 0) {
+    return(mu + beta * log(y))
+  } else {
+    return(mu + (beta / xi) * (y^xi - 1))
+  }
+}
+
+# Construir el data frame
+df <- data.frame()
+for (xi in xi_vals) {
+  zp <- zp_function(xi, mu, beta, y)
+  df <- rbind(df, data.frame(
+    log_y = log_y,
+    zp = zp,
+    xi = factor(xi, levels = xi_vals,
+                labels = c("Shape = -0.2", "Shape = 0", "Shape = 0.2"))
+  ))
+}
+
+# Graficar
+ggplot(df, aes(x = log_y, y = zp, color = xi)) +
+  geom_line(size = 1.2) +
+  labs(x = "Log y", y = "Quantile") +
+  theme_minimal(base_size = 12) +
+  scale_color_manual(values = c("blue", "black", "red")) +
+  theme(legend.title = element_blank(),
+        legend.position = c(0.8, 0.2),
+        legend.background = element_blank())
+```
+
+
+__¿Por qué son importantes estos conceptos?__ 
+
+En Ingeniería y Ciencias Ambientales, suele pensarse a los eventos extremos, en términos de tiempos de retorno, es decir, el tiempo que se espera para que ocurra un evento. En este sentido, bajo las hipótesis de datos $iid$, se dice que el tiempo de retorno $T$ tiene una distribución $Geo(p)$, con $p = P(evento)$. Por lo tanto, el tiempo de retorno medio es $E(T)=1/p$ y pueden hacerse intervalos de confianza para $E(T)$, en la medida que exista información de $P(evento)$.
+
+Cabe observar que muchas veces se utiliza la expresión Tiempo de Retorno (TR) para $E(T)$. Más precisamente, $TR(u)$, el tiempo de retorno del valor $u$, es el valor esperado (o la media) del tiempo que se debe esperar para que la variable en estudio supere el valor $u$. Esto implica que  $TR(u) =1/P(X>u)$, si $X$ es la variable en estudio.
+
+Por otro lado, y de manera inversa, el Valor de Retorno a tiempo $t$, $VR(t)$ es el valor de $u$ para el cual $TR(u)=t$, es decir que $TR(VR(t))=t$ (y también $VR(TR(u))=u$), es decir que TR y VR se pueden considerar funciones inversas una de la otra.
+
+
+<!-- ACA ME QUEDE --> 
+Para "bajar un poco a tierra" estos conceptos, vamos a calcularlos y compararlos cuando la variable $X$ es Gumbel y cuando (con los mismos valores de posición $\mu$ y escala $\beta>0$).
 
 Comencemos por la Gumbel, recordemos que $X$ tiene distribución $L( \mu,\beta)$ si $X= \mu+\beta Y$, donde $Y$ tiene distribución $L$.
 
@@ -1452,7 +1516,7 @@ resulta que
 ```
 
 
--->
+
 
 
 
