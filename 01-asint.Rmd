@@ -1390,7 +1390,9 @@ Se concluye entonces que la log-normal está en el DAM Gumbel, o, lo que es lo m
 
 ## Tiempos y Valores de Retorno
 
-Siguiendo a @coles2001introduction, vamos a ver la relación que existe entre GEV y los conceptos de __valor de retorno__ (VR) y __tiempo de retorno__ (T) de la presente sección. La Definición \@ref(def:def5) implica que se puede aproximar a la Eq.\@ref(eq:Mnr) como una integrante de la familia de GEV cuando $n$ es grande. Esto conlleva al siguiente enfoque para modelar las observaciones de datos extremos $X_1,X_2,\dots$. Se forman bloques de observaciones de largo $n$ (para $n$ grande) lo que permite crear bloques de máximos $M_{n,1},\dots, M_{n,m}$. Con esto va a ser posible ajustar una distibución GEV.  A menudo, los bloques se eligen para que correspondan a un período de tiempo de un año de duración, en cuyo caso $n$ es el número de observaciones en un año y los máximos por bloque son máximos anuales. Las estimaciones de los cuantiles extremos de la distribución del máximo anual se obtienen entonces invirtiendo la Ec. \@ref(eq:Gz): 
+Siguiendo a @coles2001introduction, vamos a ver la relación que existe entre GEV y los conceptos de __valor de retorno__ (VR) y __tiempo de retorno__ (T) de la presente sección. La Definición \@ref(def:def5) implica que se puede aproximar a la Eq.\@ref(eq:Mnr) como una integrante de la familia de GEV cuando $n$ es grande. Esto conlleva al siguiente enfoque para modelar las observaciones de datos extremos $X_1,X_2,\dots$ : se forman bloques de observaciones de largo $n$ (para $n$ grande) lo que permite crear bloques de máximos $M_{n,1},\dots, M_{n,m}$. Con esto va a ser posible ajustar una distibución GEV.  
+
+A menudo, los bloques se eligen para que correspondan a un período de tiempo de un año de duración, en cuyo caso $n$ es el número de observaciones en un año y los máximos por bloque son máximos anuales. Considerando lo anterior, al invertir la Ec. \@ref(eq:Gz) obtenermos las expresiones para estimar los cuantiles extremos de la distribución del máximo anual, dadas por  
 
 \begin{equation}
 z_p=\left\{ \begin{array}{cl}
@@ -1480,42 +1482,40 @@ Por otro lado, y de manera inversa, el Valor de Retorno a tiempo $t$, $VR(t)$ es
 
 
 <!-- ACA ME QUEDE --> 
-Para "bajar un poco a tierra" estos conceptos, vamos a calcularlos y compararlos cuando la variable $X$ es Gumbel y cuando (con los mismos valores de posición $\mu$ y escala $\beta>0$).
 
-Comencemos por la Gumbel, recordemos que $X$ tiene distribución $L( \mu,\beta)$ si $X= \mu+\beta Y$, donde $Y$ tiene distribución $L$.
-
-Dado entonces un valor $u>0$, otro valor $t>0$\footnote{Cabe observar que si se supone que las observaciones son diarias (o enteras en la unidad que corresponda), los tiempos de retorno TR se redondean a enteros y los valores de $t$ en la última ecuación se toman enteros.}
-resulta que
+::: {.example}
+Para "bajar un poco a tierra" estos conceptos, vamos a calcularlos y compararlos cuando la variable $X$ es Gumbel y cuando es Fréchet (con los mismos valores de posición $\mu$ y escala $\beta>0$).
 
 
+- Comencemos por la __Gumbel__: $X$ tiene distribución $\Lambda^{( \mu,\beta)}$ si $X= \mu+\beta Y$, donde $Y$ tiene distribución $\Lambda$. 
+
+Dado entonces un valor $u>0$, otro valor $t>0$ resulta que
 
 
-```{definition, label="defg", name="Ecuaciones G"}
+::: {.definition #defg name="Ecuaciones G"}
 \begin{align}
 &P(X>u)=1-\exp\left\{ -\exp\left\{ \frac{(u-\mu)}{\beta} \right\} \right\} \\
 &TR(u)=1/P(X>u)\\ 
 &VR(t)= \mu+\beta \log\left\{ \frac{t}{t-1} \right\}
 \end{align}
-```
+:::
+
+Cabe observar que si se supone que las observaciones son diarias (o enteras en la unidad que corresponda), los tiempos de retorno (TR) se redondean a enteros y los valores de $t$ en la última ecuación se toman enteros.
 
 
+- Sigamos ahora por la Fréchet, recordemos que $X$ tiene distribución $\Phi_{\alpha}^{\mu,\beta}$ si $x=\mu+\beta Y$, donde $Y$ tiene distribución $\Phi_{\alpha}$.
 
+Dado entonces un valor $u>0$, otro valor $t$ entero, resulta que
 
-Sigamos ahora por la Fréchet, recordemos que $X$
-tiene distribución $\Phi_{\alpha}^{\mu,\beta}$ si $x=\mu+\beta Y$, donde $Y$ tiene distribución $\Phi_{\alpha}$.
-
-Dado entonces un valor $u>0$, otro valor $t$ entero,
-resulta que
-
-```{definition, label="deff", name="Ecuaciones F"}
+::: {.definition #deff name="Ecuaciones F"}
 \begin{align}
 &P(X>u)= 1-\exp\left\{ -\left\{ \frac{\left( u-\mu \right)}{\beta} \right\}^{-\alpha} \right\} \\
 & TR(u)=1/P(X>u)\\
 &VR(t)= \mu+\beta \left\{ \log\left\{\frac{t}{t-1} \right\} \right\}^{-1/\alpha}
 \end{align}
-```
+:::
 
-
+:::
 
 
 
