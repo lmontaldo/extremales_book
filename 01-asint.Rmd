@@ -577,7 +577,11 @@ Por consiguiente el \@ref(thm:FTG) alienta a intentar ajustar datos extremales a
 
 <!--- EJEMPLO DEL LIBRO A REVEER -->
 
-__Ejemplo 1.__ Veamos un ejemplo de ajuste. Los siguientes datos corresponden a los valores, en $80$ puntos geográficos distintos de la región parisina, del máximo estival del contaminante atmosférico $O_3$ (no perceptible sensorialmente y con impacto sanitario serio). Cada dato es el máximo registro en cada sensor a lo largo de todo un verano; el contaminante se mide diariamente, por lo cual, cada uno de nuestros $80$ datos es el máximo de unas $100$ lecturas diarias (Figura \@ref(fig:parismax)).
+
+
+::: {.example #ejemplo1 }
+Veamos un ejemplo de ajuste. Los siguientes datos corresponden a los valores, en $80$ puntos geográficos distintos de la región parisina, del máximo estival del contaminante atmosférico $O_3$ (no perceptible sensorialmente y con impacto sanitario serio). Cada dato es el máximo registro en cada sensor a lo largo de todo un verano; el contaminante se mide diariamente, por lo cual, cada uno de nuestros $80$ datos es el máximo de unas $100$ lecturas diarias (Figura \@ref(fig:parismax)).
+:::
 
 
 
@@ -1043,6 +1047,7 @@ Una distribución es max-estable si y solo si es extremal: Gumbel, Weibull, Fré
 El Teorema \@ref(thm:teo7) es bastante intuitivo y análogo a los Teoremas de Lévy sobre distribuciones estables en
 aproximaciones asintóticas de las distribuciones de sumas. Para el Teorema \@ref(thm:teo8) haremos enseguida un ejercicio sencillo que nos ayudará a hacerlo creíble.
 
+
 Luego precisaremos, para terminar con esta parte, cómo son las distribuciones que tienen por DEA cada uno de los tres tipos de distribuciones extremales. Para eso recordamos algunas definiciones, como la siguiente.
 
 __Observación 19.__ Si $F$ y $G$ son dos distribuciones, van a tener colas equivalentes si $M_F=M_G$, y cuando $t$
@@ -1281,57 +1286,6 @@ qué distribuciones tienen $DEA$ y si la tienen, cual es. Cierran el tema. Adici
 (GEV, por sus siglas en inglés), que es una forma de compactar en una unica fórmula las tres
 distribuciones extremales, debida a Jenkinson-Von Mises.
 
-<!---  comentarios -->
-
-```{definition, label="def5", name="Distribución Generalizada de valores extremos (GEV)"}
-
-
-Se define la GEV con parámetros de posición $\mu$, escala $\beta$ e índice $\xi$ como
-
-\begin{align}
-&G(x;\mu,\beta,\xi) = \left\{ \begin{array}{cl}
-\exp\left\{\left( 1+\frac{\xi(t-\mu)}{\beta} \right)^{-\frac{1}{\xi}} \right\}, & \text{si}\;\xi \neq 0,\; \left( 1+\frac{\xi(t-\mu)}{\beta} \right)>0,\;\forall \;t\\
-\exp\left\{ -\exp\left( -\frac{(t-\mu)}{\beta} \right) \right\} & \text{si}\;\xi = 0,\; \forall \;t.
-\end{array} \right.
-\end{align} 
-
-\begin{align*}
-\text{Cuando} \left\{ \begin{array}{cl}
-\xi = 0 & \; :\text{corresponde a Gumbel}\\
-\xi < 0 & \; :\text{corresponde a Weibull y}\;\alpha=-1/\xi\\
-\xi > 0 & \; :\text{corresponde a Fréchet y}\;\alpha=1/\xi.
-\end{array} \right.  
-\end{align*}
-```
-
-
-
-
-En __R__ existen rutinas para estimar $\xi$ con intervalos de confianza (por máxima verosimilitud, etc.) lo cual da formas de testear si una extremal es
-Gumbel, Weibull o Fréchet.
-
-__Observación 21.__ En algunas situaciones los datos extremales pueden ajustarse a más de un modelo. Por ejemplo, puede ocurrir que tanto ajusten los datos una Gumbel como una Weibull. Frente a estas situaciones, no hay una receta única de cómo proceder sino que quien está modelando debe tener claro si corresponde volcarse hacia cálculos más pesimistas (que dan mayor probabilidad a eventos extremos muy severos) o más optimistas. 
-
-Usualmente la opción pesimista implica privilegiar la seguridad y la optimista la economía de recursos, pero insistimos en que la reflexión ante cada caso es indispensable. Un poquito más delante veremos, al comparar un modelo Gumbel con un modelo Fréchet, que las diferencias pueden
-ser sumamente drásticas.
-
-__Observación 22.__ Antes de seguir adelante, demos
-la respuesta a la parte a) del Ejercicio 5. Es un
-ejercicio de Cálculo Diferencial sencillo mostrar
-que la cola de un $N(0,1)$, es decir $Q(t)=P(X>t)$,
-donde $X$ tiene distribución $N(0,1)$, es equivalente, para $t$ tendiendo a infinito, a la función $\phi(t)/t$,
-donde $\phi$ representa la densidad normal típica
-(campana de Gauss). Basándose en esto, si se
-considera ahora una variable log-normal $Y$, tal que
-$\log(Y)$ es una $N(0,1)$, puede probarse que su cola
-$R(t)=P(Y>t)$, es equivalente, para t tendiendo a
-infinito, a la función $\phi(\log(t))/\log(t)$. Con un poco más de Cálculo, esta última función puede
-escribirse para $a>e$ (por ejemplo $a=3$), como $c\;\exp\{-\int_a^{t} \frac{1}{h(s)}ds \}$  para $t>a$, donde $c$ se expresa
-en función de $a$ y $h(s)=\frac{s\log(s)}{(\log(s))^2}$, la cual cumple las hipótesis del Teo. \@ref(thm:th11).
-
-Se concluye entonces que la log-normal está en el DAM Gumbel, o, lo que es lo mismo, que la log-
-normal admite DEA Gumbel.
-
 <!-- __Observación 23.__ Tiempos y Valores de Retorno. --> 
 
 ::: {.exercise #Ejercicio3}
@@ -1380,10 +1334,78 @@ $\frac{max(X_1,\dots,X_n)- d_n}{c_n}\rightarrow \Lambda$ cuando $n\rightarrow \i
 Las soluciones de todos los ejercicios se encuentran en el Capítulo \@ref(sec:soluciones).
 
 
+<!---  comentarios -->
+\newpage
+
+## Distribución Generalizada de valores extremos (GEV)
+
+Las familias de distribuciones Gumbel, Fréchet y Weibull se pueden combinar en una única familia de modelos con función de distribucion (GEV) bajo la forma , 
+
+\begin{equation}
+G\left( z \right)=\exp\left\{ -\left[ 1+ \xi\left( \frac{z-\mu}{\beta} \right) \right]^{-1/\xi} \right\}
+(\#eq:Gz)
+\end{equation}
+
+definida en el conjunto $\left\{ z: 1+\xi\left( z-\mu \right)/\beta>0 \right\}$ donde los parámetros satisfacen $-\infty < \mu < \infty$, $\beta>0$ y $-\infty < \xi < \infty$ [@coles2001introduction]. 
+
+Tomando en consideración los disintos valores que puede tomar $\xi$, se expresa la siguiente definición. 
+
+::: {.definition #def5 name="Distribución Generalizada de valores extremos (GEV)"}
+Se define la GEV como
+\begin{equation}
+G(z;\mu,\beta,\xi) = \left\{ \begin{array}{cl}
+e^{\left( 1+\frac{\xi(z-\mu)}{\beta} \right)^{-\frac{1}{\xi}}}, & \text{si}\;\xi \neq 0,\\
+e^{ -\exp\left( -\frac{(z-\mu)}{\beta} \right) }, & \text{si}\;\xi = 0
+\end{array} \right.
+\end{equation} 
+para todo $z$, con parámetros de posición $\mu$, escala $\beta$ e índice $\xi$.
+\[
+\text{Cuando } \xi =
+\begin{cases}
+0 & \text{: corresponde a Gumbel} \\
+< 0 & \text{: corresponde a Weibull} \\
+> 0 & \text{: corresponde a Fréchet}
+\end{cases}
+\]
+:::
+
+
+
+Lo anterior implica que se puede aproximar a la Eq.\@ref(eq:Mnr) como una integrante de la familia de GEV cuando $n$ es grande. Este argumento conlleva al siguiente enfoque para modelar las observaciones de datos extremos $X_1,X_2,\dots$. Se forman bloques de observaciones de largo $n$ (para $n$ grande) lo que permite crear bloques de máximos $M_{n,1},\dots, M_{n,m}$. Con esto va a ser posible ajustar una distibución GEV [@coles2001introduction].
+
+
+
+En __R__ existen rutinas para estimar $\xi$ con intervalos de confianza (por máxima verosimilitud, etc.) lo cual da formas de testear si una extremal es Gumbel, Weibull o Fréchet.
+
+__Observación 21.__ En algunas situaciones los datos extremales pueden ajustarse a más de un modelo. Por ejemplo, puede ocurrir que tanto ajusten los datos una Gumbel como una Weibull. Frente a estas situaciones, no hay una receta única de cómo proceder sino que quien está modelando debe tener claro si corresponde volcarse hacia cálculos más pesimistas (que dan mayor probabilidad a eventos extremos muy severos) o más optimistas. 
+
+Usualmente la opción pesimista implica privilegiar la seguridad y la optimista la economía de recursos, pero insistimos en que la reflexión ante cada caso es indispensable. Un poquito más delante veremos, al comparar un modelo Gumbel con un modelo Fréchet, que las diferencias pueden
+ser sumamente drásticas.
+
+__Observación 22.__ Antes de seguir adelante, demos
+la respuesta a la parte a) del Ejercicio 5. Es un
+ejercicio de Cálculo Diferencial sencillo mostrar
+que la cola de un $N(0,1)$, es decir $Q(t)=P(X>t)$,
+donde $X$ tiene distribución $N(0,1)$, es equivalente, para $t$ tendiendo a infinito, a la función $\phi(t)/t$,
+donde $\phi$ representa la densidad normal típica
+(campana de Gauss). Basándose en esto, si se
+considera ahora una variable log-normal $Y$, tal que
+$\log(Y)$ es una $N(0,1)$, puede probarse que su cola
+$R(t)=P(Y>t)$, es equivalente, para t tendiendo a
+infinito, a la función $\phi(\log(t))/\log(t)$. Con un poco más de Cálculo, esta última función puede
+escribirse para $a>e$ (por ejemplo $a=3$), como $c\;\exp\{-\int_a^{t} \frac{1}{h(s)}ds \}$  para $t>a$, donde $c$ se expresa
+en función de $a$ y $h(s)=\frac{s\log(s)}{(\log(s))^2}$, la cual cumple las hipótesis del Teo. \@ref(thm:th11).
+
+Se concluye entonces que la log-normal está en el DAM Gumbel, o, lo que es lo mismo, que la log-
+normal admite DEA Gumbel.
+
+<!---  comentarios 
+\newpage
+
 ## Tiempos y Valores de Retorno
 
 En Ingeniería y Ciencias Ambientales, suele pensarse a los eventos extremos,
-en términos de tiempos de retorno (tiempo que se espera para que ocurra un evento). En este sentido, bajo las hipótesis de datos $iid$, se dice que el tiempo de retorno $T$ tiene una distribución $Geo(p)$, con $p = P(evento)$. Por lo tanto, el tiempo de retorno medio es $E(T)=1/p$ y pueden hacerse intervalos de confianza para $E(T)$, en la medida que exista información de $P(evento)$.
+en términos de tiempos de retorno, es decir, el tiempo que se espera para que ocurra un evento. En este sentido, bajo las hipótesis de datos $iid$, se dice que el tiempo de retorno $T$ tiene una distribución $Geo(p)$, con $p = P(evento)$. Por lo tanto, el tiempo de retorno medio es $E(T)=1/p$ y pueden hacerse intervalos de confianza para $E(T)$, en la medida que exista información de $P(evento)$.
 
 Cabe observar que muchas veces se utiliza la expresión Tiempo de Retorno (TR) para $E(T)$. Más precisamente, $TR(u)$, el Tiempo de retorno del valor $u$, es el valor esperado ( o la media) del tiempo que se debe esperar para que la variable en estudio supere el valor $u$, es decir que $TR(u) =1/P(X>u)$, si $X$ es la variable en estudio.
 
@@ -1423,9 +1445,15 @@ resulta que
 \end{align}
 ```
 
+
+-->
+
+
+
 <!-- %%%% pagina 39 a 45 faltan los ejericions %%%
 Para visualizar claramente estos resultados,
 tabularemos y graficaremos los mismos usando en
 ambos casos $\mu=15$, $\beta=10$ y $\alpha= 2.5$ ($\xi =0.4$, no muy distante del $\xi =0$ de la Gumbel).
 -->
+
 
