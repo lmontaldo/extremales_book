@@ -1371,10 +1371,6 @@ para todo $z$, con parámetros de posición $\mu$, escala $\beta$ e índice $\xi
 
 
 
-Lo anterior implica que se puede aproximar a la Eq.\@ref(eq:Mnr) como una integrante de la familia de GEV cuando $n$ es grande. Este argumento conlleva al siguiente enfoque para modelar las observaciones de datos extremos $X_1,X_2,\dots$. Se forman bloques de observaciones de largo $n$ (para $n$ grande) lo que permite crear bloques de máximos $M_{n,1},\dots, M_{n,m}$. Con esto va a ser posible ajustar una distibución GEV [@coles2001introduction].
-
-
-
 En __R__ existen rutinas para estimar $\xi$ con intervalos de confianza (por máxima verosimilitud, etc.) lo cual da formas de testear si una extremal es Gumbel, Weibull o Fréchet.
 
 __Observación 21.__ En algunas situaciones los datos extremales pueden ajustarse a más de un modelo. Por ejemplo, puede ocurrir que tanto ajusten los datos una Gumbel como una Weibull. Frente a estas situaciones, no hay una receta única de cómo proceder sino que quien está modelando debe tener claro si corresponde volcarse hacia cálculos más pesimistas (que dan mayor probabilidad a eventos extremos muy severos) o más optimistas. 
@@ -1399,6 +1395,14 @@ en función de $a$ y $h(s)=\frac{s\log(s)}{(\log(s))^2}$, la cual cumple las hip
 Se concluye entonces que la log-normal está en el DAM Gumbel, o, lo que es lo mismo, que la log-
 normal admite DEA Gumbel.
 
+<!---  transicion a  Tiempos y Valores de Retorno --->
+
+La Definición \@ref(def:def5) implica que se puede aproximar a la Eq.\@ref(eq:Mnr) como una integrante de la familia de GEV cuando $n$ es grande. Este argumento conlleva al siguiente enfoque para modelar las observaciones de datos extremos $X_1,X_2,\dots$. Se forman bloques de observaciones de largo $n$ (para $n$ grande) lo que permite crear bloques de máximos $M_{n,1},\dots, M_{n,m}$. Con esto va a ser posible ajustar una distibución GEV.  A menudo, los bloques se eligen para que correspondan a un período de tiempo de un año de duración, en cuyo caso $n$ es el número de observaciones en un año y los máximos por bloque son máximos anuales. Las estimaciones de los cuantiles extremos de la distribución del máximo anual se obtienen entonces invirtiendo la Ec. \@ref(eq:Gz): 
+
+
+
+[@coles2001introduction].
+
 <!---  comentarios 
 \newpage
 
@@ -1418,6 +1422,8 @@ Comencemos por la Gumbel, recordemos que $X$ tiene distribución $L( \mu,\beta)$
 
 Dado entonces un valor $u>0$, otro valor $t>0$\footnote{Cabe observar que si se supone que las observaciones son diarias (o enteras en la unidad que corresponda), los tiempos de retorno TR se redondean a enteros y los valores de $t$ en la última ecuación se toman enteros.}
 resulta que
+
+
 
 
 ```{definition, label="defg", name="Ecuaciones G"}
