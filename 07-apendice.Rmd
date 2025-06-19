@@ -423,4 +423,41 @@ Sea \( U(x) := \frac{1}{1 - F(x)} \). Si existe una función auxiliar \( A(x) > 
 entonces \( F \in \mathrm{DAM}(\Lambda) \).
 
 -->
+## Estimación por Máxima Verosimilitud {#sec:mv}
+
+Bajo el supuesto de que \( Z_1, \ldots, Z_m \) son variables independientes con distribución GEV, la log-verosimilitud para los parámetros \( (\mu, \sigma, \xi) \), cuando \( \xi \neq 0 \), se expresa como
+
+\begin{equation}
+\ell(\mu, \sigma, \xi) = -m \log \sigma - \left(1 + \frac{1}{\xi} \right) \sum_{i=1}^{m} \log \left[ 1 + \xi \left( \frac{Z_i - \mu}{\sigma} \right) \right] - \sum_{i=1}^{m} \left[ 1 + \xi \left( \frac{Z_i - \mu}{\sigma} \right) \right]^{-1/\xi}
+\end{equation}
+
+siempre que se cumpla que
+
+\[
+1 + \xi \left( \frac{Z_i - \mu}{\sigma} \right) > 0 \quad \text{para todo } i=1, \ldots, m.
+\]
+
+Cuando esta condición no se cumple, la verosimilitud se considera cero (y por lo tanto la log-verosimilitud tiende a \(-\infty\)).
+
+
+
+En el caso particular en que \( \xi = 0 \), se utiliza el límite correspondiente a la distribución de Gumbel. La log-verosimilitud se convierte entonces en
+
+\begin{equation}
+\ell(\mu, \sigma) = -m \log \sigma - \sum_{i=1}^{m} \left( \frac{Z_i - \mu}{\sigma} \right) - \sum_{i=1}^{m} \exp\left( -\frac{Z_i - \mu}{\sigma} \right)
+\end{equation}
+
+
+
+Maximizar estas expresiones con respecto a los parámetros \( (\mu, \sigma, \xi) \) nos da los estimadores de máxima verosimilitud. Dado que no existe una solución analítica general, se utiliza la optimización numérica.
+
+Para evitar problemas cerca de \( \xi = 0 \), es común emplear la fórmula de Gumbel (caso límite) cuando \( \xi \) está muy cerca de cero.
+
+
+
+Bajo las condiciones discutidas sobre los valores posibles de $\xi$, la distribución aproximada del vector de parámetros estimados \( (\hat{\mu}, \hat{\sigma}, \hat{\xi}) \) es normal multivariada, con matriz de covarianza igual al inverso de la matriz de información observada evaluada en el punto de máxima verosimilitud.
+
+Esta matriz puede calcularse analíticamente, pero en la práctica es más sencillo usar diferencias numéricas para aproximar las derivadas segundas, y funciones estándar para obtener la inversión. A partir de aquí pueden derivarse intervalos de confianza e inferencia adicional.
+
+
 

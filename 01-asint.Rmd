@@ -110,7 +110,7 @@ min(X_1,\dots,X_n) = - max(Y_1,\dots,Y_n)
 \end{equation}
 
 la teoría asintótica de los mínimos de datos $iid$ se reduce a la de los máximos, razón por la que
-nos concentramos aquí en estudiar el comportamiento asintótico de los **máximos** exclusivamente. A modo de ejemplo, si suponemos que $R_1, R_2, \dots$ es la secuencia de rendimientos diarios de un índice bursátil. Entonces
+nos concentramos aquí en estudiar el comportamiento asintótico de los máximos exclusivamente. A modo de ejemplo, si suponemos que $R_1, R_2, \dots$ es la secuencia de rendimientos diarios de un índice bursátil. Entonces
 
 \begin{equation}
 M_n=\max\left\{ R_1, \dots, R_t\right\}
@@ -1309,7 +1309,7 @@ distribución normal tienen $DEA$ Gumbel.
 a. Determinar si la distribución log-normal ($\log X$ es normal) tiene DEA y si la tiene,
 determinar cuál es su DEA. 
 
-b. Con la ayuda de **R**
+b. Con la ayuda de R
 simular una muestra de 100 datos iid, cada uno de
 los cuales es el máximo de 500 log-normales
 standard $iid$. Intente ajustar la distribución de la
@@ -1360,11 +1360,11 @@ e^{ -\exp\left( -\frac{(z-\mu)}{\beta} \right) }, & \text{si}\;\xi = 0
 \end{equation} 
 para todo $z$, con parámetros de posición $\mu$, escala $\beta$ e índice $\xi$.
 \[
-\text{Cuando } \xi =
+\text{Cuando }
 \begin{cases}
-0 & \text{: corresponde a Gumbel} \\
-< 0 & \text{: corresponde a Weibull} \\
-> 0 & \text{: corresponde a Fréchet}
+\xi=0 & \text{: corresponde a Gumbel} \\
+\xi< 0 & \text{: corresponde a Weibull} \\
+\xi> 0 & \text{: corresponde a Fréchet}
 \end{cases}
 \]
 :::
@@ -1388,6 +1388,172 @@ Se concluye entonces que la log-normal está en el DAM Gumbel, o, lo que es lo m
 
 <!---  transicion a  Tiempos y Valores de Retorno --->
 
+## Estimación por Máxima Verosimilitud (MV)
+ 
+Una vez que decidimos usar una distribución GEV para modelar los máximos por bloques (por ejemplo, las máximas anuales de temperatura o precipitación), el siguiente paso es ajustar el modelo a los datos. Esto significa estimar los tres parámetros de la GEV:
+
+ 
+
+- \( \mu \): de localización
+
+- \( \sigma \): de escala
+
+- \( \xi \): parámetro de forma
+
+Estos parámetros determinan completamente la forma y el comportamiento de la distribución.
+
+
+
+El método más utilizado es el de Máxima Verosimilitud (MV). La idea central consiste en buscar los valores de los parámetros que hacen que los datos observados sean "lo más probables posible" bajo el modelo (ver Apéndice \@ref(sec:ap), sección \@ref(sec:mv)).
+
+
+
+Este procedimiento se realiza mediante optimización numérica. En la práctica, existen funciones en R (como `fgev()` del paquete `ismev`, o `fevd()` del paquete `extRemes`) que implementan este ajuste de manera automática.
+
+
+Pero este método no siempre funciona bien. El método de máxima verosimilitud tiene muy buenas propiedades si se cumplen ciertas condiciones:
+
+a. Cuando el parámetro de forma \( \xi > -0.5 \), los estimadores son regulares y se comportan bien en muestras grandes.
+
+b. Si \( -1 < \xi < -0.5 \), los estimadores existen, pero no tienen las propiedades asintóticas habituales.
+
+c. Si \( \xi < -1 \), los estimadores por máxima verosimilitud pueden no existir.
+
+En gerenal, en la práctica, vamos a estar en el caso a (@coles2001introduction). 
+
+
+\newpage
+
+::: {.example #mv name="Estimación por MV"}
+Cuando disponemos de una muestra y asumimos que sigue un cierto modelo probabilístico, el paso siguiente consiste en determinar los parámetros de dicho modelo. Como estos parámetros son desconocidos, deben ser estimados a partir de los datos. Existen diversos métodos de estimación, pero el enfoque más utilizado y recomendado es el de máxima verosimilitud, por sus buenas propiedades estadísticas y su aplicabilidad general. 
+
+Con los siguientes datos vamos ajustar y estimar por MV una GEV y una distribución Gumbel para luego analizar la bondad de ajuste en cada caso.
+:::
+
+
+
+Vamos a usar el paquete `evd` de `R` y de los datos `uccle` tomamos la columna `day` que contiene el máximo anual de precipitaciones diarias.
+
+```{r echo=TRUE}
+library(evd)
+data(uccle)
+```
+
+
+```{r echo=TRUE}
+head(uccle, 5)
+```
+```{r echo=TRUE}
+datos=uccle$day
+class(datos)
+```
+
+
+
+Vamos a emplear la función `fgev` que ajusta los parámetros por MV a una distribución de valores
+extremos generalizada, $GEV(\mu,\beta,\xi)$.
+
+
+```{r echo=TRUE}
+fit_gev <- evd::fgev(datos)
+fit_gev$estimate
+```
+
+
+
+Para ajustar una distribución de Gumbel, imponemos $shape=0$. 
+
+```{r echo=TRUE}
+fit_gumbel <- evd::fgev(datos,shape=0)
+fit_gumbel$estimate
+```
+
+
+
+Se suelen utilizar gráficos de niveles de retorno para visualizar la relación entre los niveles estimados y sus correspondientes periodos de retorno, los cuales suelen representarse en escala logarítmica. Estos gráficos permiten obtener una estimación visual de los valores extremos esperados para distintos horizontes temporales. Sin embargo, para una mayor precisión, se recomienda realizar los cálculos numéricamente.
+
+Además, existen diversos **gráficos de diagnóstico** que permiten evaluar de forma cualitativa la **bondad del ajuste** del modelo a los datos observados como se presentan en las siguientes figuras, para el caso del ajuste `fit_gev`.
+
+
+
+```{r diagnosticofgev, fig.cap=c("Gráfico de cuantiles (Q–Q)", "Gráfico de probabilidades (P–P)", "Densidad ajustada vs empírica", "Niveles de retorno"), fig.height=4, fig.width=12, echo=FALSE, warning=FALSE}
+plot(fit_gev, which = 1)
+plot(fit_gev, which = 2)
+plot(fit_gev, which = 3)
+plot(fit_gev, which = 4)
+```
+
+
+- Gráfico P–P: este gráfico compara las probabilidades empíricas (representadas por cruces) con las probabilidades teóricas que predice el modelo GEV. Si el ajuste es bueno, los puntos deben alinearse cerca de la diagonal (la línea de 45°). Cuanto más cerca estén los puntos de esa línea, mejor es la concordancia entre los datos y el modelo. Además, el gráfico suele incluir bandas de tolerancia: si la mayoría de los puntos cae dentro de esas bandas, eso indica que el modelo ajusta adecuadamente los datos.
+
+- Grafico Q-Q plot:  el ajuste será mejor cuanto más se aproximen los puntos a la recta y estén entre los límites.
+
+- Gráfico de la función de densidad empírica y la función de valores extremos generalizada estimada. El análisis en este caso es visual. 
+
+- Gráfico de niveles y periodos de retorno: calcularlos permite concluir respecto al ajuste (Veremos estos conceptos en la próxima sección.).
+
+Otra herramienta útil para evaluar la bondad del ajuste de un modelo es el test de Kolmogorov–Smirnov (KS). Este test está implementado en R mediante la función `ks.test()`. El objetivo del test es comparar si una distribución empírica (obtenida a partir de los datos) se ajusta razonablemente bien a una distribución teórica especificada previamente.
+
+Se plantea un contraste de hipótesis
+
+- \( H_0 \): los datos provienen de una determinada distribución teórica (por ejemplo, normal o GEV).
+- \( H_1 \): los datos no provienen de esa distribución.
+
+
+Al aplicar el test, se obtiene
+
+- Un valor estadístico \( D \), que representa la máxima diferencia absoluta entre la función de distribución acumulada empírica y la teórica.
+
+- Un p-valor, que permite decidir si hay evidencia suficiente para rechazar \( H_0 \).
+
+Si \( D \) es pequeño (y el p-valor es grande), eso indica que no hay una diferencia significativa entre los datos y la distribución teórica, y por tanto el modelo podría ser adecuado.
+
+El critorio de decisión consiste en comparar el estadístico \( D \) con un valor crítico \( D_\alpha \), determinado por el nivel de significación \( \alpha \):
+
+- Si \( D > D_\alpha \), se rechaza \( H_0 \): los datos no se ajustan a la distribución propuesta.
+- Si \( D \leq D_\alpha \), no se rechaza \( H_0 \): no hay evidencia para descartar el modelo.
+
+En resumen, el test KS proporciona una forma cuantitativa y no paramétrica de evaluar si una distribución teórica es compatible con los datos observados.
+
+Una forma práctica y habitual de tomar decisiones con el test de Kolmogorov–Smirnov es a través del p-valor que devuelve el test
+
+- Si el p-valor es mayor que \( \alpha \) entonces no se rechaza la hipótesis nula. El modelo podría ajustarse bien.
+- Si el p-valor es menor que \( \alpha \) entonces se rechaza la hipótesis nula. Hay evidencia de que el modelo no se ajusta.
+
+El valor de \( \alpha \) más común es 0.05.
+
+\vspace{1cm}
+
+```{r echo=TRUE}
+# Aplico el test sobre fit_gev:
+ks.test(uccle$day, "pgev", 
+        fit_gev$estimate[1], 
+        fit_gev$estimate[2], 
+        fit_gev$estimate[3])
+```
+
+- Advertencia sobre "ties":   El mensaje `"ties should not be present"` indica que hay valores repetidos (empates) en los datos (`uccle$day`).   El test de Kolmogorov–Smirnov asume que los datos provienen de una distribución continua, sin empates exactos.   Aunque el test se puede ejecutar, la presencia de empates puede afectar la precisión del valor-p, especialmente si son muchos. Esto es común cuando los datos se redondean a valores discretos (por ejemplo, a milímetros enteros).
+
+
+-  $D = 0.0797$ : Este valor representa la máxima diferencia absoluta entre la función de distribución empírica y la función acumulada de la GEV ajustada. Cuanto menor sea \( D \), mejor es el ajuste del modelo a los datos.
+
+- $\text{p-valor} = 0.9793$: Este valor es muy alto, lo que indica que no hay evidencia suficiente para rechazar la hipótesis nula de que los datos provienen de la distribución GEV ajustada.
+
+Entonces, según el test de Kolmogorov–Smirnov, el modelo GEV se ajusta adecuadamente a los datos analizados.
+
+
+```{r}
+#Aplico el test sobre fit_gumbel:
+ks.test(uccle$day, "pgev", 
+        fit_gumbel$estimate[1], 
+        fit_gumbel$estimate[2])
+```
+
+
+Según el test de Kolmogorov–Smirnov, el modelo Gumbel se ajusta adecuadamente a los datos analizados.
+
+\newpage
+
 ## Tiempos y Valores de Retorno
 
 Siguiendo a @coles2001introduction, vamos a ver la relación que existe entre GEV y los conceptos de __valor de retorno__ (VR) y __tiempo de retorno__ (T) de la presente sección. La Definición \@ref(def:def5) implica que se puede aproximar a la Eq.\@ref(eq:Mnr) como una integrante de la familia de GEV cuando $n$ es grande. Esto conlleva al siguiente enfoque para modelar las observaciones de datos extremos $X_1,X_2,\dots$ : se forman bloques de observaciones de largo $n$ (para $n$ grande) lo que permite crear bloques de máximos $M_{n,1},\dots, M_{n,m}$. Con esto va a ser posible ajustar una distibución GEV.  
@@ -1402,7 +1568,7 @@ z_p=\left\{ \begin{array}{cl}
  (\#eq:rv)
 \end{equation}
 
-donde $G(z_p)=1-p$. 
+donde $P(X>z_p)=1/p\; \Rightarrow G(z_p)=1-p$. Con los parámetros estimados por MV $\hat{\mu}, \hat{\beta}, \hat{\xi}$ sustituimos en \@ref(eq:rv) y obtenermos $z_p$.
 
 Decimos que $z_p$ es el valor de retorno ($VR$) asociado al tiempo de retorno ($T$) expresado como $1/p$ y se espera que el valor $z_p$ sea excedido en media una vez cada $1/p$ años. Es decir, para un año cualquiera, existe una probabilidad $p$ de que el valor máximo supere el nivel $z_p$.
 
@@ -1418,11 +1584,11 @@ z_p=\left\{ \begin{array}{cl}
 
 Si se grafica $z_p$ contra $\log y_p$:
 
-- si $\xi = 0$ entonces se tiene una recta;
+- si $\xi = 0$ entonces se tiene una recta. Implica que los eventos extremos aumentan lentamente con el tiempo. Los eventos extremos son posibles, pero crecen de manera moderada y predecible.
 
-- si $\xi <0$, la curva es convexa con límite asintótico a medida que  $p \to 0$ en $\mu - \beta / \xi$; 
+- si $\xi <0$, la curva es convexa con límite asintótico a medida que  $p \to 0\;$ en $\mu - \beta / \xi$. No importa cuánto tiempo pase, el valor extremo no supera cierto límite. Hay un tope físico o natural. Por ejemplo, si estamos midiendo velocidad del viento, quizá físicamente no puede superar cierto umbral.
 
-- si $\xi <0$, la curva es cóncava y no tiene un límite finito.
+- si $\xi >0$, la curva es cóncava y no tiene un límite finito. No hay límite para los extremos. A medida que el tiempo de retorno aumenta, los eventos extremos se vuelven cada vez más grandes y más peligrosos. Esto es típico en fenómenos con colas pesadas, como catástrofes financieras o terremotos extremos.
 
 Debido a la simplicidad en su interpretación, y a que la elección de la escala comprime la cola de la distribución, resaltando así el efecto de la extrapolación, las gráficas de niveles de retorno son especialmente útiles para presentar los datos y para validar. En la siguiente Figura \@ref(fig:nr) se presentan las curvas de valores de retorno para distintos valores de $\xi$.
  
@@ -1476,16 +1642,31 @@ __¿Por qué son importantes estos conceptos?__
 
 En Ingeniería y Ciencias Ambientales, suele pensarse a los eventos extremos, en términos de tiempos de retorno, es decir, el tiempo que se espera para que ocurra un evento. En este sentido, bajo las hipótesis de datos $iid$, se dice que el tiempo de retorno $T$ tiene una distribución $Geo(p)$, con $p = P(evento)$. Por lo tanto, el tiempo de retorno medio es $E(T)=1/p$ y pueden hacerse intervalos de confianza para $E(T)$, en la medida que exista información de $P(evento)$.
 
+
 Cabe observar que muchas veces se utiliza la expresión Tiempo de Retorno (TR) para $E(T)$. Más precisamente, $TR(u)$, el tiempo de retorno del valor $u$, es el valor esperado (o la media) del tiempo que se debe esperar para que la variable en estudio supere el valor $u$. Esto implica que  $TR(u) =1/P(X>u)$, si $X$ es la variable en estudio.
 
 Por otro lado, y de manera inversa, el Valor de Retorno a tiempo $t$, $VR(t)$ es el valor de $u$ para el cual $TR(u)=t$, es decir que $TR(VR(t))=t$ (y también $VR(TR(u))=u$), es decir que TR y VR se pueden considerar funciones inversas una de la otra.
 
+En suma:
 
-<!-- ACA ME QUEDE --> 
+- El tiempo de retorno (TR) permite cuantificar cuán raro o extremo es un evento. Por ejemplo, si se espera exceder un cierto nivel del río una vez cada 100 años, decimos que el tiempo de retorno $T=100$.
+- El TR se basa en la probabilidad de excedencia $p$, es decir, la probabilidad de que un evento supere cierto umbral $z$ en un año $T=1/p$ entonces $p=1/T$.
+- Para un nivel $z_p$ su valor de retorno en $T$ años es tal que $P(X>z_p)=1/T$.
+- La forma de la curva de valores de retorno $z_p$ vs el tiempo $T$, o su equivalente $y_p=-\log(1-p)$ nos indica cómo crecen los valores extremos con el tiempo TR:
+
+| Tipo de GEV | $\xi$     | Forma               | Implicación sobre el valor de retorno $z_T$ a largo plazo                       |
+| ----------- | --------- | ------------------- | ------------------------------------------------------------------------------- |
+| **Gumbel**  | 0         | lineal en $\log T$  | Crece lentamente                                                                |
+| **Weibull** | $\xi < 0$ | se aplana (convexa) | Tiene un **máximo**: no importa cuánto esperes, no pasa de ahí                  |
+| **Fréchet** | $\xi > 0$ | cóncava             | Crece **sin límite**: cuanto mayor el $T$, **más extremo** es el valor esperado |
+
+
+
+
 
 ::: {.example}
 Para "bajar un poco a tierra" estos conceptos, vamos a calcularlos y compararlos cuando la variable $X$ es Gumbel y cuando es Fréchet (con los mismos valores de posición $\mu$ y escala $\beta>0$).
-
+:::
 
 - Comencemos por la __Gumbel__: $X$ tiene distribución $\Lambda^{( \mu,\beta)}$ si $X= \mu+\beta Y$, donde $Y$ tiene distribución $\Lambda$. 
 
@@ -1494,7 +1675,7 @@ Dado entonces un valor $u>0$, otro valor $t>0$ resulta que
 
 ::: {.definition #defg name="Ecuaciones G"}
 \begin{align}
-&P(X>u)=1-\exp\left\{ -\exp\left\{ \frac{(u-\mu)}{\beta} \right\} \right\} \\
+&P(X>u)=1-\exp\left\{ -\exp\left\{ -\frac{(u-\mu)}{\beta} \right\} \right\} \\
 &TR(u)=1/P(X>u)\\ 
 &VR(t)= \mu+\beta \log\left\{ \frac{t}{t-1} \right\}
 \end{align}
@@ -1515,15 +1696,239 @@ Dado entonces un valor $u>0$, otro valor $t$ entero, resulta que
 \end{align}
 :::
 
+\vspace{1cm}
+Se realizan las siguientes simulaciones empleando en ambos casos $\mu=15$, $\beta=10$ y $\alpha= 2.5$ ($\xi =0.4$, no muy distante del $\xi=0$ de la Gumbel).
+
+\vspace{1cm}
+
+
+
+
+```{r echo=TRUE, warning=FALSE}
+# Parámetros comunes
+mu <- 15
+beta <- 10
+alpha <- 2.5
+
+# Secuencia de valores u (nivel) y t (retorno)
+u_vals <- seq(15, 250, by = 5)
+t_vals <- 90:4140
+
+# Funciones para la Gumbel
+P_exceed_gumbel <- function(u, mu, beta) {
+  1 - exp(-exp(-(u - mu) / beta))
+}
+
+TR_gumbel <- function(u, mu, beta) {
+  1 / P_exceed_gumbel(u, mu, beta)
+}
+
+VR_gumbel <- function(t, mu, beta) {
+  mu + beta * log(t / (t - 1))
+}
+
+# Funciones para la Fréchet
+P_exceed_frechet <- function(u, mu, beta, alpha) {
+  1 - exp(-((u - mu) / beta)^(-alpha))
+}
+
+TR_frechet <- function(u, mu, beta, alpha) {
+  1 / P_exceed_frechet(u, mu, beta, alpha)
+}
+
+VR_frechet <- function(t, mu, beta, alpha) {
+  mu + beta * (log(t / (t - 1)))^(-1 / alpha)
+}
+
+# Cálculos
+tr_gumbel_vals <- TR_gumbel(u_vals, mu, beta)
+tr_frechet_vals <- TR_frechet(u_vals, mu, beta, alpha)
+
+vr_gumbel_vals <- VR_gumbel(t_vals, mu, beta)
+vr_frechet_vals <- VR_frechet(t_vals, mu, beta, alpha)
+```
+
+
+
+
+
+
+
+
+```{r echo=TRUE, warning=FALSE}
+# Cálculo de probabilidades de excedencia
+p_gumbel <- P_exceed_gumbel(u_vals, mu, beta)
+p_frechet <- P_exceed_frechet(u_vals, mu, beta, alpha)
+```
+
+
+
+Se pueden visualizar claramente los resultados en la Fig.\@ref(fig:trioplot):
+
+- De la Fig. \@ref(fig:trioplot) (a) se desprende que el  modelo Fréchet da probabilidades mucho mayores a valores muy elevados: es más pesimista, si los
+valores mayores representan mayores esfuerzos o problemas .
+
+- En cuanto a los TR de la Fig. \@ref(fig:trioplot) (b): Es claro que, siguiendo la lógica anterior, va a ser más pesimista_el modelo que de tiempos de retorno menores en valores elevados. Y eso es lo que ocurre con el modelo Fréchet. 
+
+- En cuanto a los VR de la Fig. \@ref(fig:trioplot) (b): será  más pesimista quien dé mayores VR. Resulta evidente el mayor pesimismo del modelo Fréchet.
+
+\newpage
+
+
+```{r trioplot, fig.cap="Excedencias, tiempos y valores de retorno", fig.height=15, fig.width=16, echo=FALSE, message=FALSE, warning=FALSE}
+par(mfrow = c(3, 1), mar = c(6.5, 5.5, 4.5, 2), oma = c(4, 0, 4, 0))
+
+# 1. Probabilidades de excedencia
+plot(u_vals, p_gumbel, type = "l", col = "blue", lwd = 2,
+     ylim = c(0, 1), xlab = "u", ylab = expression(P(X > u)), main = "(a) Probabilidades de Excedencia",
+     cex.lab = 2.5, cex.axis = 2, cex.main = 3)
+lines(u_vals, p_frechet, col = "red", lwd = 2, lty = 2)
+legend("topleft", legend = c("Gumbel", "Fréchet"), col = c("blue", "red"),
+       lty = 1:2, lwd = 2, bty = "n", cex = 2.5)
+
+# 2. Tiempo de retorno
+plot(u_vals, tr_gumbel_vals, type = "l", col = "blue", lwd = 2,
+     ylab = "Tiempo de Retorno", xlab = "Nivel u", main = "(b) TR(u)",
+     cex.lab = 2.5, cex.axis = 2, cex.main = 3)
+lines(u_vals, tr_frechet_vals, col = "red", lwd = 2, lty = 2)
+legend("topleft", legend = c("Gumbel", "Fréchet"), col = c("blue", "red"),
+       lty = 1:2, lwd = 2, bty = "n", cex = 2.5)
+
+# 3. Valores de retorno (CORREGIDO)
+plot(t_vals, vr_gumbel_vals, type = "l", col = "blue", lwd = 2,
+     xlab = "Días", ylab = "Valor", main = "(c) Valores de Retorno",
+     ylim = range(c(vr_gumbel_vals, vr_frechet_vals)),
+     cex.lab = 2.5, cex.axis = 2, cex.main = 3)
+lines(t_vals, vr_frechet_vals, col = "red", lwd = 2)
+legend("topleft", legend = c("Gumbel", "Fréchet 2,5"), col = c("blue", "red"),
+       lwd = 2, bty = "n", cex = 2.5)
+```
+
+
+
+:: {.example name="Valores y tiempos de retorno"}
+Con los datos el Ej. \@ref(exm:mv) vamos ahora a calcular los VR y los TR.
 :::
 
+Para calcular los VR definimos  un vector con los valores de años (TR) para los que queremos calcular estos niveles, por ejemplo para 2, 5, 10, 15, 25, 50, 100, 150 y 200 años:
+
+```{r}
+# años para los que vamos a calcular los VR
+tpo <- c(2,5,10,15,25,50,100, 150,200) 
+```
 
 
 
-<!-- %%%% pagina 39 a 45 faltan los ejericions %%%
-Para visualizar claramente estos resultados,
-tabularemos y graficaremos los mismos usando en
-ambos casos $\mu=15$, $\beta=10$ y $\alpha= 2.5$ ($\xi =0.4$, no muy distante del $\xi =0$ de la Gumbel).
+```{r}
+# probabilidades para esos años
+prob <- 1/tpo
+```
+
+
+
+
+<!--
+
+Ahora, salvando las ligeras diferencias fruto de que $t$ es discreto y hay redondeos, se tiene que:
+
+- $TR(VR(t))\approx t$ para cada modelo,
+
+- $VR(TR(u))\approx u$ para cada modelo.
+
+Ejemplo para Gumbel
+
+Tomamos \( t = 90 \) y calculamos $VR(90) = 15 + 10 \cdot \log\left( \frac{90}{89} \right) \approx 15.11$
+
+
+Luego aplicamos la función de tiempo de retorno
+
+\[
+TR(15.11) = \frac{1}{1 - \exp\left( -\exp\left( -\frac{15.11 - 15}{10} \right) \right)} \approx 90
+\]
+
+Por tanto, $TR(VR(90)) \approx 90$.
+
+
+
+
+```{r tablaVR}
+# Tabla de valores de retorno (primeros 5 días)
+tabla_vr <- data.frame(
+  t = t_vals,  # ← nombre correcto aquí
+  Gumbel = vr_gumbel_vals,
+  Fréchet = vr_frechet_vals
+)
+
+# Mostrar con kable
+knitr::kable(tabla_vr, digits = 1, caption = "VR para Gumbel y Fréchet")
+```
+
+```{r tablaTR}
+# Tabla de tiempos de retorno (primeros 25 niveles u)
+tabla_tr <- data.frame(
+  u = u_vals,
+  Gumbel =tr_gumbel_vals,
+  Fréchet = tr_frechet_vals
+)
+
+# Mostrar con kable
+knitr::kable(tabla_tr, digits = 1, caption = "TR para Gumbel y Fréchet")
+```
+
+Ahora si observamos los resultados tabulados en las Tablas \@ref(tab:tablaVR) y \@ref(tab:tablaTR):
+
+
+
+```{r}
+# Elegir t
+t <- 90
+
+# Calcular VR(t)
+vr_t_gumbel <- vr_gumbel_vals[which(t_vals == t)]
+vr_t_frechet <- vr_frechet_vals[which(t_vals == t)]
+
+# Evaluar TR en VR(t)
+tr_vr_gumbel <- TR_gumbel(vr_t_gumbel, mu, beta)
+tr_vr_frechet <- TR_frechet(vr_t_frechet, mu, beta, alpha)
+
+# Mostrar
+cat("Gumbel:\n VR(90) =", round(vr_t_gumbel, 0), "→ TR(VR) =", round(tr_vr_gumbel, 1), "\n")
+cat("Fréchet:\n VR(90) =", round(vr_t_frechet, 0), "→ TR(VR) =", round(tr_vr_frechet, 1), "\n")
+```
+Interpretación del resultado: 
+
+- Para la Gumbel: Si vamos a la Tabla \@ref(tab:tablaVR) y miramos $t=90$, el $VR(t=90)\approx 15$, si vamos a la la Tabla \@ref(tab:tablaTR) el $TR(u=15)\approx 1.6$. 
+
+- Para la Fréchet: Si vamos a la Tabla \@ref(tab:tablaVR) y miramos $t=90$, el $VR(t=90)\approx 75$, si vamos a la la Tabla \@ref(tab:tablaTR) el $TR(u=15)\approx 1.6$. 
+
 -->
+
+
+
+<!--
+
+```{r fig1, fig.cap="(1) Gráfico de cuantiles (Q–Q)", echo=FALSE, fig.height=3, fig.width=6}
+plot(fit_gev, which = 1)
+```
+
+```{r fig2, fig.cap="(2) Gráfico de probabilidades (P–P)", echo=FALSE, fig.height=3, fig.width=6}
+plot(fit_gev, which = 2)
+```
+
+```{r fig3, fig.cap="(3) Gráfico de densidad", echo=FALSE, fig.height=3, fig.width=6}
+plot(fit_gev, which = 3)
+```
+
+```{r fig4, fig.cap="(4) Gráfico de residuos estandarizados", echo=FALSE, fig.height=3, fig.width=6}
+plot(fit_gev, which = 4)
+```
+
+
+-->
+
+
+
+
+
 
 
