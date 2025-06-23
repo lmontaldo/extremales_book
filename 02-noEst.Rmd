@@ -109,7 +109,7 @@ han encontrado ejemplos de dependencia fuerte.
 
 [^4]: En inglés, long range dependence.
 
- 
+\newpage 
 ## Descomposición de series temporales
 
 Las series temporales no estacionarias contienen características que cambian sistemáticamente con el tiempo. Por ejemplo, los procesos asociados al medio ambiente están sujetos a los efectos estacionales, a tendencias y también a efectos del cambio climático de más largo plazo [@coles2001introduction]. Lo anterior implica se puede descomponer a una serie temporal en distintos componentes: tendencia-ciclo, estacional, irregular. Se emplean métodos estadísticos para extraer estos componentes con el objetivo de entender a los patrones subyacentes de la serie estudiada y obtener predicciones confiables [@enders].
@@ -138,20 +138,33 @@ __Modelo multiplicativo :__ Se aplica cuando la variación estacional cambia con
 $$
 Y_t = T_t \times S_t \times R_t
 $$
+<!--
+A modo ilustrativo en la Fig.\@ref(fig:adit) , tomamos el ejemplo de @hyndman donde se muestran los distintos componentes de una serie temporal en un modelo aditivo.
 
 
 
+```{r adit, fig.cap="Número total de personas empleadas en el comercio minorista de EE.UU. y sus tres componentes" ,echo=FALSE, fig.height=5, fig.width=10, message=FALSE, warning=FALSE}
+#install.packages("fpp3")
+library(fpp3)
+us_retail_employment <- us_employment |>
+  filter(year(Month) >= 1990, Title == "Retail Trade") |>
+  select(-Series_ID)
+dcmp <- us_retail_employment |>
+  model(stl = STL(Employed))
+components(dcmp) |> autoplot()
+```
 
 
+-->
 
-Cuando los datos no son $iid$ pero se vuelven $iid$ al restarle una
-función determinística, son bastante simples de manejar.
+<!---
+
 
 Si esta función es monótona, se habla de que los datos presentan
 tendencias (trends). Si en cambio la función es periódica, se dice que
 los datos presentan ciclos (seasonal effects).
 
-<!---  [Text to display](https://otexts.com/fpp3/decomposition.html) -->
+  [Text to display](https://otexts.com/fpp3/decomposition.html) 
 
 Se puede demostrar que si los datos se vuelven iid al restar una función
 determinística cualquiera (lo cual no siempre es el caso!), entonces se
@@ -161,40 +174,69 @@ Al descomponer una serie temporal, a veces es útil primero transformar o
 ajustar la serie para que la descomposición, y su análisis posterior,
 sea lo más sencilla posible (@hyndman).
 
+-->
+
+Considerando lo anterior, cuando los datos no son $iid$ pero se vuelven $iid$ al restarle una
+función determinística, son bastante simples de manejar.
+
+::: {.example #datosnoiid name="Datos no estacionarios"}
 Vamos a presentar a continuación como “lucen” los distintos tipos de
 datos y qué tan reconocibles son. Los datos se han simulado
 computacionalmente, por lo tanto sabemos a cuál es su real estructura.
-Empecemos por lo básico”:¿Cómo lucen datos iid? A continuación una
-muestra de tamaño mil de datos iid con distribución Gumbel.
 
-```{r echo=FALSE, warning=FALSE}
+1- Empecemos por lo básico”:¿Cómo lucen datos $iid$? A continuación una
+muestra de tamaño mil de datos $iid$ con distribución Gumbel (Fig.\@ref(fig:datosiid)).
+
+2- Comparación de la distribución anterior con una distribución normal (Fig.\@ref(fig:compnorm)).
+
+3- Simulación de datos con distribución Gumbel $iid$ con una tendencia parabólica y ciclos sinusoidales.
+
+4- Restar los componentes de tendencia y ciclo de la serie simulada en 3-.
+:::
+
+1- Simulación de una distribución Gumbel con 1000 daots $iid$.
+
+```{r datosiid, fig.cap="Mil datos iid simulados con una distribución Gumbel" ,echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
 set.seed(123)
 n <- 1000
 library(evd)
 datos_iid <- rgumbel(n)
-
 plot(datos_iid, type = "l", col = "steelblue", lwd = 1.2,
-     main = "Datos iid con distribución Gumbel simulados como serie temporal",
      xlab = "Tiempo", ylab = "Valor")
 ```
 
 Lo más sobresaliente en la visualización es la presencia de
-**variaciones abruptas** en los datos, que dificultan su representación
+variaciones abruptas en los datos, que dificultan su representación
 gráfica e interpretación inmediata. Estas oscilaciones no son
 necesariamente equilibradas en torno a un eje horizontal, lo cual se
-debe a la **asimetría de la distribución Gumbel**, que presenta una cola
+debe a la asimetría de la distribución Gumbel, que presenta una cola
 más larga hacia la izquierda.
 
-Aunque su valor esperado es aproximadamente 0.577, la mediana se
-encuentra en torno a -0.366, reflejando dicha asimetría. Si hubiésemos
-simulado datos a partir de una distribución simétrica, como la Normal,
-podríamos observar un mayor equilibrio visual entre los picos y valles
-de la serie. Sin embargo, eso podría desviar la atención del aspecto
-esencial: **las oscilaciones intensas** y el hecho de que **el conjunto
-de datos no muestra una tendencia clara** ni evidencia de **ciclos
-persistentes**.
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=TRUE}
+# Calcular media y mediana
+media_gumbel <- mean(datos_iid)
+mediana_gumbel <- median(datos_iid)
+```
+
+```{r echo=FALSE}
+cat("Media:", round(media_gumbel, 4), "\n")
+cat("Mediana:", round(mediana_gumbel, 4), "\n")
+```
+
+
+
+Aunque su valor esperado es aproximadamente 0.54, la mediana se
+encuentra en torno a -0.31, reflejando dicha asimetría. 
+
+2- Si simulamos datos a partir de una distribución simétrica, como la Normal,
+podemos observar un mayor equilibrio visual entre los picos y valles
+de la serie. Sin embargo, eso podría desviar la atención del aspecto
+esencial que son las oscilaciones intensas. Además, el conjunto de datos no muestra una tendencia clara ni evidencia de ciclos persistentes.
+
+
+
+```{r compnorm, fig.cap="Mil datos iid simulados con una distribución Gumbel y una Normal" ,echo=FALSE, fig.height=5, fig.width=6, message=FALSE, warning=FALSE}
 set.seed(123)
 n <- 1000
 library(evd)
@@ -212,99 +254,233 @@ datos <- tibble(
 # Graficar
 ggplot(datos, aes(x = tiempo, y = Valor, color = Distribución)) +
   geom_line() +
-  scale_color_manual(values = c("Gumbel" = "red", "Normal" = "blue")) +
+  scale_color_manual(values = c("Gumbel" = "steelblue", "Normal" = "purple")) +
   facet_wrap(~Distribución, ncol = 1, scales = "free_y") +
-  labs(title = "Simulación de datos iid: Gumbel (asimétrica) vs. Normal (simétrica)",
-       x = "Tiempo", y = "Valor") +
+  labs(x = "Tiempo", y = "Valor") +
   theme_minimal() +
   theme(legend.position = "none")
 
 ```
 
-Del gráfico se desprende que :
+De las Fig. \@ref(fig:compnorm) y \@ref(fig:distribmar) desprende que :
 
--   Gumbel muestra más valores extremos hacia la izquierda (asimetría
-    negativa).
+-   Gumbel muestra más valores extremos hacia la izquierda, presenta asimetría
+    negativa (Fig.\@ref(fig:distribmar))
 
--   Normal muestra oscilaciones más simétricas alrededor de cero.
 
-```{r echo=FALSE, warning=FALSE}
+
+-   Normal muestra oscilaciones más simétricas alrededor de cero (Fig. \@ref(fig:compnorm)).
+
+```{r distribmar, fig.cap="Comparación de distribuciones marginales: Gumbel vs. Normal" ,echo=FALSE, fig.height=5, fig.width=6, message=FALSE, warning=FALSE}
 ggplot(datos, aes(x = Valor, fill = Distribución, color = Distribución)) +
   geom_histogram(aes(y = after_stat(density)), bins = 40, alpha = 0.4, position = "identity") +
   geom_density(linewidth  = 1.2, alpha = 0.2)+
-  scale_fill_manual(values = c("Gumbel" = "red", "Normal" = "blue")) +
-  scale_color_manual(values = c("Gumbel" = "red", "Normal" = "blue")) +
+  scale_fill_manual(values = c("Gumbel" = "steelblue", "Normal" = "purple")) +
+  scale_color_manual(values = c("Gumbel" = "steelblue", "Normal" = "purple")) +
   facet_wrap(~Distribución, ncol = 1, scales = "free") +
-  labs(title = "Comparación de distribuciones marginales: Gumbel vs. Normal",
-       x = "Valor", y = "Densidad") +
+  labs(x = "Valor", y = "Densidad") +
   theme_minimal()
 ```
 
-Este comportamiento es típico de secuencias iid: aunque presentan
+Este comportamiento es típico de secuencias $iid$: aunque presentan
 variabilidad local intensa, su estructura global carece de patrones de
 dependencia temporal.
 
-Veamos ahora como lucen datos que son Gumbel iid, a los que se les ha
-sumado una tendencia parabólica y ciclos sinusoidales.
+
+
+
+
+3-Simulamos 500 datos con una distribución Gumbel más un componente de tendencia y ciclo. El modelo simulado puede expresarse como
+
+\begin{equation} 
+Y_t = X_t + \underbrace{a t^2 + b t + c}_{\text{tendencia cuadrática}} + \underbrace{A \sin(\omega t + \phi)}_{\text{componente cíclica}}, \quad t = 1, 2, \dots, n,
+  (\#eq:simu)
+\end{equation} 
+
+
+
+
+donde:
+
+- \( X_t \overset{\text{iid}}{\sim} \text{Gumbel}(\mu, \sigma) \) son los datos $iid$ con distribución Gumbel,
+- \( a, b, c \in \mathbb{R} \) son coeficientes de la tendencia polinómica de segundo orden,
+- \( A \) es la amplitud del ciclo sinusoidal,
+- \( \omega \) es la frecuencia angular,
+- \( \phi \) es el desfase,
+- \( n \) es el número total de observaciones.
+
+
+
 
 
 ```{r echo=FALSE, warning=FALSE}
+# Parámetros y simulación
 set.seed(123)
 n <- 500
-gumbel_data <- rgumbel(n, loc = 0, scale = 1.2)
+t <- 1:n
 
-time <- 1:n
-trend <- 0.03 * time  # tendencia lineal
+# Ruido iid Gumbel
+gumbel_noise <- rgumbel(n, loc = 0, scale = 1.2)
 
-frequency <- 2 * pi / 50  # frecuencia del ciclo
-seasonality <- 3 * sin(frequency * time)  # ciclo de gran amplitud
+# Tendencia cuadrática: a * t^2 + b * t + c
+a <- 0.0002
+b <- 0.02
+c <- 0
+trend <- a * t^2 + b * t + c
 
-observed_data <- gumbel_data + trend + seasonality
+# Componente cíclica: A * sin(omega * t + phi)
+A <- 3
+omega <- 2 * pi / 50
+phi <- 0
+cycle <- A * sin(omega * t + phi)
 
-df <- data.frame(time = time, observed_data = observed_data)
+# Serie observada
+Y <- gumbel_noise + trend + cycle
+```
 
-ggplot(df, aes(x = time, y = observed_data)) +
-  geom_line(color = 'steelblue', size = 0.8) +
-  labs(x = "Tiempo", y = "Dato") +
+
+```{r gumbelt, fig.cap="Serie simulada: Gumbel + tendencia cuadrática + ciclo sinusoidal" ,echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+# Armar data frame
+df <- data.frame(t = t, Y = Y, trend = trend, cycle = cycle)
+
+# Gráfico
+ggplot(df, aes(x = t, y = Y)) +
+  geom_line(color = "steelblue", size = 0.8) +
+  labs(x = "Tiempo", y = "Valor observado") +
   theme_minimal()
 ```
 
 
-Si bien hay oscilaciones aleatorias, es perceptible a simple vista una tendencia creciente y la presencia de una estructura cíclica.
 
-Tras un poco de análisis exploratorio uno puede percatarse que la tendencia debe ser lineal o cuadrática, por lo cual si se propone un polinomio de orden 2 más un término sinusoidal (con parámetros de amplitud, frecuencia y fase), mediante mínimos cuadrados se puede ajustar bien, resultando efectivamente cuadrática la tendencia.
+De la Fig. \@ref(fig:gumbelt) se desprende que si bien hay oscilaciones aleatorias, es perceptible a simple vista una tendencia creciente y la presencia de una estructura cíclica.
 
-Si se le restaran a los datos originales los valores de las componentes determinísticas (Tendencia + Ciclo) ajustadas, los nuevos datos que resultan, llamados *Residuos*, deberían razonablemente superar los tests para datos $iid$.
+Sin conocer el modelo de simulación de la Eq. \@ref(eq:simu), sólo con observar la Fig. \@ref(fig:gumbelt) y trás un poco de análisis exploratorio unx puede intuir que la tendencia debe ser lineal o cuadrática. Si se estima un polinomio de orden 2 más un término sinusoidal (con parámetros de amplitud, frecuencia y fase), mediante mínimos cuadrados se puede ajustar bien (Fig. \@ref(fig:gumbelmco)).
 
 
-```{r echo=FALSE, warning=FALSE}
-# Simular datos Gumbel iid
-set.seed(123)
-n <- 500
-gumbel_data <- rgumbel(n + 2, loc = 0, scale = 1)  # generar 2 extras para rezagos
+```{r include=FALSE}
+# Usar el mismo omega que en la simulación
+omega <- 2 * pi / 50
 
-# Coeficientes de dependencia
-a1 <- 0.5
-a2 <- 0.3
+# Crear variables para el modelo
+df$tt <- df$t
+df$tt2 <- df$t^2
+df$sin_term <- sin(omega * df$t)
+df$cos_term <- cos(omega * df$t)
 
-# Construir proceso 2-dependiente
-X <- numeric(n)
-for (t in 3:(n+2)) {
-  X[t-2] <- a1 * gumbel_data[t-1] + a2 * gumbel_data[t-2] + gumbel_data[t]
-}
+# Ajuste por mínimos cuadrados
+modelo_mco <- lm(Y ~ tt2 + tt + sin_term + cos_term, data = df)
 
-# Graficar
-time <- 1:n
-df <- data.frame(time = time, X = X)
+# Resumen del modelo
+summary(modelo_mco)
+```
 
-ggplot(df, aes(x = time, y = X)) +
-  geom_line(color = 'steelblue', size = 0.8) +
-  labs(title = "Proceso 2-dependiente estacionario con datos Gumbel",
-       x = "Tiempo", y = "Observación") +
+
+
+
+
+```{r gumbelmco, fig.cap="Ajuste por mínimos cuadrados: tendencia cuadrática + componente sinusoidal" ,echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+# Gráfico: datos y ajuste
+df$ajuste <- predict(modelo_mco)
+
+library(ggplot2)
+ggplot(df, aes(x = t)) +
+  geom_line(aes(y = Y), color = "steelblue", size = 0.8, alpha = 0.6) +
+  geom_line(aes(y = ajuste), color = "darkred", size = 0.9) +
+  labs(x = "Tiempo", y = "Valor") +
   theme_minimal()
 ```
 
 
+
+
+4 - Si se le restan a los datos originales los valores de las componentes determinísticas —la tendencia y el ciclo ajustados por mínimos cuadrados—, se obtienen los **residuos**:
+
+$$
+\hat{\varepsilon}_t = Y_t - \hat{T}_t - \hat{C}_t,
+$$
+
+donde \( \hat{T}_t \) es la tendencia estimada y \( \hat{C}_t \) la componente cíclica estimada.
+
+```{r echo=TRUE}
+# Calcular residuos
+df$residuos <- df$Y - df$ajuste
+```
+
+Estos residuos (Fig. \@ref(fig:residgumbelmco)) deberían comportarse como ruido aleatorio, y en particular, deberían superar razonablemente los tests para datos independientes e idénticamente distribuidos ($iid$). A continuación se presentan algunas herramientas para tomar este tipo de conclusiones sobre los residuos.
+
+
+```{r residgumbelmco, fig.cap="Residuos del modelo ajustado" ,echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+# Graficar los residuos
+library(ggplot2)
+ggplot(df, aes(x = t, y = residuos)) +
+  geom_line(color = "gray30", size = 0.7) +
+  labs(
+       x = "Tiempo", y = "Residuos") +
+  theme_minimal()
+```
+
+
+- Herramientas de diagnóticos visual: Sirven para diagnosticar la dependencia temporal de una serie: si la serie es ruido blanco ($iid$), tanto la ACF como la PACF mostrarán valores cercanos a cero para todos los retardos (excepto en el lag 0).
+
+
+  - La función de autocorrelación (ACF) mide la correlación entre los valores actuales de una serie temporal \( Y_t \) y sus valores pasados \( Y_{t-k} \), para diferentes retardos \( k \). Es decir, nos dice cuánto del valor actual está relacionado con sus propios valores pasados, incluyendo cualquier efecto intermedio. Nos indica qué tan correlacionado está \( Y_t \) con \( Y_{t-k} \), sin tener en cuenta lo que ocurre entre medio.
+
+  - La función de autocorrelación parcial (PACF) mide la correlación directa entre \( Y_t \) y \( Y_{t-k} \), eliminando el efecto de los retardos intermedios \( Y_{t-1}, Y_{t-2}, \dots, Y_{t-k+1} \).
+ 
+
+
+
+
+
+
+```{r acfpacfcombined, fig.cap = "ACF y PACF de los residuos", echo=FALSE, fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
+# Establecer diseño: 2 filas, 1 columna
+par(mfrow = c(2, 1), mar = c(4, 4, 2, 1))
+
+# ACF
+acf(df$residuos, main = "")
+
+# PACF
+pacf(df$residuos, main = "")
+```
+
+
+
+\newpage
+
+- El resultado del test de Box-Ljung, que se usa para evaluar si los residuos presentan autocorrelación (es decir, si son dependientes entre sí). Se pone a prueba $H_0:$ los residuos son independientes (no autocorrelacionados).
+
+
+```{r echo=FALSE}
+# Test de Ljung-Box para autocorrelación (independencia)
+Box.test(df$residuos, lag = 20, type = "Ljung-Box")
+```
+
+
+Como el valor-\(p = 0.5551\) es mayor que 0.05, no se rechaza la hipótesis nula.
+
+Entonces, no hay evidencia de autocorrelación en los residuos.
+
+Esto es positivo, ya que indica que el modelo ajustado capturó correctamente la estructura determinística (tendencia + ciclo), y lo que queda se comporta como \textit{ruido aleatorio} (\textit{iid}).
+
+<!--
+
+```{r residuoshist, fig.cap = "Histograma de residuos",echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+ggplot(df, aes(x = residuos)) +
+  geom_histogram(color = "black", fill = "steelblue", bins = 30) +
+  labs(x = "Residuos", y = "Frecuencia") +
+  theme_minimal()
+```
+
+
+
+```{r hist, fig.cap="QQ-plot de residuos" ,echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+# QQ-plot para evaluar distribución
+qqnorm(df$residuos)
+qqline(df$residuos, col = "red")
+```
+
+-->
 
 ```{r echo=FALSE, warning=FALSE}
 # Simular datos Gumbel iid
