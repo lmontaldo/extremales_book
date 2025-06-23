@@ -1,4 +1,10 @@
 
+```{r include=FALSE}
+library(dplyr)
+library(tidyverse)
+```
+
+
 # Un primer enfoque de datos no $iid$ {#noiid}
 
  
@@ -106,14 +112,32 @@ han encontrado ejemplos de dependencia fuerte.
  
 ## Descomposición de series temporales
 
-Las series temporales no estacionarias contienen características que cambian sistemáticamente con el tiempo. Por ejemplo, los procesos asociados al medio ambiente están sujetos a los efectos estacionales, a tendencias y también a efectos del cambio climático de más largo plazo [@coles2001introduction]. 
+Las series temporales no estacionarias contienen características que cambian sistemáticamente con el tiempo. Por ejemplo, los procesos asociados al medio ambiente están sujetos a los efectos estacionales, a tendencias y también a efectos del cambio climático de más largo plazo [@coles2001introduction]. Lo anterior implica se puede descomponer a una serie temporal en distintos componentes: tendencia-ciclo, estacional, irregular. Se emplean métodos estadísticos para extraer estos componentes con el objetivo de entender a los patrones subyacentes de la serie estudiada y obtener predicciones confiables [@enders].
 
-Lo anterior implica se puede descomponer a una serie temporal en distintos componentes: tendencia, estacional, ciclo, irregular. Se emplean métodos estadísticos para extraer estos componentes con el objetivo de entender a los patrones subyacentes de la serie estudiada y obtener predicciones confiables [@enders].
+Siguiendo @hyndman, los distintos componentes se pueden describir de la siguiente manera:
+
+- Tendencia-ciclo: Se vincula a los movimientos de largo plazo. Los ciclos en particular, son movimientos irregulares. Es decir, podemos pensar a los ciclos como fluctuaciones de largo plazo, no necesariamente regulares, asociadas a fenómenos económicos, sociales o naturales (como recesiones o expansiones). A diferencia de la estacionalidad, los ciclos no tienen una duración fija.
+
+- Estacionalidad: Son fluctuaciones periódicas que se repiten a intervalos regulares, como días, meses o años. Por ejemplo, ventas más altas en diciembre o temperaturas más bajas en invierno.
+
+- Irregularidad: Todo lo que no es lo anterior. Es decir, son variaciones impredecibles, aleatorias o residuales, causadas por factores no sistemáticos. Es un componente residual.
 
 
+Existen dos modelos generales para descomponer una serie temporal: el modelo aditivo y el modelo multiplicativo.
 
+__Modelo aditivo :__ Se utiliza cuando la variación estacional es aproximadamente constante a lo largo del tiempo.
 
+$$
+Y_t = T_t + S_t + R_t
+$$
 
+donde \(Y_t\) es la serie original, \(T_t\) la tendencia, \(S_t\) la estacionalidad y \(R_t\) el residuo.
+
+__Modelo multiplicativo :__ Se aplica cuando la variación estacional cambia con el nivel de la serie (heterocedasticidad).
+
+$$
+Y_t = T_t \times S_t \times R_t
+$$
 
 
 
@@ -500,4 +524,186 @@ hacia la estacionariedad. El análisis de las propiedades de valores
 extremos de dichas series transformadas puede proporcionar a los
 analistas financieros información clave sobre el mercado
 (@coles2001introduction).
+
+
+### Concepto de series de tiempo estacionarias
+Siguiendo a @enders, se dice que un proceso estocástico $z_{t}$ con media y varianza finitas es estacionario en covarianza para todo $t$ y $t-s$ cuando
+
+\begin{align}
+	\label{eq:2_7}
+	E(z_{t})&=E(z_{t-s})=\mu\\
+	\label{eq:2_8}
+	var(z_t)&=var(z_{t-s})=\sigma^2_z\\
+	\label{eq:2_9}
+	cov(z_t,z_{t-s})&=cov(z_{t-j},z_{t-j-s})=\gamma_s
+\end{align}
+donde $\mu, \sigma^2_z, \gamma_s$ con constantes.
+
+En \eqref{eq:2_8}, cuando $s=0$ se va a tener que $\gamma_0$ es la varianza de $z_t$. Que una serie temporal sea estacionaria en covarianza implica que tanto la media como todas sus autocovarianzas\footnote{También se habla de proceso debilmente estacionario o estacionario de segundo orden.} no están afectadas por cambios en los orígenes temporales\footnote{En modelos multivariados, el término autocovarianza refiere a la covarianza entre $z_t$ y sus propios rezagos mientras que covarianza cruzada refiere a la covarianza entre series temporales}.
+
+Dado que se está en un marco de ecuaciones en diferencias, se tienen que cumplir condiciones de estabilidad en el sistema y esto implica que las raíces características asociadas al sistema de interés caígan dentro del círculo unitario. Cuando una serie temporal no sea estacionaria, es posible que presente una evidente tendencia, medias y varianzas que no son constantes en el tiempo.
+\end{comment}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<!--
+### Pruebas ADF
+
+Se testea para cada serie de datos
+
+\begin{align*}
+	&H_0)\; \gamma = 0\\
+	&H_1)\; \gamma \neq 0   
+\end{align*}
+
+En este sentido, se consideran tres ecuaciones de regresión distintas para poner a prueba $H_0$,
+
+\begin{align}
+	\label{eq: modelo_c}
+	\Delta z_t=&\gamma z_{t-1} + \sum_{i=2}^p \beta_i \Delta z_{t-i+1} + \varepsilon_t \\
+	\label{eq: modelo_b}
+	\Delta z_t=&a_0+\gamma z_{t-1} + \sum_{i=2}^p \beta_i \Delta z_{t-i+1} + \varepsilon_t \\
+	\label{eq: modelo_a}
+	\Delta z_t=&a_0+\gamma z_{t-1} + a_2 t+ \sum_{i=2}^p \beta_i \Delta z_{t-i+1} + \varepsilon_t
+\end{align}
+
+Existen tres estadísticos $\tau,\;\tau_{\mu},\;\tau_{\tau}$ para probar la hipótesis nula $H_0)\:\gamma=0$ en cada caso y además, se tienen otros tres $F-$estadísticos $\:\phi_1,\:\phi_2,\:\phi_3$ para hacer pruebas conjuntas sobre los coeficientes.  
+
+Los estadísticos $\:\phi_1,\:\phi_2,\:\phi_3$ se construyen como pruebas $F$:
+
+\begin{equation*}
+	\phi_{i}=\frac{\left[SSR_{restringido}-SSR_{no\:restringido}\right]/r}{SSR_{no\:restringido}/(t-k)}    
+\end{equation*}
+
+donde SSR es la suma de los cuadrados de los residuos en los modelos restringidos y no restringidos, $r$ es la cantidad de restricciones, $T$ es la cantidad de observaciones,  $k$ es la cantidad de parámetros estimados en el modelo irrestricto, $i=1,2,3$. A su vez, $T-k$ van a ser los grados de libertad del modelos sin restricciones. Los valores de los coeficientes estimados se van a comparar con los valores críticos de tablas reportados por @dickey1981.
+La hipótesis nula indica que el proceso de generación de los datos es la del modelo restringido contra la hipótesis alternativa de que los datos son generados por el modelo sin restringir. Cuando los valores de $\:\phi_1,\:\phi_2,\:\phi_3$ sean mayores a los valores críticos reportados por @dickey1981 se rechaza la hipótesis nula, cuando sean menores a los valores críticos entonces no se rechaza la hipótesis nula.
+
+
+
+En el siguiente cuadro \@ref(tab:modelos_adf) se consideran los tres modelos y cada una de las hipótesis a testear con sus respectivos estadísticos.
+
+
+
+\begin{table}[h!]
+	\centering
+	\small % Smaller font size
+	\setlength{\tabcolsep}{3pt} % Adjust column spacing
+	\caption{Modelos del test ADF}
+	\label{tab: modelos_adf}
+	\begin{tabular}{|c|c|c|c|}
+		\hline 
+		& Modelo & $H_0)$ & Estadistíco de prueba \\
+		\hline 
+		\hline 
+		c & $\Delta z_{t}=a_{0}+\gamma z_{t-1}+a_{2}t+\sum_{i=2}^{p}\beta_{i}\Delta z_{t-i+1}+\varepsilon_{t}$ & $\begin{array}{c}
+			\gamma=0\\
+			\gamma=a_{2}=0\\
+			\gamma=a_{2}=a_{0}=0
+		\end{array}$ & $\begin{array}{c}
+			\tau_{\tau}\\
+			\phi_{3}\\
+			\phi_{2}
+		\end{array}$ \\
+		\hline 
+		b & $\Delta z_{t}=a_{0}+\gamma z_{t-1}+\sum_{i=2}^{p}\beta_{i}\Delta z_{t-i+1}+\varepsilon_{t}$ & $\begin{array}{c}
+			\gamma=0\\
+			\gamma=a_{0}=0
+		\end{array}$ & $\begin{array}{c}
+			\tau_{\mu}\\
+			\phi_{1}
+		\end{array}$ \\
+		\hline 
+		a & $\Delta z_{t}=\gamma z_{t-1}+\sum_{i=2}^{p}\beta_{i}\Delta z_{t-i+1}+\varepsilon_{t}$ & $\gamma=0$ & $\tau$ \\
+		\hline 
+	\end{tabular}
+\end{table}
+
+
+```{r tab:modelos_adf, echo=FALSE}
+library(kableExtra)
+
+# Create the table as a data frame
+adf_table <- data.frame(
+  Modelo = c("c", "b", "a"),
+  Ecuación = c(
+    "$\\Delta z_t = a_0 + \\gamma z_{t-1} + a_2 t + \\sum_{i=2}^{p} \\beta_i \\Delta z_{t-i+1} + \\varepsilon_t$",
+    "$\\Delta z_t = a_0 + \\gamma z_{t-1} + \\sum_{i=2}^{p} \\beta_i \\Delta z_{t-i+1} + \\varepsilon_t$",
+    "$\\Delta z_t = \\gamma z_{t-1} + \\sum_{i=2}^{p} \\beta_i \\Delta z_{t-i+1} + \\varepsilon_t$"
+  ),
+  `H_0` = c(
+    "$\\begin{array}{c} \\gamma = 0 \\\\ \\gamma = a_2 = 0 \\\\ \\gamma = a_2 = a_0 = 0 \\end{array}$",
+    "$\\begin{array}{c} \\gamma = 0 \\\\ \\gamma = a_0 = 0 \\end{array}$",
+    "$\\gamma = 0$"
+  ),
+  `Estadístico` = c(
+    "$\\begin{array}{c} \\tau_{\\tau} \\\\ \\phi_3 \\\\ \\phi_2 \\end{array}$",
+    "$\\begin{array}{c} \\tau_{\\mu} \\\\ \\phi_1 \\end{array}$",
+    "$\\tau$"
+  )
+)
+
+# Render the table
+kbl(adf_table, booktabs = TRUE, escape = FALSE,
+    caption = "Modelos del test ADF",
+    col.names = c("", "Modelo", "$H_0$", "Estadístico de prueba")) %>%
+  kable_styling(latex_options = c("striped", "hold_position"), font_size = 9)
+```
+
+
+
+Cuando no se conozca el proceso de generación de los datos, se sugiere realizar las pruebas de Dickey-Fuller Aumentado partiendo del modelo
+menos restrictivo para cada serie temporal a uno más particular. Si bien las pruebas de ADF son útiles para detectar la presencia de raíces unitarias, los mismos tienen sus limitaciones. Partiendo del modelo general al particular, cada prueba está condicionada a que las pruebas anteriores sean correctas.  Cuando se empieza por el primer paso, es decir, con el modelo (c) con constante y con tendencia, se hace más difícil rechazar $H_0)$, por lo tanto, cuando se rechace la hipótesis nula en un modelo (c) se tiende a rechazar también la hipótesis nula cuando no se incluyan los términos deterministas.  A su vez, establece que el problema principal de las pruebas de Dickey-Fuller es que tanto el intercepto como la pendiente de la tendencia son, con frecuencia, estimados de manera \textit{pobre}  bajo la presencia de raíces unitarias. En general, se tiende a no rechazar la hipótesis nula de raíz unitaria incluso cuando el verdadero valor de $\gamma$ no es cero. Además, la prueba presenta limitaciones también frente a cambios de régimen (@enders).
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+### Pruebas KPSS
+
+En @kpss, se parte de una representación cada serie temporal como la suma de un componente de tendencia determinística, un paseo aleatorio y un error estacionario. En este contexto, se pone a prueba
+
+
+\begin{align*}
+	H_0)&\text{ la serie es estacionaria alrededor de una tendencia}    \\
+	H_1)&\text{ la serie es no estacionaria}
+\end{align*}
+
+que se corresponde con la hipótesis de que la varianza del paseo aleatorio (_random walk_) es igual a cero. 
+
+Se emplea un estadístico de Multiplicadores de Lagrange (ML) para testear la hipótesis nula de estacionariedad. De esta manera, siendo $z_t$ con $t=1,2,...,T$ las series a las que se les quiere aplicar el test, se asume que se puede descomponer a la serie en la suma de un componente de tendencia determinística, un paseo aleatorio y un error estacionario se tiene que,
+
+\begin{equation}
+	z_t=\xi t + r_t + \varepsilon_t
+(\#eq:kpss2)
+\end{equation}
+
+Donde $r_t$ es un paseo aleatorio:
+
+\begin{equation}
+	r_t = r_{t-1} + u_t,
+		(\#eq:kpss3)
+\end{equation}
+
+donde $u_t$ es $iid(0,\sigma_u^2)$. El valor inicial $r_0$  es fijo y sirve se intercepto. La hipótesis de estacionariedad es $\sigma_u^2=0$ y como se asume que $\varepsilon_t$ es estacionario, bajo la hipótesis nula $z_t$ es estacionaria alrededor de una tendencia.
+
+En el caso particular de que en el modelo \@ref(eq: kpss2) se tenga $\xi=0$, bajo la hipótesis nula $z_t$ va a ser estacionaria alrededor de una constante ($r_0$).
+
+Sean $e_t$ con $t=1,2,...,T$, los residuos de la regresión $z$ con un intercepto y tendencia. A su vez, sea $\hat{\sigma_\varepsilon^2}$ la estimación del error de la varianza de la regresión (suma de los residuos al cuadrado divida $T$). Con lo anterior, se define el proceso de suma parcial de los residuos como
+
+\begin{equation}
+	S_t=\sum_{i=1}^t r_i, \quad t=1,....,T   
+		(\#eq:kpss5)
+\end{equation}
+
+Entonces el estadístico ML es 
+
+\begin{equation}
+	\label{eq: kpss6}
+	ML=\sum_{t=1}^T S^2_t/\hat{\sigma^2_\varepsilon}   
+\end{equation}
+
+En el caso de que se quiera poner a prueba la hipótesis nula de estacionariedad alrededor de una constante se define $e_t$ como los residuos de la regresión $z$ sobre un intercepto ($e_t=z_t-\bar{z})$. Cabe resaltar que es una prueba de cola superior y se reportan los valores críticos. Además, para este caso se asume que los errores $\varepsilon_t \overset{\text{iid}}{\sim} \mathcal{N}(0,\sigma_{\varepsilon}^2)$
+Sin embargo, se puede extender la prueba con supuestos más débiles sobre la distribución de los errores dado que el supuesto anterior puede ser poco realista.
+
+-->
 

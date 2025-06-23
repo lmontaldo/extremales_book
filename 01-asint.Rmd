@@ -9,11 +9,17 @@ output:
 
 <!-- ## Introducción: las distribuciones extremales {#intro}-->
 
- 
+```{r include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 library(evd)
 library(ggplot2)
+library(dplyr)
+library(tidyverse)
 ```
 
 
@@ -594,7 +600,7 @@ Veamos un ejemplo de ajuste. Los siguientes datos corresponden a los valores, en
 
 
 
-```{r echo=FALSE, paged.print=TRUE}
+```{r echo=FALSE}
 data <- data.frame(
   X_i = c(430.3, 115.7, 4.48, 26.95, 72.27, 206.4, 22.79, 25.03, 226.8, 11.1,
         1572, 100, 104.5, 37.1, 20.22, 106.9, 47.2, 62.82, 39.3, 18.52,
@@ -605,6 +611,8 @@ data <- data.frame(
         158, 25.46, 462.5, 35.53, 876.4, 462.5, 53.47, 23.59, 38.77, 494.2,
         164.2, 52.06, 54.13, 15.53, 29, 14.35, 1675, 15.01, 72.07, 22.99))
 ```
+
+
 
 ```{r echo=FALSE, paged.print=TRUE}
 n <- length(X_i)
@@ -690,7 +698,7 @@ Como cada dato de los 80 que disponemos es un máximo de un centenar de observac
 Dado que visualmente se aprecian valores muy apartados (Figura \@ref(fig:parishist)), se
 presume una distribución de colas pesadas y por ese motivo se intenta un ajuste a una Fréchet.
 
-```{r parishist, fig.cap="Histograma de los máximos diarios", fig.height=3, fig.width=6, echo=FALSE, message=FALSE, warning=FALSE}
+```{r parishist, echo=FALSE, fig.cap="Histograma de los máximos diarios", fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
 hist(data$X_i, breaks = 30, main="",
      xlab = "Valor observado", ylab="frecuencia", col = "lightblue", border = "white")
 ```
