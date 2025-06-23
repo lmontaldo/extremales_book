@@ -49,6 +49,8 @@ Adoptamos un enfoque basado en la __verosimilitud__, ya que proporciona un marco
 
 El principal objetivo del análisis de valores extremos consiste en cuantificar el __comportamiento estocástico__ de un proceso para niveles inusualmente altos (o bajos). En particular, los análisis de valores extremos buscan estimar la probabilidad de eventos extremos.
 
+En la teoría de valores extremos, existen dos enfoques fundamentales, ambos ampliamente utilizados: el método de máximos por bloques6[BM, por sus siglas en inglés.] y el método de excedencias sobre umbral^[POT, por sus siglas en inglés.] [@ferreira2015].
+
 <!--
 Por ejemplo, imaginemos que se está diseñando una defensa costera y se necesita que un muro de contención sea capaz de resistir todos los niveles del mar que podrían registrarse durante su vida útil estimada, digamos 100 años. Tal vez se disponga de datos locales sobre los niveles del mar, pero solo para un período relativamente corto, como 10 años. El desafío es entonces estimar qué niveles podrían alcanzarse en los próximos 100 años, basándose únicamente en ese historial limitado. La teoría de valores extremos ofrece un marco adecuado para realizar este tipo de extrapolaciones. En ausencia de criterios empíricos o físicos que permitan formular una regla de extrapolación, los modelos estándar se construyen a partir de argumentos asintóticos. 
 -->

@@ -1,6 +1,8 @@
 
 # Un primer enfoque de datos no $iid$ {#noiid}
 
+ 
+
 ## Datos no $iid$
 
 Vamos a ver que en la realidad frecuentemente los datos no son $iid$, y
@@ -33,7 +35,15 @@ curso al menos explicaremos brevemente los
 aspectos medulares que usemos.
 -->
 ```
-Cuando los datos:
+
+## Procesos estacionarios
+
+Una secuencia de variables aleatorias independientes es, en general, estacionaria. Sin embargo, la estacionariedad admite dependecia en las variables de una serie pero implica que sus propiedades estocásticas sean homogéneas en el tiempo. Si $X_1,X_2, \dots$ es una serie estacionaria, entonces $X_1$ tiene la misma distribución que $X_{60}$, la distribución conjunta de $(X_1, X_2)$ es la misma que $X_{101}$ y $X_{102}$ pero no es necesario que $X_1$ sea independiente de $X_2$ o de $X_102$. La dependencia en las series estacionarias puede tomar múltiples formas por lo que se hace dificil realizar generalizaciones. Para el caso extremal, es necesario imponer restricciones: se puede suponer que los valores extremos son independientes cuando están lo suficientemente apartados en el tiempo. Muchas series estacionarias satisfacen esto y además es una condición posible para muchos procesos físicos. Eliminar la dependencia de largo plazo para valores extremos, nos permite poner el foco en el efecto de la dependencia de corto plazo.  Cuando los datos extremales sean estacionarios podremos modelarlos a través del método de máximos por bloques con distribuciones GEV como vimos anteriormente y como veremos luego, por métodos de umbrales [@coles2001introduction].
+
+
+
+
+Entonces, cuando los datos:
 
 -   No necesariamente son independientes pero la estructura de
     distribuciones es siempre la misma, se habla de datos estacionarios
@@ -92,6 +102,23 @@ han encontrado ejemplos de dependencia fuerte.
 [^3]: Lo cual es una de las razones de su popularidad.
 
 [^4]: En inglés, long range dependence.
+
+ 
+## Descomposición de series temporales
+
+Las series temporales no estacionarias contienen características que cambian sistemáticamente con el tiempo. Por ejemplo, los procesos asociados al medio ambiente están sujetos a los efectos estacionales, a tendencias y también a efectos del cambio climático de más largo plazo [@coles2001introduction]. 
+
+Lo anterior implica se puede descomponer a una serie temporal en distintos componentes: tendencia, estacional, ciclo, irregular. Se emplean métodos estadísticos para extraer estos componentes con el objetivo de entender a los patrones subyacentes de la serie estudiada y obtener predicciones confiables [@enders].
+
+
+
+
+
+
+
+
+
+
 
 Cuando los datos no son $iid$ pero se vuelven $iid$ al restarle una
 función determinística, son bastante simples de manejar.

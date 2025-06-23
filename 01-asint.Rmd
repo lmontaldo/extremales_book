@@ -54,6 +54,15 @@ Son un caso particular de evento raro o gran desviación respecto a la media. En
 
 El comienzo del curso se centra en la teoría más clásica de estadística de datos extremos, basada en los trabajos de @frechet1927, @gumbel1958statistics, @weibull1951, @fisher1928limiting, @gnedenko1943, entre otros. En este marco, los argumentos que manejamos son de tipo __asintóticos__^[El análisis asintótico es un método de descripción del comportamiento en el límite.] y podríamos decir que nos ubicamos en lo que se conoce en la literatura como _paradigma de los valores extremos_ [@coles2001introduction].
 
+En la teoría de valores extremos (EVT por sus siglas en en inglés relativas a Extreme Value
+Theory.), existen dos enfoques fundamentales, ambos ampliamente utilizados: el método de máximos por bloques (BM)^[BM, por sus siglas en inglés relativas a Block Maxima.] y el método de excedencias sobre umbral (POT)^[POT, por sus siglas en inglés.] [@ferreira2015]. En este capítulo se pone el foco en el método por BM y más adelante veremos el POT. 
+
+
+
+
+The block maxima (BM) approach in extreme value
+theory (EVT), consists of dividing the observation period into nonoverlapping periods of equal size and restricts attention to the maximum observation in each period
+
 
 
 __Observación 1.1__ (Distribución del máximo de dos variables independientes).
@@ -1432,7 +1441,7 @@ Con los siguientes datos vamos ajustar y estimar por MV una GEV y una distribuci
 
 
 
-Vamos a usar el paquete `evd` de `R` y de los datos `uccle` tomamos la columna `day` que contiene el máximo anual de precipitaciones diarias.
+Vamos a usar el paquete `evd` de `R` y de los datos `uccle` tomamos la columna `day` que contiene el máximo anual de precipitaciones diarias. Es decir, para cada año, se tomó el día con la lluvia más alta registrada, y ese valor es el que se guarda en la columna `day`.
 
 ```{r echo=TRUE}
 library(evd)
@@ -1443,6 +1452,9 @@ data(uccle)
 ```{r echo=TRUE}
 head(uccle, 5)
 ```
+
+
+
 ```{r echo=TRUE}
 datos=uccle$day
 class(datos)
@@ -1454,7 +1466,7 @@ Vamos a emplear la función `fgev` que ajusta los parámetros por MV a una distr
 extremos generalizada, $GEV(\mu,\beta,\xi)$.
 
 
-```{r echo=TRUE}
+```{r echo=TRUE, warning=TRUE}
 fit_gev <- evd::fgev(datos)
 fit_gev$estimate
 ```
@@ -1463,7 +1475,7 @@ fit_gev$estimate
 
 Para ajustar una distribución de Gumbel, imponemos $shape=0$. 
 
-```{r echo=TRUE}
+```{r echo=TRUE, warning=TRUE}
 fit_gumbel <- evd::fgev(datos,shape=0)
 fit_gumbel$estimate
 ```
@@ -1524,13 +1536,14 @@ El valor de \( \alpha \) más común es 0.05.
 
 \vspace{1cm}
 
-```{r echo=TRUE}
+```{r echo=TRUE, warning=TRUE}
 # Aplico el test sobre fit_gev:
 ks.test(uccle$day, "pgev", 
         fit_gev$estimate[1], 
         fit_gev$estimate[2], 
         fit_gev$estimate[3])
 ```
+
 
 - Advertencia sobre "ties":   El mensaje `"ties should not be present"` indica que hay valores repetidos (empates) en los datos (`uccle$day`).   El test de Kolmogorov–Smirnov asume que los datos provienen de una distribución continua, sin empates exactos.   Aunque el test se puede ejecutar, la presencia de empates puede afectar la precisión del valor-p, especialmente si son muchos. Esto es común cuando los datos se redondean a valores discretos (por ejemplo, a milímetros enteros).
 
@@ -1542,7 +1555,7 @@ ks.test(uccle$day, "pgev",
 Entonces, según el test de Kolmogorov–Smirnov, el modelo GEV se ajusta adecuadamente a los datos analizados.
 
 
-```{r}
+```{r echo=TRUE, warning=TRUE}
 #Aplico el test sobre fit_gumbel:
 ks.test(uccle$day, "pgev", 
         fit_gumbel$estimate[1], 
@@ -1551,6 +1564,8 @@ ks.test(uccle$day, "pgev",
 
 
 Según el test de Kolmogorov–Smirnov, el modelo Gumbel se ajusta adecuadamente a los datos analizados.
+
+
 
 \newpage
 
@@ -1686,6 +1701,8 @@ Cabe observar que si se supone que las observaciones son diarias (o enteras en l
 
 - Sigamos ahora por la Fréchet, recordemos que $X$ tiene distribución $\Phi_{\alpha}^{\mu,\beta}$ si $x=\mu+\beta Y$, donde $Y$ tiene distribución $\Phi_{\alpha}$.
 
+\newpage
+
 Dado entonces un valor $u>0$, otro valor $t$ entero, resulta que
 
 ::: {.definition #deff name="Ecuaciones F"}
@@ -1805,24 +1822,70 @@ legend("topleft", legend = c("Gumbel", "Fréchet 2,5"), col = c("blue", "red"),
 ```
 
 
-
-:: {.example name="Valores y tiempos de retorno"}
-Con los datos el Ej. \@ref(exm:mv) vamos ahora a calcular los VR y los TR.
+::: {.example name="Valores y tiempos de retorno"}
+Con los datos del Ej. \@ref(exm:mv), vamos ahora a calcular los valores de retorno (VR) y los tiempos de retorno (TR).
 :::
 
-Para calcular los VR definimos  un vector con los valores de años (TR) para los que queremos calcular estos niveles, por ejemplo para 2, 5, 10, 15, 25, 50, 100, 150 y 200 años:
+Para calcular los valores de retorno, primero definimos un vector con los periodos de retorno (en años) para los que queremos estimar dichos niveles. Por ejemplo: 2, 5, 10, 15, 25, 50, 100, 150 y 200 años.
 
-```{r}
-# años para los que vamos a calcular los VR
-tpo <- c(2,5,10,15,25,50,100, 150,200) 
+```{r echo=TRUE}
+# Años para los que vamos a calcular los valores de retorno
+tpo <- c(2, 5, 10, 15, 25, 50, 100, 150, 200)
+```
+
+A partir de estos valores, calculamos las probabilidades asociadas:
+
+```{r echo=TRUE}
+# Probabilidades asociadas a los periodos de retorno
+prob <- 1 / tpo
+```
+
+Utilizamos los parámetros estimados para la distribución de Gumbel ajustada:
+
+```{r echo=TRUE}
+# Parámetros del ajuste Gumbel: loc, scale
+z <- fit_gumbel$estimate
+```
+
+Y finalmente, calculamos los valores de retorno mediante la función cuantílica `qgumbel`:
+
+```{r echo=TRUE}
+# Cálculo directo usando lower.tail = FALSE
+round(qgumbel(prob, z[1], z[2], lower.tail = FALSE), 1)
+```
+
+```{r echo=TRUE}
+# Alternativamente, usando 1 - prob
+round(qgumbel(1 - prob, z[1], z[2]), 1)
+```
+
+Obtenemos así los valores máximos diarios esperados para cada uno de los periodos de retorno definidos.
+
+\vspace{1cm}
+
+Queremos ahora calcular el TR para una precipitación máxima concreta:
+
+```{r echo=TRUE}
+# Calcular el valor máximo observado
+maximo_obs <- max(datos)
+round(maximo_obs,0)
 ```
 
 
+```{r echo=TRUE}
+# Extraer parámetros estimados del ajuste Gumbel
+z <- fit_gumbel$estimate  # z[1] = loc, z[2] = scale
 
-```{r}
-# probabilidades para esos años
-prob <- 1/tpo
+# Calcular el periodo de retorno correspondiente a ese valor máximo
+periodo_retorno <- 1 / (1 - pgumbel(maximo_obs, z[1], z[2]))
+
+# Mostrar el resultado redondeado
+round(periodo_retorno, 0)
 ```
+
+O sea que, podríamos esperar una precipitación máxima diaria de 72 mm, por término medio, cada 68 años.
+
+
 
 
 
