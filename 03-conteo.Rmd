@@ -1,25 +1,115 @@
-# El enfoque de conteo de eventos y los modelos de base Poissoniana.
+# El enfoque de conteo de eventos y los modelos de base Poissoniana
+
+## Teoría de los procesos puntuales
+
+Siguiendo a @coles2001introduction, se puede caracterizar un comportamiento de valores extremos de varias maneras, una de ellas es la __Teoría de los procesos puntuales__. Aunque los resultados de la inferencia obtenida bajo este esquema pueden ser equivalentes a los obtenidos con un modelo apropiado como los vistos antes, existen buenas razones para considerar este enfoque:
+
+1- Su interpretación permite unificar a los modelos vistos anteriormente.
+
+2- Se vincula a una verosimilitud que brinda una formulación más natural para los excesos sobre un umbral no estacionarios.
+
+Un __proceso puntual__ es un modelo estocástico que se utiliza para describir la ocurrencia de eventos en el tiempo^[O en el espacio.]. Por ejemplo, si se desea estudiar cuándo ocurren eventos como tormentas eléctricas, terremotos o valores extremos en una serie temporal, un proceso puntual permite representar en qué momento  suceden esos eventos, sin modelar directamente su magnitud.
+
+En este contexto, el conjunto $\mathcal{J}$ representa el dominio donde pueden ocurrir los eventos, es decir, un __intervalo de tiempo__, y el proceso puntual asigna de manera aleatoria posiciones a los eventos dentro de dicho intervalo. A partir del modelo, es posible calcular la probabilidad de que ocurra una cantidad determinada de eventos (como tormentas eléctricas o terremotos) dentro de un período de tiempo específico. Además, dado que ha ocurrido un evento, se puede estimar el tiempo esperado hasta el siguiente evento.
+
+Una forma de caracterizar las propiedades estadísticas de un proceso puntual es definir un conjunto de variables aleatorias de valor entero no negativo, \( N(J) \), para cada subconjunto \( J \subset \mathcal{J} \), tal que \( N(J) \) representa la cantidad de puntos en el conjunto \( J \). Especificar de manera consistente la distribución de probabilidad de cada \( N(J) \) determina las medidas del proceso puntual, al cual denotamos como \( N \). 
+
+También se pueden definir las medidas de resumen de un proceso puntual. En particular, definimos la __medida de intensidad del proceso__ como
+
+\begin{equation}
+\Lambda\left( J \right)=E\left\{ N\left( J \right) \right\}
+\end{equation}
+
+que da la cantidad esperada de puntos en cualquier subconjunto \( J \subset \mathcal{J} \).
+
+Suponiendo que \( J = [j_1, x_1) \times \dots \times [j_k, x_k) \subset \mathbb{R}^k \), y siempre que exista, la función derivada
+
+\begin{equation}
+\lambda(x) = \frac{\partial \Lambda(J)}{\partial x_1 \cdots \partial x_k}
+\end{equation}
+
+se denomina __función de intensidad (densidad)__ del proceso.
 
 
+### Proceso de Poisson homogéneo unidimensional
 
-Vamos ahora a cambiar el enfoque de manera
-importante. Seguiremos ocupándonos de valores
-extremadamente altos^[En los extremadamente bajos la teoría se reduce a este caso.], pero desde una mirada diferente.
-Fijaremos un cierto umbral, llamaremos _evento_
-cuando la variable observada supera dicho umbral
-y dado un cierto intervalo del tiempo $J$, contaremos 
+El proceso de __Poisson homogéneo unidimensional__ es el modelo más simple para describir eventos que ocurren aleatoriamente a lo largo del tiempo, como terremotos, llamadas o llegadas de clientes. Se caracteriza por los siguientes supuestos:
+
+\begin{itemize}
+  \item Los eventos ocurren de manera independiente.
+  \item La probabilidad de que ocurra un evento es constante en el tiempo.
+\end{itemize}
+
+Sea \( N(J) \) la cantidad de eventos en el intervalo \( J= [t_1, t_2] \). Esta cantidad sigue una distribución de Poisson, tal que 
+
+\begin{equation}
+N([t_1, t_2]) \sim \text{Poisson}(\lambda (t_2 - t_1))
+\end{equation}
+
+donde \( \lambda > 0 \) es la __tasa (intensidad) de ocurrencia de eventos por unidad de tiempo__.
+
+Además, si los intervalos \( J \) y \(M  \) no se superponen, entonces $N(J) \perp\!\!\!\perp N(M)$. Es decir, el número de eventos en __intervalos disjuntos__ son variables aleatorias independientes. La medida de intensidad del proceso es $\Lambda([t_1, t_2]) = \lambda (t_2 - t_1)$, y la función de intensidad (densidad de intensidad) es simplemente constante $\lambda(t) = \lambda.$ 
+
+
+Este modelo es apropiado cuando los eventos ocurren de manera aleatoria y uniforme en el tiempo.
+
+
+### Proceso de Poisson no homogéneo unidimensional
+
+El proceso de Poisson homogéneo puede generalizarse para modelar eventos que ocurren aleatoriamente en el tiempo, pero con una tasa variable \( \lambda(t) \). Esto da lugar al __proceso de Poisson no homogéneo unidimensional__, el cual mantiene la propiedad de contar eventos de forma independiente en subconjuntos disjuntos (como en el caso homogéneo), pero con una propiedad modificada:
+
+Para todo subconjunto \( J = [t_1, t_2] \subset \mathcal{J} \), se cumple que $N(J) \sim \text{Poisson}(\Lambda(J))$, donde
+
+\[
+\Lambda(J) = \int_{t_1}^{t_2} \lambda(t)\, dt.
+\]
+
+De forma implícita, \( \Lambda(\cdot) \) es la medida de intensidad del proceso, y \( \lambda(\cdot) \) es su función de densidad de intensidad.
+
+### Proceso de Poisson no homogéneo k-dimensional
+
+El proceso de Poisson no homogéneo puede generalizarse aún más para describir puntos que ocurren aleatoriamente dentro de un subconjunto de un espacio \( k \)-dimensional. Un proceso puntual sobre \( \mathcal{J} \subset \mathbb{R}^k \) se dice que es un __proceso de Poisson no homogéneo \( k \)-dimensional__ con función de densidad de intensidad \( \lambda(x) \) si cumple con:
+
+\begin{itemize}
+  \item independencia de conteos sobre subconjuntos disjuntos de \( \mathcal{J} \), y
+  \item para todo \( J \subset \mathcal{J} \),
+  \[
+  N(J) \sim \text{Poisson}(\Lambda(J)), \quad \text{donde} \quad \Lambda(J) = \int_J \lambda(x) \, dx.
+  \]
+\end{itemize}
+
+La propiedad intrínseca de un proceso de Poisson es que los puntos ocurren independientemente unos de otros. La aparición de un punto en una ubicación \( x \in \mathcal{J} \) ni fomenta ni inhibe la aparición de otros puntos en las cercanías de \( x \) ni en ninguna otra parte del espacio.
+
+Por esta razón, los procesos de Poisson son modelos ideales para fenómenos de __dispersión aleatoria__. Las variaciones en la cantidad de puntos entre diferentes subregiones del espacio \( \mathcal{J} \) pueden explicarse mediante una función de intensidad no constante, lo cual refleja una mayor cantidad esperada de puntos en ciertas regiones respecto de otras.  Sin embargo, esto no implica que la presencia de puntos en una región afecte la ocurrencia en otra. Esto también sugiere que hay fenómenos físicos para los que el proceso de Poisson no es un buen modelo, como aquellos con espaciamiento natural (por ejemplo, la ubicación de árboles en un bosque), o con agrupamiento natural (como los momentos de ocurrencia de tormentas).
+ 
+
+En aplicaciones estadísticas, los modelos de procesos puntuales requieren estimar el proceso a partir de un conjunto de puntos observados \( x_1, \dots, x_n \) en una región o intervalo \( J \). Esto implica elegir una clase de modelos de procesos puntuales, y estimar los parámetros dentro de dicha clase. Nos centraremos en la estimación dentro de la familia de __procesos de Poisson no homogéneos__.
+
+Supondremos que la función de intensidad \( \lambda(\cdot) \) pertenece a una familia paramétrica \( \lambda(\cdot\, ; \beta) \). Entonces, el problema se reduce a estimar el vector de parámetros desconocido \( \beta \), suponiendo que el modelo es válido. Esta aproximación es similar a la que se utiliza en la estimación de parámetros para distribuciones de probabilidad. Entre los métodos disponibles, el de MV se destaca como una metodología general con buenas propiedades estadísticas.
+
+<!--
+La verosimilitud se obtiene considerando la probabilidad de los datos observados como una función del parámetro desconocido \( \theta \)^[Presentamos el desarrollo en el caso más simple, donde el conjunto \( J \) es unidimensional, aunque el razonamiento es análogo para procesos de Poisson en dimensiones superiores.].
+-->
+
+
+## Procesos de conteo: definiciones
+
+Considerando la Teoría de los procesos puntuales presentada anteriormente, presentamos a continuación las definiciones de los conceptos ya vistos para seguir avanzando en el estudio de los procesos de conteo.
+
+Fijaremos un cierto __umbral__ ($u$), llamaremos __evento__ cuando la variable observada ($X_t$ para $t=1,\dots,T$) supera dicho umbral tal que $X_t>u$. Si además, consideramos un cierto intervalo de tiempo $J$, podemos definir 
+
 $$N(J)= \text{número de eventos en el intervalo}\; J.$$
 
 Por ejemplo, si lo que registramos son velocidades de vientos máximas medidas cada 10
 minutos, y fijamos como umbral 80 km/h (aproximadamente $22.22\; m/s$), entonces
-$N(Enero)=$ cantidad de períodos de 10 minutos durante enero, en que se registró una velocidad de viento superior a los $80\; km/h$.
+$N(Enero)=$ cantidad de períodos de 10 minutos durante enero en la que se registró una velocidad de viento superior a los $80\; km/h$.
 
-Obviamente, dadas las fluctuaciones que tienen los fenómenos que estudiamos, intentamos realizar estadísticas sobre el número de eventos $N$ y para ello primero debemos presentar algunos modelos probabilísticos, de más simples a más complejos.
+Obviamente, dadas las fluctuaciones que tienen los fenómenos que estudiamos, intentamos realizar estadísticas sobre el número de eventos $N$ y para ello primero debemos considerar los __modelos probabilísticos__, de más simples a más complejos, presentados en la sección anterior.
 
-$N$ es lo que se llama un _proceso de conteo_^[_Counting process_ en inglés.] o _proceso
-puntual_^[_Point process_ en inglés.], un tipo de modelos empleados en Logística, Telecomunicaciones, estudios de Contaminación, Atmosférica o Costera, Clima, entre otros.
-El proceso de conteo más simple es el llamado
-Proceso de Poisson, que puede caracterizarse de la
+$N$ es lo que se llama un __proceso de conteo__^[_Counting process_ en inglés.] o __proceso
+puntual__^[_Point process_ en inglés.], un tipo de modelos empleados en logística, telecomunicaciones, estudios de contaminación atmosférica o costera, entre otros.
+
+El proceso de conteo más simple es el llamado __Proceso de Poisson__, que puede caracterizarse de la
 siguiente manera.
 
 
@@ -28,19 +118,14 @@ Si $N$ es un proceso de conteo y $\lambda >0$, entonces diremos que $N$
 es un Proceso de Poisson de parámetro $\lambda$, $PP(\lambda)$, si se cumple que :
   
 a) Para todo intervalo $J$ de los reales positivos, $N(J)$
-es una variable aleatoria que tiene distribución de
-Poisson de parámetro $\lambda$ $longitud(J)$.
+es una variable aleatoria que tiene distribución de Poisson de parámetro $\lambda$ $longitud(J)$.
 
-b) Si $J, L, M, \dots$ es una cantidad arbitraria de
-intervalos de reales positivos DISJUNTOS,
-entonces $N(J), N(L), N(M),\dots$ son variables
-aleatorias independientes.
+b) Si $J, L, M, \dots$ es una cantidad arbitraria de intervalos de reales positivos DISJUNTOS,
+entonces $N(J), N(L), N(M),\dots$ son variables aleatorias independientes.
 ```
 
-El siguiente teorema brinda una visualización muy
-interesante de los Procesos de Poisson, que nos
-servirá mucho para introducir otros modelos y que
-es ideal para poder simular computacionalmente
+El siguiente teorema brinda una visualización muy interesante de los Procesos de Poisson, que nos
+servirá mucho para introducir otros modelos y que es ideal para poder simular computacionalmente
 Procesos de Poissson.
 
 ```{theorem, label="d31", name="Otra visión de los Procesos de Poisson"}
@@ -59,7 +144,7 @@ Obviamente, esto muchas veces es “too good to be true”, pero variaciones de 
 
 __Observación 1:__ En la práctica, si se toman datos
 en los instantes $1,\dots,n$ suele reescalarse el tiempo
-dividiendo por $n$ y los instantes quedan en $[0,1]$. Allí se define un PP de manera casi idéntica, obviamente modificando en la definición, tanto en
+dividiendo por $n$ y los instantes quedan en $[0,1]$. Allí se define un PP de manera casi idéntica, obviamente modificando en la Def. \@ref(def:d13), tanto en
 a) como en b) que los intervalos deben estar
 contenidos en $[0,1]$.
 
@@ -99,27 +184,38 @@ promedial inter-eventos.
 
 
 ```{example, label="ex13", name="Proceso de ocupación de las líneas entre dos centrales"}
-Propiedades como esta hicieron, en las primeras dos décadas del siglo XX, a un
-creador genial como Agner Erlang modelar mediante Procesos de Poisson las llamadas que
+En las primeras dos décadas del siglo XX, un
+creador genial como Agner Erlang modeló mediante Procesos de Poisson las llamadas que
 arribaban a una central telefónica, así como (con parámetros muy distintos) el proceso de ocupación
-de las líneas entre dos centrales. Eso condujo no sólo al desarrollo de las primeras centrales de
+de las líneas entre dos centrales. 
+
+Eso condujo no sólo al desarrollo de las primeras centrales de
 telefonía conmutada por circuitos por CTC, la filial danesa de Bell, sino además a que Erlang
 desarrollara su “fórmulas de bloqueo”, fino cálculo por el cual, según los parámetros del proceso de
 arribo y del proceso de ocupación de líneas, se calcula la probabilidad de “saturación” (no hay
 ninguna línea disponible) dado el número de líneas entre centrales, o, dada una probabilidad de
-saturación “tolerable” $\varepsilon$ DISEÑAR (determinar el mínimo número de lineas necesarias para que la probabilidad de bloqueo no exceda $\varepsilon$). Si el tiempo entre arribos de llamadas a la central es Exponencial de parámetro $\lambda$, y la duración media de una llamada es Exponencial de parámetro $\mu$, entonces el parámetro crucial de la fórmula de Erlang es
+saturación “tolerable” $\varepsilon$ DISEÑAR (determinar el mínimo número de lineas necesarias para que la probabilidad de bloqueo no exceda $\varepsilon$). 
+
+Si el tiempo entre arribos de llamadas a la central es Exponencial de parámetro $\lambda$, y la duración media de una llamada es Exponencial de parámetro $\mu$, entonces el __parámetro crucial__ de la fórmula de Erlang es
 
 $$
 \rho=\frac{\lambda}{\mu}=\frac{\text{Duración media de la llamada}}{\text{Tiempo medio entre llamadas}}
 $$  
   
-y a mayor valor de $\rho$, mayor probabilidad de saturación para una conectividad dada. Esta fórmula aún sigue en uso en algunos problemas y
-dió pie al desarrollo de fórmulas de bloqueo más sofisticadas para situaciones más complejas. Con mucha justicia, la unidad en la que se mide la intensidad de tráfico en redes se llama “erlang” y éste ejemplo nos parece una clara muestra de cuán útil ha sido el muy sencillo Proceso de Poisson.
+y a mayor valor de $\rho$, mayor probabilidad de saturación para una conectividad dada. 
+
+
+Esta fórmula aún sigue en uso en algunos problemas y
+dió pie al desarrollo de fórmulas de bloqueo más sofisticadas para situaciones más complejas. 
+
+La unidad en la que se mide la intensidad de tráfico en redes se llama “erlang” y este ejemplo nos parece una clara muestra de cuán útil ha sido el muy sencillo Proceso de Poisson.
+
+```
+
 
 Sin embargo, en otros problemas, por ejemplo en modernas redes de datos en las que los “eventos” de “demanda de servicio” pueden ocurrir
-simultáneamente en muy grandes cantidades (“clustering”), aparece un modelo más sofisticado, que puede ser definido a partir del Proceso de
-Poisson: el Proceso de Poisson Compuesto.
-```
+simultáneamente en muy grandes cantidades (“clustering”), aparece un modelo más sofisticado, que puede ser definido a partir del Proceso de Poisson, el __Proceso de Poisson Compuesto__.
+
 
 
 

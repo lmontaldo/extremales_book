@@ -48,37 +48,120 @@ Una secuencia de variables aleatorias independientes es, en general, estacionari
 
 
 
+### Concepto de Estacionariedad
+
+Consideremos los datos relativos a los niveles máximos anuales del nivel del mar registrados en Port Pirie, una localidad de Australia del Sur, durante el período 1923-1987.
+
+```{r echo=TRUE, warning=FALSE}
+library(ismev)
+data(portpirie)
+```
+
+<!--
+Los primeros 5 datos son:
+
+```{r}
+head(portpirie, 5)
+```
+
+-->
+
+```{r nice-fig2, echo=FALSE, fig.cap='Niveles máximos anuales del nivel del mar en Port Pirie (1923-1987)', ,echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+
+plot(portpirie,  xlab = "Year", ylab = "Sea Level (meters)", col="red")
+```
+
+__Problema:__ A partir de estos datos, puede ser necesario estimar el nivel máximo del mar que
+probablemente ocurra en la región en los próximos 100 o 1000 años. 
+
+Lo anterior plantea un desafío importante: ¿cómo podemos estimar los niveles para los próximos 1000 años sin conocer, por ejemplo, los cambios climáticos que podrían suceder?
+
+No hay evidencia contundente en la Fig. \@ref(fig:nice-fig2) que sugiera que el patrón de
+variación en los niveles del mar haya cambiado durante el período de
+observación, pero dicha estabilidad podría no persistir en el futuro.
+
+La observación anterior es crucial: aunque la teoría de valores extremos ha
+adoptado una terminología como el "nivel de retorno a 1000 años", este concepto solo tiene sentido bajo el supuesto de estabilidad (o estacionariedad) en el proceso subyacente (@coles2001introduction).
+
+
+
 
 Entonces, cuando los datos:
 
--   No necesariamente son independientes pero la estructura de
+(1) No necesariamente son independientes pero la estructura de
     distribuciones es siempre la misma, se habla de datos estacionarios
     o *procesos estacionarios*.
 
--   No son independientes pero la dependencia se va atenuando a medida
+(2) No son independientes pero la dependencia se va atenuando a medida
     que se consideran datos más lejanos (para fijar ideas, imaginemos
     que los datos corresponde a medidas en el tiempo, y que datos muy
     viejos no influirían significativamente sobre el presente, por
     ejemplo), se habla de datos débilmente dependientes.
 
-El caso más sencillo de esta situación es la de datos $m$-dependientes,
-siendo $m$ un número; si los datos que están a una distancia mayor que
-$m$ entonces son independientes. Un ejemplo son los procesos llamados
-promedios móviles de orden $q$, $MA(q)$[^1] con $m=q$.
 
-[^1]: Moving Averages en inglés.
+#### Caso estacionario: datos $m-$dependientes
+
+El caso más sencillo de la situación (2) es la de datos $m$-dependientes,
+siendo $m$ un número; si los datos que están a una distancia mayor que
+$m$ entonces son _independientes_. 
+
+Un ejemplo de datos $m$-dependientes son los procesos llamados
+Medias Móviles^[Moving Averages en inglés.] de orden $q$ [@enders]. El proceso $MA(q)$ con $m=q$ puede expresarse como
+
+\[
+X_t = \mu + \varepsilon_t + \theta_1 \varepsilon_{t-1} + \theta_2 \varepsilon_{t-2} + \cdots + \theta_q \varepsilon_{t-q},
+\]
+
+donde
+
+- \( X_t \) es el valor observado en el tiempo \( t \),
+-  \( \mu \) es la media del proceso,
+-  \( \varepsilon_t \sim \text{iid}(0, \sigma^2) \) es un proceso de ruido blanco,
+- \( \theta_1, \dots, \theta_q \) son los coeficientes del modelo,
+- \( q \) es el orden del modelo.
+
+En forma compacta, puede escribirse como
+
+\[
+X_t = \mu + \sum_{j=0}^{q} \theta_j \varepsilon_{t-j}, \quad \text{con } \theta_0 = 1.
+\]
+
+ 
 
 Algunos datos bioquímicos del agua de determinadas playas uruguayas que
 se miden diariamente suelen ser 7-dependientes, por ejemplo. Esto
 significa que datos que fueron tomados con más de una semana de
-separación, son independientes. En cambio, algunos datos de poblaciones
-o de composición de suelos que se van registrando a lo largo de los
+separación, son independientes. 
+
+En cambio, algunos datos de poblaciones o de composición de suelos que se van registrando a lo largo de los
 años, son débilmente dependientes, pero no son $m$-dependientes para
-ningún $m$. Es el caso de los llamados procesos autorregresivos de orden
-$p$, $AR(p)$, donde cada dato es una combinación lineal de los $p$
-anteriores más un término aleatorio que es un ruido blanco. Esto
-procesos son Markovianos, es decir, de memoria infinita: todo el pasado
-es tan informativo como los últimos $p$ datos[^2]. En este sentido, la
+ningún $m$. Es el caso de los llamados procesos Autorregresivos de orden
+$p$, $AR(p)$, donde cada dato es una combinación lineal de los $p$ anteriores más un término aleatorio que es un ruido blanco [@enders]. 
+
+El proceso \( \text{AR}(p) \), se define como
+
+
+\[
+X_t = \phi_1 X_{t-1} + \phi_2 X_{t-2} + \cdots + \phi_p X_{t-p} + \varepsilon_t,
+\]
+
+donde:
+\begin{itemize}
+  \item \( X_t \) es el valor de la serie en el tiempo \( t \),
+  \item \( \phi_1, \dots, \phi_p \) son los coeficientes autorregresivos,
+  \item \( \varepsilon_t \sim \text{iid}(0, \sigma^2) \) representa el ruido blanco,
+  \item \( p \) es el orden del modelo (número de retardos).
+\end{itemize}
+
+En forma compacta, se puede escribir como
+
+\[
+X_t = \sum_{j=1}^{p} \phi_j X_{t-j} + \varepsilon_t.
+\]
+
+
+Estos procesos son Markovianos, es decir, de memoria infinita: todo el pasado
+es tan informativo como los últimos $p$ datos^[El carácter Markoviano es mal presentado en algunos textos y cursos, hablando confusamente de memoria corta.]. En este sentido, la
 genética aporta excelentes ejemplos para distinguir los procesos
 markovianos. Esto es así porque algunas pocas generaciones atrás
 alcanzan para calcular probabilidades de muchas características de la
@@ -86,8 +169,7 @@ descendencia, mientras que la memoria no es corta sino infinita: cada
 característica resulta de toda la fiogenética, así nos remontemos al
 origen de las especies.
 
-[^2]: El carácter Markoviano es mal presentado en algunos textos y
-    cursos, hablando confusamente de *memoria corta*
+
 
 <!--- EJEMPLO DEL LIBRO A REVEER -->
 
@@ -97,17 +179,73 @@ imagen bíblica (con todo respeto a todos los
 pensares), si Adán y Eva hubieran tenido otros
 genes, la especie podría ser diferente!!-->
 ```
+
 En la teoría clásica de series de tiempo, una estructura $AR(p)$ a
-partir de un proceso $MA(q)$, da lugar a los procesos $ARMA(p,q)$, que
-en general son débilmente dependientes y aproximan bien a cualquier
-proceso estacionario débilmente dependiente[^3]. Lo opuesto a
-dependencia débil es dependencia fuerte[^4]. En algunos datos de
-telecomunicaciones que se registran en escalas temporales muy finas, se
-han encontrado ejemplos de dependencia fuerte.
+partir de un proceso $MA(q)$, da lugar a lo que llamamos proceso Autorregresivo de Medias Móviles de orden \( (p,q) \). Este modelo combina un modelo Autorregresivo \( \text{AR}(p) \) con un modelo de Medias Móviles \( \text{MA}(q) \). La expresión general del modelo $ARMA(p,q)$ es
 
-[^3]: Lo cual es una de las razones de su popularidad.
+\[
+X_t = \phi_1 X_{t-1} + \phi_2 X_{t-2} + \cdots + \phi_p X_{t-p} + \varepsilon_t + \theta_1 \varepsilon_{t-1} + \theta_2 \varepsilon_{t-2} + \cdots + \theta_q \varepsilon_{t-q},
+\]
 
-[^4]: En inglés, long range dependence.
+donde
+\begin{itemize}
+  \item \( \{X_t\} \) es la serie temporal observada,
+  \item \( \varepsilon_t \sim \text{iid}(0, \sigma^2) \) es un ruido blanco,
+  \item \( \phi_1, \dots, \phi_p \) son los coeficientes autorregresivos,
+  \item \( \theta_1, \dots, \theta_q \) son los coeficientes de medias móviles,
+  \item \( p \) es el orden autorregresivo, y \( q \) el orden de medias móviles.
+\end{itemize}
+
+
+
+\medskip
+
+También puede escribirse en forma compacta como
+
+\[
+X_t = \sum_{i=1}^{p} \phi_i X_{t-i} + \varepsilon_t + \sum_{j=1}^{q} \theta_j \varepsilon_{t-j}.
+\]
+
+
+
+
+
+Los procesos \( \text{ARMA}(p,q) \), en general, son débilmente dependientes y aproximan bien a cualquier proceso estacionario débilmente dependiente\footnote{Lo cual es una de las razones de su popularidad.}.
+
+Un proceso estocástico \( \{X_t\} \) se dice \emph{débilmente dependiente}^[Se dice también que es un proceso \emph{débilmente correlacionado} o de \emph{dependencia de corto alcance}.] si la dependencia entre sus observaciones disminuye a medida que crece la distancia temporal entre ellas [@doukhan2007].
+
+En términos de la función de autocorrelación, esto significa que
+
+\[
+\lim_{h \to \infty} \rho(h) = 0,
+\]
+
+donde \( \rho(h) \) es la función de autocorrelación de orden \( h \), definida como
+
+\[
+\rho(h) = \frac{\text{Cov}(X_t, X_{t+h})}{\sqrt{\text{Var}(X_t)\, \text{Var}(X_{t+h})}} = \text{Corr}(X_t, X_{t+h}).
+\]
+
+Esta mide la correlación lineal entre dos observaciones de la serie temporal separadas por \( h \) unidades de tiempo.
+
+Una condición más fuerte que suele usarse es que la suma de las autocorrelaciones sea absolutamente convergente
+
+\[
+\sum_{h=-\infty}^{\infty} |\rho(h)| < \infty.
+\]
+
+Esta propiedad garantiza que la influencia del pasado sobre el presente se desvanece rápidamente, lo cual caracteriza a los procesos débilmente dependientes.
+
+
+
+
+
+
+
+\vspace{1em}
+
+Procesos como los modelos \( \text{ARMA}(p,q) \) son ejemplos típicos de procesos débilmente dependientes. En contraste, procesos con \emph{dependencia fuerte} (o de \emph{largo alcance}) mantienen correlación significativa incluso para retardos grandes.Es decir, lo opuesto a dependencia débil es dependencia fuerte^[En inglés, long range dependence.]. En algunos datos de telecomunicaciones que se registran en escalas temporales muy finas, se han encontrado ejemplos de dependencia fuerte.
+ 
 
 \newpage 
 ## Descomposición de series temporales
@@ -178,6 +316,20 @@ sea lo más sencilla posible (@hyndman).
 
 Considerando lo anterior, cuando los datos no son $iid$ pero se vuelven $iid$ al restarle una
 función determinística, son bastante simples de manejar.
+
+
+Existes varios métodos para estimar y descomponer series temporales [@brockwell2016], entre ellos:
+
+- El método X-11, desarrollado originalmente por la Oficina del Censo de EE.UU. y ampliado por Statistics Canada, se basa en la descomposición clásica pero incorpora ajustes adicionales para mejorar sus limitaciones. Permite estimar la tendencia-ciclo en todos los puntos, admite variaciones estacionales suaves y corrige efectos de calendario, feriados y predictores conocidos.
+
+- STL es un método robusto y flexible para descomponer series temporales en tendencia y estacionalidad, utilizando suavizado local (loess) para capturar relaciones no lineales.
+
+
+Una vez estimados los componentes de una serie temporal, se realiza el ajuste de la serie, restándole los componentes a los datos originales (que pueden estan previamente transformados en logaritmos).
+
+
+
+
 
 ::: {.example #datosnoiid name="Datos no estacionarios"}
 Vamos a presentar a continuación como “lucen” los distintos tipos de
@@ -482,6 +634,23 @@ qqline(df$residuos, col = "red")
 
 -->
 
+
+
+
+::: {.example #mdepen name="Datos estacionarios"}
+Consideremos un conjunto de observaciones de un proceso 2-dependiente, estacionario, donde los
+datos tienen distribución Gumbel.
+
+1- Comparación de una distribución Gumbel $iid$ con la de Gumbel 2-dependiente.
+
+2- Gráfico de una distribución Gumbel 2-dependiente con componente cíclica.
+
+3- Veamos finalmente como luce la dependencia fuerte. Nuevamente el proceso es estacionario y los
+datos son Gumbel.
+:::
+
+1- Veamos qué pasa ahora si yuxtaponemos la gráfica de Gumbel $iid$ con la de Gumbel 2-dependiente.
+
 ```{r echo=FALSE, warning=FALSE}
 # Simular datos Gumbel iid
 set.seed(123)
@@ -505,23 +674,31 @@ df_long <- data.frame(
   Proceso = factor(rep(c("IID", "Dependiente"), each = n))
 )
 
-# Graficar comparación
-ggplot(df_long, aes(x = time, y = Valor, color = Proceso)) +
-  geom_line(alpha = 0.8) +
-  labs(title = "Comparación: Gumbel iid vs. Gumbel 2-dependiente",
-       x = "Tiempo", y = "Valor") +
-  theme_minimal()
 ```
 
-Aún para el ojo más adiestrado es muy difícil
-distinguir las dos situaciones. Puede quizás
-percibirse mayor “inercia” en el caso de los datos en linea roja, correspondiente a la 2-dependencia, pero es realmente muy difícil lograrlo (y nada seguro jugarse).
+
+
+
+
+```{r iidvs2m, fig.cap = "Comparación: Gumbel iid vs. Gumbel 2-dependiente",echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+ggplot(df_long, aes(x = time, y = Valor, color = Proceso)) +
+  geom_line(alpha = 0.8) +
+  scale_color_manual(values = c("IID" = "steelblue", "Dependiente" = "red")) +
+  labs(x = "Tiempo", y = "Valor", color = "Proceso") +
+  theme_minimal()+
+  theme(legend.position = "bottom")
+```
+
+
+
+Aún para el ojo más adiestrado es muy difícil distinguir las dos situaciones. Puede quizás
+percibirse mayor “inercia” en el caso de los datos en linea roja, correspondiente a la 2-dependencia, pero es realmente muy difícil lograrlo.
 
 Esto demuestra la importancia de realizar tests de hipótesis sobre la estructura subyacente y no
 utilizar el “ojímetro”.
 
 
-Veamos como luce ahora una serie de datos Gumbel 2-dependientes con componente cíclica.
+2- Veamos como luce ahora una serie de datos Gumbel 2-dependientes con componente cíclica.
 
 
 ```{r echo=FALSE, warning=FALSE}
@@ -544,6 +721,11 @@ for (t in 3:(n+2)) {
 time <- 1:n
 df <- data.frame(time = time, X = X_dep_cycle)
 
+```
+
+
+
+```{r ciclica2m, fig.cap = "Gumbel 2-dependiente con componente cíclica",echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
 ggplot(df, aes(x = time, y = X)) +
   geom_line(color = 'steelblue', size = 0.8) +
   labs(x = "Tiempo", y = "Observación") +
@@ -551,156 +733,303 @@ ggplot(df, aes(x = time, y = X)) +
 ```
 
 
-Se insinúa una estructura de ciclos, pero
-nuevamente es altanebte recomendable chequear la
-estructura mediante tests.
-La adición de una tendencia creciente fuerte,
-podría ser una técnica exploratoria que ayudara a
-visualizar los ciclos, como apuntó Juan Piccini en
-la primera edición de este curso.
+Se insinúa una estructura de ciclos, pero nuevamente es altamente recomendable chequear la
+estructura mediante tests. 
 
-Veamos finalmente como luce la dependencia
-fuerte. Nuevamente el proceso es estacionario y los
+3- Veamos finalmente como luce la dependencia fuerte. Nuevamente el proceso es estacionario y los
 datos son Gumbel.
 
-```{r echo=FALSE, warning=FALSE}
+
+
+
+```{r gumbelpoda, fig.cap = "Proceso Gumbel 2-dependiente con poda inferior evidente", echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+# Simulación
 set.seed(123)
 n <- 500
 gumbel_full <- rgumbel(n + 2, loc = 0, scale = 0.7)
 
 a1 <- 0.9
-a2 <- -0.7  # más negativo para intensificar la poda
+a2 <- -0.7
 
-X_dep_poda <- numeric(n)
-for (t in 3:(n+2)) {
-  X_dep_poda[t-2] <- a1 * gumbel_full[t-1] + a2 * gumbel_full[t-2] + gumbel_full[t]
+X_dep <- numeric(n)
+for (t in 3:(n + 2)) {
+  X_dep[t - 2] <- a1 * gumbel_full[t - 1] + a2 * gumbel_full[t - 2] + gumbel_full[t]
 }
 
-time <- 1:n
-df <- data.frame(time = time, X = X_dep_poda)
+time <- 3:(n + 2)
+df <- data.frame(time = time, X = X_dep)
 
-ggplot(df, aes(x = time, y = X)) +
-  geom_line(color = 'steelblue', size = 0.8) +
-  labs(title = "Proceso Gumbel 2-dependiente con poda inferior evidente",
-       x = "Tiempo", y = "Observación") +
+# Poda visual: reemplazar todo valor menor a -1 por -1 (sin poner NA)
+df$Xp <- pmax(df$X, -1)
+
+# Graficar
+ggplot(df, aes(x = time, y = Xp)) +
+  geom_line(color = "steelblue", size = 0.8) +
+  labs(x = "Tiempo", y = "Valores") +
   theme_minimal()
 ```
 
+
+
+
+
 Las oscilaciones son parecidas a los casos anteriores pero la muy parejita “poda” inferior es la que hace sospechar algo “raro”. De todos modos, las posibles estructuras de dependencia fuerte son muchas, complejas y
 verificarlas no es sencillo.
-Como resumen final, en los más próximos capítulos
-tomaremos direcciones no iid, en las que veremos:
 
-1- Si el proceso es estacionario y débilmente
-dependiente, la técnica clásica de DEA puede
-aplicarse esencialmente igual (Leadbetter,
-Lindgren, Rootzén).
 
-2- Si el proceso no es estacionario o no es
-débilmente dependiente, cumple algunas
-propiedades condicionales a otro proceso que le
-pauta la “fase”, la técnica clásica de DEA
-puede aplicarse, pero con modificaciones no
-menores.
+
+Como resumen final, en los más próximos capítulos tomaremos direcciones no $iid$, en las que veremos:
+
+1- Si el proceso es estacionario y débilmente dependiente, la técnica clásica de DEA puede
+aplicarse esencialmente igual.
+
+<!-- (Leadbetter, Lindgren, Rootzén) -->
+
+2- Si el proceso no es estacionario o no es débilmente dependiente, cumple algunas
+propiedades condicionales a otro proceso que le pauta la “fase”, la técnica clásica de DEApuede aplicarse, pero con modificaciones no menores.
 
 Además:
 
-3- Puede cambiarse el enfoque y mirar el número
-de eventos extremos en diversos lapsos, esto
-lleva en el caso iid a un proceso de Poisson,
-para estacionarios y débilmente dependientes a
-un Poisson Compuesto y en el marco más
-general del punto 2, a mezclas de Procesos de
-Poisson Compuestos (Lise Bellanger-GP).
+3- Puede cambiarse el enfoque y mirar el número de eventos extremos en diversos lapsos, esto
+lleva en el caso $iid$ a un proceso de Poisson, para estacionarios y débilmente dependientes a
+un Poisson Compuesto y en el marco más general del punto 2, a mezclas de Procesos de
+Poisson Compuestos. El conteo de eventos extremos será también la base o el “pie”, para introducir una técnica muy usada, POT (Picos Sobre Umbrales) y sus variaciones más recientes que veremos al final del curso.
 
-El conteo de eventos extremos será también la base
-o el “pie”, para introducir una técnica muy usada,
-POT (Picos Sobre Umbrales) y sus variaciones más
-recientes que veremos al final.
-
-## Análisis de series temporales
+<!-- (Lise Bellanger-GP). -->
 
 
 
-## Pruebas de raíz unitaria y tendencia
+\newpage
 
-```{r include=FALSE, warning=FALSE}
-library(ismev)
-data(portpirie)
-```
+## Pruebas de raíz unitaria y estacionariedad
 
-### Concepto de Estacionariedad
+Para analizar si una serie temporal es estacionaria, se suelen utilizar dos pruebas complementarias: Pruebas ADF y KPSS.
 
-```{r}
-head(portpirie)
-```
+### Prueba ADF (Augmented Dickey-Fuller)
 
-```{r nice-fig2, echo=FALSE, fig.cap='Niveles máximos anuales del nivel del mar registrados en Port Pirie.', out.width='80%', fig.asp=.75, fig.align='center', fig.alt='Niveles máximos anuales del nivel del mar registrados en Port Pirie, una localidad justo al norte de Adelaida, Australia del Sur, durante el período 1923-1987'}
+La prueba ADF se utiliza para detectar raíces unitarias en una serie temporal, es decir, para evaluar si la serie es no estacionaria (@dickey1981).
 
-plot(portpirie,  xlab = "Year", ylab = "Sea Level (meters)", col="brown")
-```
+Se plantea
 
-La figura \@ref(fig:nice-fig2) muestra los niveles máximos anuales del
-nivel del mar registrados en Port Pirie, una localidad justo al norte de
-Adelaida, Australia del Sur, durante el período 1923-1987. A partir de
-estos datos, puede ser necesario estimar el nivel máximo del mar que
-probablemente ocurra en la región en los próximos 100 o 1000 años. Esto
-plantea una cuestión importante: ¿cómo podemos estimar los niveles que
-pueden ocurrir en los próximos 1000 años sin conocer, por ejemplo, los
-cambios climáticos que podrían suceder?
+\[
+\begin{cases}
+H_0: \gamma = 0 & \text{(la serie no es estacionaria)} \\
+H_1: \gamma < 0 & \text{(la serie es estacionaria)}
+\end{cases}
+\]
 
-No hay evidencia contundente en la figura que sugiera que el patrón de
-variación en los niveles del mar haya cambiado durante el período de
-observación, pero dicha estabilidad podría no persistir en el futuro.
-Esta advertencia es crucial: aunque la teoría de valores extremos ha
-adoptado terminología como el "nivel de retorno a 1000 años", que
-corresponde al nivel que se espera que sea excedido exactamente una vez
-en los próximos 1000 años, esto solo tiene sentido bajo el supuesto de
-estabilidad (o estacionariedad) en el proceso subyacente. Es más
-realista hablar en términos de niveles que, bajo las condiciones
-actuales, ocurrirán en un año determinado con una baja probabilidad
-(@coles2001introduction).
+Para ello, se estiman tres modelos
 
-#### Ejemplo en Finanzas
+\begin{align}
+\text{(c)}\quad \Delta z_t &= a_0 + \gamma z_{t-1} + a_2 t + \sum_{i=2}^{p} \beta_i \Delta z_{t-i+1} + \varepsilon_t \\
+\text{(b)}\quad \Delta z_t &= a_0 + \gamma z_{t-1} + \sum_{i=2}^{p} \beta_i \Delta z_{t-i+1} + \varepsilon_t \\
+\text{(a)}\quad \Delta z_t &= \gamma z_{t-1} + \sum_{i=2}^{p} \beta_i \Delta z_{t-i+1} + \varepsilon_t
+\end{align}
 
+Los modelos se aplican de lo más general (modelo c: con constante y tendencia) a lo más simple (modelo a: sin términos determinísticos).
+
+En cada caso se evalúa si \( \gamma = 0 \) mediante estadísticos tipo \( \tau \), y también se pueden hacer pruebas conjuntas con estadísticos \( \phi \) (pruebas \( F \)).
+
+\bigskip
+
+Recomendación práctica: Al desconocer la verdadera forma del modelo, se comienza con el más general. Si se rechaza \( H_0 \) en ese modelo, no es necesario probar los más simples. Si no se rechaza, se procede a simplificar y volver a testear.
+
+
+
+### Prueba KPSS (Kwiatkowski–Phillips–Schmidt–Shin)
+
+
+
+La prueba de KPSS se utiliza para verificar si una serie temporal es estacionaria [@kpss]. Parte de un modelo que descompone la serie como la suma de varios componentes
+
+\[
+x_t = \mu + \alpha t + u_t + \varepsilon_t,
+\]
+
+donde
+\begin{itemize}
+  \item \( \mu \) es una constante (drift),
+  \item \( \alpha t \) es una tendencia determinística,
+  \item \( u_t \) es un paseo aleatorio,
+  \item \( \varepsilon_t \) es un error estacionario.
+\end{itemize}
+
+El paseo aleatorio \( u_t \) se define como $u_t = u_{t-1} + a_t, \quad a_t \overset{iid}{\sim} \mathcal{N}(0, \sigma_a^2).$
+
+
+Se testea 
+
+\begin{align*}
+H_0 &: \sigma_a^2 = 0 \quad \text{(la serie es estacionaria)} \\
+H_1 &: \sigma_a^2 > 0 \quad \text{(la serie no es estacionaria)}
+\end{align*}
+
+
+
+La prueba KPSS puede aplicarse sobre tres formas distintas del modelo, según los términos determinísticos considerados:
+
+
+- Sin constante ni tendencia:  $x_t = u_t + \varepsilon_t$.
+
+
+- Con constante, sin tendencia: $x_t = \mu + u_t + \varepsilon_t$.
+
+
+- Con constante y tendencia: $x_t = \mu + \alpha t + u_t + \varepsilon_t$
+
+
+
+
+El estadístico de KPSS mide la magnitud acumulada de los residuos de la regresión. Se compara con valores críticos preestablecidos. 
+
+La regla de decisión es
+
+- Si el valor-p es menor que 0.05, se rechaza \( H_0 \): la serie no es estacionaria.
+
+- Si el valor-p es mayor que 0.05, no se rechaza \( H_0 \): la serie es estacionaria.
+
+
+\vspace{1cm}
+
+
+
+
+Una vez que se ha ajustado la serie, es posible aplicar estas pruebas tanto sobre la serie limpia de componentes completa o sobre bloques de valores extremos, dependiendo del objetivo del análisis.
+
+
+
+
+:::{.example #DJ  name="Pruebas de RU y estacionariedad: Indice Dow Jones"}
 Las técnicas de valores extremos han ganado popularidad en aplicaciones
 financieras. Esto no es sorprendente: la solvencia financiera de una
 inversión probablemente esté determinada por cambios extremos en las
-condiciones del mercado en lugar de cambios típicos. Sin embargo, la
+condiciones del mercado, en lugar de cambios típicos. Sin embargo, la
 compleja estructura estocástica de los mercados financieros implica que
-la aplicación ingenua de técnicas de valores extremos puede ser engañosa
-(@coles2001introduction).
+una aplicación "ingenua" de técnicas de valores extremos puede ser engañosa (@coles2001introduction).
+:::
+
+Consideremos los siguientes datos con los valores de cierre diario del índice Dow Jones en el período de 1996 a 2000.
 
 ```{r echo=TRUE}
-data(dowjones)
-dowjones$LogDiff <- c(NA, diff(log(dowjones$Index)))
-```
-
-```{r echo=TRUE}
+data(dowjones) # del paquete ismev
 head(dowjones)
 ```
 
-```{r nice-fig4,echo=FALSE, fig.cap='Panel a) Precios de cierre diario del índice Dow Jones. Panel b) Rendimientos diarios del índice Dow Jones (en logarítmos).', out.width='80%', fig.asp=.75, fig.align='center', fig.alt='Panel izquierdo: precios de cierre diario del índice Dow Jones.Panel derecho: rendimientos logarítmicos diarios del índice Dow Jones.'}
-par(mfrow = c(1,2))
-plot(x=dowjones$Date, y=dowjones$Index, type="l", col="blue", xlab="Date", ylab="Index", main="a)")
-plot(x=dowjones$Date, y=dowjones$LogDiff, type="l", col="purple", xlab="Date", ylab="diff log Index", main="b)")
+
+
+
+```{r dji, fig.cap = "Valores de cierre diario del índice Dow Jones (1996-2000)", echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+plot(x=dowjones$Date, y=dowjones$Index, type="l", col="blue", xlab="Fecha", ylab="índice Dow Jones")
 ```
 
-La Fig.\@ref(fig:nice-fig4) muestra los precios de cierre diario del
-índice Dow Jones durante un período de 5 años. Evidentemente, el nivel
-del proceso ha cambiado drásticamente a lo largo del período observado,
-y las cuestiones sobre los valores extremos del comportamiento diario
-quedan eclipsadas por la variación temporal a largo plazo en la serie.
-Varios estudios empíricos sobre series de este tipo han indicado que se
-puede obtener una aproximación a la estacionariedad tomando los
-logaritmos de los cocientes de observaciones sucesivas, lo que se conoce
-como los retornos logarítmicos diarios. El panel b) de la Fig.
-\@ref(fig:nice-fig4) sugiere una transformación razonablemente exitosa
+La Figura \@ref(fig:dji) muestra cómo fue cambiando el valor del índice Dow Jones día a día durante cinco años. Se nota que el nivel general del índice varió mucho en ese tiempo, por lo que resulta difícil ver con claridad los valores extremos del día a día: quedan "tapados" por los grandes cambios a largo plazo.
+
+
+
+
+Para este tipo de series, muchos estudios muestran que una buena forma de hacerla más estable (estacionaria) es calcular los logaritmos de los cocientes entre valores de días consecutivos. A eso se le llama retorno logarítmico diario. 
+
+El retorno logarítmico diario se puede definir como
+
+\[
+r_t = \log\left( \frac{I_t}{I_{t-1}} \right) = \log(I_t) - \log(I_{t-1}),
+\]
+
+donde \( I_t \) representa el precio de cierre del activo (el índice Dow Jones) en el día \( t \).
+
+Esta transformación estabiliza la varianza y facilita el análisis estadístico de la serie.
+
+```{r echo=TRUE}
+# Calcular retornos logarítmicos diarios
+dowjones$LogReturn <- c(NA, diff(log(dowjones$Index)))
+# El primer valor será NA porque no hay dato anterior para el día 1.
+
+
+# Ver resultado
+head(dowjones)
+```
+
+
+La Fig. \@ref(fig:retornodji) sugiere una transformación razonablemente exitosa
 hacia la estacionariedad. El análisis de las propiedades de valores
 extremos de dichas series transformadas puede proporcionar a los
 analistas financieros información clave sobre el mercado
 (@coles2001introduction).
 
+
+
+```{r retornodji, fig.cap = "Retorno logarítmico diario del índice Dow Jones (1996-2000)", echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+plot(x=dowjones$Date, y=dowjones$LogReturn, type="l", col="darkgrey", xlab="Fecha", ylab="retornos logarítmicos diarios")
+```
+
+Antes de correr las pruebas sobre la serie transformada es necesario eliminar (y reemplazar) datos faltantes y valores infinitos dados por el logaritmo.
+\vspace{0.3cm}
+```{r}
+any(is.na(dowjones$LogReturn))      # TRUE si hay NA
+any(!is.finite(dowjones$LogReturn)) # TRUE si hay Inf o -Inf
+```
+
+```{r}
+# Reemplazar todo Inf y -Inf por 0
+dowjones$LogReturn[is.infinite(dowjones$LogReturn)] <- 0
+
+# Eliminar NA (puede ser el primero)
+dowjones <- dowjones[!is.na(dowjones$LogReturn), ]
+```
+
+\vspace{0.5cm}
+
+Aplicamos las pruebas de RU y KPSS:
+
+```{r warning=FALSE}
+#install.packages("aTSA")
+library(aTSA)
+
+# Test ADF
+aTSA::adf.test(dowjones$LogReturn, output=TRUE)
+```
+
+En los tres modelos evaluados (sin constante ni tendencia, con constante, y con constante y tendencia), todos los valores del estadístico ADF son muy negativos (por ejemplo, −35.6, −26.2, etc.), y todos los $valores-p$ son menores  a $\alpha=0.05$.
+
+Conclusión ADF: Se rechaza la hipótesis nula en todos los casos. Por lo tanto, la serie de retornos logarítmicos es estacionaria según esta prueba.
+
+\newpage
+
+```{r}
+# Test KPSS
+aTSA::kpss.test(dowjones$LogReturn,  lag.short = TRUE, output = TRUE)
+```
+
+
+- Modelo sin constante ni tendencia: valor-p = 0.0153 $\Rightarrow$ se rechaza $H_0$.
+
+- Modelos con constante y con constante + tendencia: valores-p = 0.10 $\Rightarrow$ no se rechaza $H_0$.
+
+
+
+Conclusión KPSS:
+
+- En el modelo más simple (sin constante ni tendencia), se rechaza la estacionariedad.
+
+- En los modelos con constante y/o tendencia, no se rechaza la estacionariedad.
+
+
+Ambas pruebas coinciden en los modelos más completos (con constante y tendencia): la serie es estacionaria.
+Esto es coherente con el comportamiento esperado de una serie de retornos financieros, que usualmente son estacionarios.
+
+\vspace{1cm}
+Los datos del índice Dow Jones ofrecen un ejemplo para explorar la utilidad del enfoque POT.
+
+
+<!--
+
+\bigskip
+
+\textit{Limitaciones:}  
+Cuando existe una raíz unitaria, los coeficientes determinísticos pueden ser estimados con baja precisión. Esto puede dificultar el rechazo de \( H_0 \) incluso cuando la serie es estacionaria en realidad.
+
+-->
+<!--
 
 ### Concepto de series de tiempo estacionarias
 Siguiendo a @enders, se dice que un proceso estocástico $z_{t}$ con media y varianza finitas es estacionario en covarianza para todo $t$ y $t-s$ cuando
@@ -720,8 +1049,8 @@ En \eqref{eq:2_8}, cuando $s=0$ se va a tener que $\gamma_0$ es la varianza de $
 Dado que se está en un marco de ecuaciones en diferencias, se tienen que cumplir condiciones de estabilidad en el sistema y esto implica que las raíces características asociadas al sistema de interés caígan dentro del círculo unitario. Cuando una serie temporal no sea estacionaria, es posible que presente una evidente tendencia, medias y varianzas que no son constantes en el tiempo.
 \end{comment}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-<!--
+
+
 ### Pruebas ADF
 
 Se testea para cada serie de datos
@@ -827,7 +1156,10 @@ kbl(adf_table, booktabs = TRUE, escape = FALSE,
 
 
 Cuando no se conozca el proceso de generación de los datos, se sugiere realizar las pruebas de Dickey-Fuller Aumentado partiendo del modelo
-menos restrictivo para cada serie temporal a uno más particular. Si bien las pruebas de ADF son útiles para detectar la presencia de raíces unitarias, los mismos tienen sus limitaciones. Partiendo del modelo general al particular, cada prueba está condicionada a que las pruebas anteriores sean correctas.  Cuando se empieza por el primer paso, es decir, con el modelo (c) con constante y con tendencia, se hace más difícil rechazar $H_0)$, por lo tanto, cuando se rechace la hipótesis nula en un modelo (c) se tiende a rechazar también la hipótesis nula cuando no se incluyan los términos deterministas.  A su vez, establece que el problema principal de las pruebas de Dickey-Fuller es que tanto el intercepto como la pendiente de la tendencia son, con frecuencia, estimados de manera \textit{pobre}  bajo la presencia de raíces unitarias. En general, se tiende a no rechazar la hipótesis nula de raíz unitaria incluso cuando el verdadero valor de $\gamma$ no es cero. Además, la prueba presenta limitaciones también frente a cambios de régimen (@enders).
+menos restrictivo para cada serie temporal a uno más particular. Si bien las pruebas de ADF son útiles para detectar la presencia de raíces unitarias, los mismos tienen sus limitaciones. Partiendo del modelo general al particular, cada prueba está condicionada a que las pruebas anteriores sean correctas.  Cuando se empieza por el primer paso, es decir, con el modelo (c) con constante y con tendencia, se hace más difícil rechazar $H_0)$, por lo tanto, cuando se rechace la hipótesis nula en un modelo (c) se tiende a rechazar también la hipótesis nula cuando no se incluyan los términos deterministas.  A su vez, establece que el problema principal de las pruebas de Dickey-Fuller es que tanto el intercepto como la pendiente de la tendencia son, con frecuencia, estimados de manera \textit{pobre}  bajo la presencia de raíces unitarias. En general, se tiende a no rechazar la hipótesis nula de raíz unitaria incluso cuando el verdadero valor de $\gamma$ no es cero. Además, la prueba presenta limitaciones también frente a cambios de régimen 
+
+
+(@enders).
 
 
 

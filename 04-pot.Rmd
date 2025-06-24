@@ -175,6 +175,13 @@ estimaciones: $k$ solución computacional de
 \end{align}
 
 
+
+
+
+
+
+
+
 <!-- EJERCICIO PAGINA 114 A 117: PREGUNTAR A ANGEL Y PONER ACA -->
 
 
