@@ -63,6 +63,8 @@ El comienzo del curso se centra en la teoría más clásica de estadística de d
 En la teoría de valores extremos^[EVT por sus siglas en en inglés relativas a Extreme Value
 Theory.], existen dos enfoques fundamentales, ambos ampliamente utilizados: el método de máximos por bloques (BM)^[BM, por sus siglas en inglés relativas a Block Maxima.] y el método de excedencias sobre umbral (POT)^[POT, por sus siglas en inglés.] [@ferreira2015]. En este capítulo se pone el foco en el método BM y más adelante veremos el POT. 
 
+La metodología de BM en la EVT consiste en dividir el período de observación en bloques no superpuestos de igual tamaño y considerar únicamente el valor máximo observado en cada bloque. Las nuevas observaciones así generadas seguirán (bajo ciertas condiciones) alguna de las distribuciones que veremos en este capítulo (@ferreira2015, gumbel1958). 
+
 
 
 

@@ -92,9 +92,11 @@ La verosimilitud se obtiene considerando la probabilidad de los datos observados
 -->
 
 
-## Procesos de conteo: definiciones
+## Procesos de conteo y distribuciones Poisson
 
-Considerando la Teoría de los procesos puntuales presentada anteriormente, presentamos a continuación las definiciones de los conceptos ya vistos para seguir avanzando en el estudio de los procesos de conteo.
+### Proceso de conteo
+
+Considerando la Teoría de los procesos puntuales presentada anteriormente, introducimos a continuación algunas de las definiciones de los conceptos ya vistos para seguir avanzando en el estudio de los procesos de conteo.
 
 Fijaremos un cierto __umbral__ ($u$), llamaremos __evento__ cuando la variable observada ($X_t$ para $t=1,\dots,T$) supera dicho umbral tal que $X_t>u$. Si además, consideramos un cierto intervalo de tiempo $J$, podemos definir 
 
@@ -109,11 +111,14 @@ Obviamente, dadas las fluctuaciones que tienen los fenómenos que estudiamos, in
 $N$ es lo que se llama un __proceso de conteo__^[_Counting process_ en inglés.] o __proceso
 puntual__^[_Point process_ en inglés.], un tipo de modelos empleados en logística, telecomunicaciones, estudios de contaminación atmosférica o costera, entre otros.
 
+### Proceso de Poisson
+
 El proceso de conteo más simple es el llamado __Proceso de Poisson__, que puede caracterizarse de la
 siguiente manera.
 
 
-```{definition, label="d13", name="Proceso de Poisson"}
+
+<!-- definition #d13 name="Proceso de Poisson"
 Si $N$ es un proceso de conteo y $\lambda >0$, entonces diremos que $N$
 es un Proceso de Poisson de parámetro $\lambda$, $PP(\lambda)$, si se cumple que :
   
@@ -122,7 +127,78 @@ es una variable aleatoria que tiene distribución de Poisson de parámetro $\lam
 
 b) Si $J, L, M, \dots$ es una cantidad arbitraria de intervalos de reales positivos DISJUNTOS,
 entonces $N(J), N(L), N(M),\dots$ son variables aleatorias independientes.
-```
+
+-->
+
+
+
+::: {.definition #d13 name="Proceso de Poisson"}
+Sea $\{N(t),\, t \geq 0\}$ un proceso de conteo. 
+Se dice que es un proceso de Poisson con tasa $\lambda > 0$ ($PP(\lambda)$) si se cumplen las siguientes condiciones:
+
+
+1- $N(0) = 0$
+
+2- Tiene incrementos independientes: el número de eventos que ocurren en intervalos disjuntos de tiempo son variables aleatorias independientes.
+
+3- El número de eventos en cualquier intervalo de longitud $t$ tiene distribución de Poisson con media $\lambda t$, es decir, para todo $\:s, t \geq 0\:$ y $\:n = 0, 1, 2, \ldots\:$ tal que
+
+$$
+\mathbb{P}(N(t + s) - N(s) = n) = \frac{e^{-\lambda t} (\lambda t)^n}{n!}
+$$
+
+
+
+Como consecuencia del punto (3), el proceso tiene incrementos estacionarios y se cumple que
+\[
+\mathbb{E}[N(t)] = \lambda t.
+\]
+
+Es por este motivo que decimos que $\lambda$ es la tasa del proceso [@ross2014].
+:::
+
+
+::: {.definition #dfinter name="Distribuciones de Tiempos inter-eventos y de Espera"}
+
+Consideremos un proceso de Poisson y definamos el tiempo del primer evento como $T_1$. 
+
+Para $n > 1$, sea $T_n$ el tiempo transcurrido entre el $(n-1)$-ésimo y el $n$-ésimo evento. 
+La secuencia $\{T_n,\; n = 1, 2, \dots\}$ se llama la __secuencia de tiempos inter-eventos__. Por ejemplo, si $T_1 = 5$ y $T_2 = 10$, entonces el primer evento del proceso de Poisson ocurre en el instante 5 y el segundo en el instante $5 + 10 = 15$.
+
+\vspace{0.3cm}
+Determinemos ahora la distribución de los tiempos $T_n$. Comenzamos observando que el evento $\{T_1 > t\}$ ocurre si y sólo si no ocurre ningún evento del proceso de Poisson en el intervalo $[0, t]$, por lo tanto:
+
+\[
+P(T_1 > t) = P(N(t) = 0) = e^{-\lambda t}
+\]
+
+Esto implica que $T_1$ tiene una distribución exponencial con media $1/\lambda$.
+\vspace{0.3cm}
+
+Ahora bien, $P(T_2 > t) = \mathbb{E}[P(T_2 > t \mid T_1)]$.
+
+\vspace{0.3cm}
+Sin embargo,
+
+\begin{align}
+P(T_2 > t \mid T_1 = s) &= P(\text{0 eventos en } (s, s + t] \mid T_1 = s) \nonumber \\
+&= P(\text{0 eventos en } (s, s + t]) \nonumber \\
+&= e^{-\lambda t} 
+(\#eq:512)
+\end{align}
+
+donde las últimas dos igualdades se deducen de las propiedades de incrementos independientes y estacionarios del proceso de Poisson.
+\vspace{0.3cm}
+Por lo tanto, a partir de la Ecuación \@ref(eq:512) concluimos que $T_2$ también es una variable aleatoria exponencial con media $1/\lambda$ y, además, que $T_2$ es independiente de $T_1$. Repitiendo el mismo argumento para $T_3, T_4,\dots$, se obtiene la misma conclusión para toda la secuencia (@ross2014).
+:::
+
+::: {.proposition #exp} 
+
+$T_n,\; n = 1, 2, \dots,\;$son variables aleatorias exponenciales independientes e idénticamente distribuidas con media $\frac{1}{\lambda}$.
+
+\vspace{0.3cm}
+El proceso de Poisson no tiene memoria: desde cualquier punto en el tiempo, su evolución futura es independiente del pasado y sigue la misma distribución. Por eso, los tiempos entre eventos (interarribos) siguen una __distribución exponencial__ (@ross2014).
+:::
 
 El siguiente teorema brinda una visualización muy interesante de los Procesos de Poisson, que nos
 servirá mucho para introducir otros modelos y que es ideal para poder simular computacionalmente
@@ -152,9 +228,9 @@ contenidos en $[0,1]$.
 
 
 __Observación 2:__ Conviene recordar que si $X$ es
-una $VA$ Poisson de parámetro $\lambda>0$ y $T$ es una $VA$
+una $V.A.$ Poisson de parámetro $\lambda>0$ y $T$ es una $V.A.$
 exponencial de parámetro $\lambda$, entonces $E(X)= \lambda$ y $E(T)=1/\lambda$.
-Si $T_1,\dots,T_n,\dots$ iid son los tiempos inter-eventos de un
+Si $T_1,\dots,T_n,\dots$ $iid$ son los tiempos inter-eventos de un
 $PP(\lambda)$ se deduce entonces de la ley de los grandes
 números que
 
@@ -181,6 +257,31 @@ muy atractiva.
 
 La tasa promedial de incidencia de los eventos en un $PP(\lambda)$ es inversamente proporcional al tiempo
 promedial inter-eventos.
+
+
+
+::: {.definition #tiempoar name="Tiempo de espera hasta el n-ésimo evento"}
+
+Otra cantidad de interés es \( S_n \), el tiempo de arribo del \( n \)-ésimo evento, también llamado tiempo de espera hasta el \( n \)-ésimo evento. Se define
+
+\[
+S_n = \sum_{i=1}^{n} T_i, \quad n \geq 1,
+\]
+
+y por lo tanto, a partir de que los \( T_i \) son variables aleatorias exponenciales independientes e idénticamente distribuidas con parámetro \( \lambda \), se deduce que \( S_n \) sigue una distribución Gamma con parámetros \( n \) y \( \lambda \) [@ross2014]. 
+
+:::
+<!--
+Es decir, la función de densidad de probabilidad de \( S_n \) está dada por:
+
+\[
+f_{S_n}(t) = \lambda e^{-\lambda t} \frac{(\lambda t)^{n-1}}{(n-1)!}, \quad t \geq 0.
+\]
+
+Esta expresión también puede obtenerse observando que el \( n \)-ésimo evento ocurre en o antes del instante \( t \) si, y solo si, han ocurrido al menos \( n \) eventos en ese intervalo.
+
+-->
+
 
 
 ```{example, label="ex13", name="Proceso de ocupación de las líneas entre dos centrales"}
@@ -212,14 +313,37 @@ La unidad en la que se mide la intensidad de tráfico en redes se llama “erlan
 
 ```
 
+\vspace{0.5cm}
 
-Sin embargo, en otros problemas, por ejemplo en modernas redes de datos en las que los “eventos” de “demanda de servicio” pueden ocurrir
-simultáneamente en muy grandes cantidades (“clustering”), aparece un modelo más sofisticado, que puede ser definido a partir del Proceso de Poisson, el __Proceso de Poisson Compuesto__.
+Sin embargo, en otros problemas, por ejemplo en modernas redes de datos en las que los eventos relacionados a la demanda de servicio pueden ocurrir simultáneamente en muy grandes cantidades (clustering), aparece un modelo más sofisticado, que puede ser definido a partir del Proceso de Poisson, el __Proceso de Poisson Compuesto__. 
+
+Cuando hay dependencia temporal en las observaciones, los extremos pueden aparecer agrupados (en clusters) por lo que es adecuado emplear este modelo [@poissonComp].
+
+
+\vspace{0.5cm}
+
+### Generalizaciones del Proceso de Poisson
+
+#### Proceso de Poisson Compuesto
+
+::: {.definition #def13 name="Proceso de Poisson Compuesto"}
+
+Sea \( N(t) \) un proceso de Poisson homogéneo con tasa \( \lambda > 0 \), y sea \( \{S_i\}_{i \in \mathbb{N}} \) una sucesión de variables aleatorias independientes e idénticamente distribuidas (iid) con valores en \( \mathbb{N} = \{1, 2, 3, \dots\} \), y además independientes de \( N(t) \). Entonces, el proceso estocástico \( \{M(t),\ t \geq 0\} \) definido por
+
+\[
+M(t) = \sum_{i=1}^{N(t)} S_i, \quad t \geq 0,
+\]
+
+
+se llama **Proceso de Poisson Compuesto** con tasa \( \lambda \) y distribución de saltos \( G \), donde $G$ es la ley de los \( S_i \) [@ross2014]. 
+
+Seguimos la notación \( M \sim PPC(\lambda; G) \).
+:::
 
 
 
-
-```{definition, label="def13", name="Proceso de Poisson Compuesto"}
+<!--
+::: {.definition #def13 name="Proceso de Poisson Compuesto"}
 Si $N$ es un Proceso de Poisson de parámetro $\lambda>0$ , $G$ es una distribución de probabilidad en los naturales $(1,2,3,\dots)$, consideramos $S_1,\dots,S_n,\dots$ iid con distribución $G$ y construímos un nuevo proceso de conteo $M$ de la forma siguiente:
   
 - Cuando $N$ tiene su primer evento, $M$ tiene $S_1$ eventos simultáneos; 
@@ -227,21 +351,122 @@ Si $N$ es un Proceso de Poisson de parámetro $\lambda>0$ , $G$ es una distribuc
 - Cuando $N$ tiene su segundo evento, $M$ tiene $S_2$ eventos simultáneos.....y así sucesivamente.
 
 decimos que $M$ es un Proceso de Poisson Compuesto de parámetro $\lambda>0$ y distribución de eventos $G$, abreviaremos $M$ es $PPC(\lambda;G)$.
-```
+:::
+
+
+
+Matematicamente, un proceso estocástico \( \{X(t),\ t \geq 0\} \) se dice que es un __proceso de Poisson compuesto__ si puede representarse como
+
+\[
+X(t) = \sum_{i=1}^{N(t)} Y_i, \quad t \geq 0,
+\]
+
+donde \( \{N(t),\ t \geq 0\} \) es un proceso de Poisson, y \( \{Y_i,\ i \geq 1\} \) es una familia de variables aleatorias independientes e idénticamente distribuidas ($iid$) que además son independientes del proceso \( N(t) \). Denominamos \( X(t) \) como la variable aleatoria de Poisson compuesta [@ross2014].
+
+-->
 
 
 
 
-```{exercise, label="ex1"}
-Demostrar que para un $PPC(\lambda;G)$ el tiempo medio inter-eventos sigue siendo $1/\lambda$, pero que la tasa de incidencia media de eventos ahora es $\lambda E(G)$..
-```
+
+
+
+
+::: {.exercise #ppc name="PPC"}
+Demostrar que para un $PPC(\lambda;G)$ el tiempo medio inter-eventos sigue siendo $1/\lambda$, pero que la tasa de incidencia media de eventos ahora es $\lambda E(G)$.
+:::
+
+
+
+
+
 
 __Observación 3.__ Para aclarar, si $G$ es una distribución degenerada otorga al $1$ probabilidad $1$, el correspondiente $PPC(\lambda;G)$ en realidad es un $PPC(\lambda)$. Ergo, el $PP$ es un caso particular de $PPC$.
 
+<!--
+En otras palabras, el proceso de Poisson $PP(\lambda)$ puede verse como un caso particular de un proceso de Poisson Compuesto donde siempre ocurre un único evento en cada arribo del proceso de Poisson base.
+-->
 
 __Observación 4.__ Para evitar confusiones frecuentes, distinguiremos explícitamente estos procesos de los llamados _Procesos de Poisson no-homogéneos_. Para ello recordemos, sin entrar en tecnicismos, que una medida en los reales positivos es una función que a los conjuntos asocia números positivos con las mismas propiedades formales,
-excepto que no tiene por qué dar a todo el conjunto de los reales positivos (a todo el universo) el valor 1. Dicho de otro modo, una probabilidad es una medida particular, que a todo el universo asigna el valor 1. Puede pensarse como ejemplo típico de una medida, la que asigna a un conjunto la integral sobre ese conjunto de una función no negativa (no
+excepto que no tiene por qué dar a todo el conjunto de los reales positivos (a todo el universo) el valor 1. 
+
+Dicho de otro modo, una probabilidad es una medida particular, que a todo el universo asigna el valor 1. Puede pensarse como ejemplo típico de una medida, la que asigna a un conjunto la integral sobre ese conjunto de una función no negativa (no
 necesariamente de integral total 1, puede ser incluso infinita). La longitud es el ejemplo más simple de medida (llamada también _Medida de Lebesgue_) y la longitud de todos los reales positivos es infinito. Puede demostrarse que la longitud multiplicada por una constante no negativa son las únicas medidas invariantes por traslaciones, punto importante para la distinción que queremos hacer.
+
+
+#### Procesos de Poisson no-homogéneos
+
+Una función \( f(h) \) se dice que es \( o(h) \) si
+\[
+\lim_{h \to 0} \frac{f(h)}{h} = 0.
+\]
+
+::: {.definition #oh name="Orden pequeño respecto de h"}
+Una función \( f(h) \) se dice que es \( o(h) \) si
+\[
+\lim_{h \to 0} \frac{f(h)}{h} = 0.
+\] 
+:::
+
+Por ejemplo, la función \( f(x) = x^2 \) es \( o(h) \) ya que
+
+\[
+  \frac{f(h)}{h} = \frac{h^2}{h} = h \quad \Rightarrow \quad \lim_{h \to 0} \frac{f(h)}{h} = \lim_{h \to 0} h = 0.
+ \]
+
+
+
+
+::: {.definition #ppnh name="Proceso de Poisson No Homogéneo"}
+Un proceso de conteo \( \{N(t),\ t \geq 0\} \) se denomina \textbf{proceso de Poisson no homogéneo} con función de intensidad \( \lambda(t) \), si cumple las siguientes condiciones:
+
+\begin{enumerate}
+  \item \textbf{Condición inicial:} 
+  \[
+  N(0) = 0.
+  \]
+
+  \item \textbf{Incrementos independientes:} Para cualquier elección de intervalos de tiempo no solapados, los incrementos del proceso en esos intervalos son independientes.
+
+  \item \textbf{Probabilidad de múltiples eventos en un intervalo pequeño:}
+  \[
+  \mathbb{P}(N(t+h) - N(t) \geq 2) = o(h),
+  \]
+  es decir, la probabilidad de que ocurran dos o más eventos en un intervalo infinitesimal \( h \) es despreciable en comparación con \( h \) cuando \( h \to 0 \).
+
+  \item \textbf{Probabilidad de un solo evento en un intervalo pequeño:}
+  \[
+  \mathbb{P}(N(t+h) - N(t) = 1) = \lambda(t) h + o(h),
+  \]
+  lo que significa que la probabilidad de que ocurra un único evento en el pequeño intervalo \( [t, t+h) \) es aproximadamente proporcional a \( h \), con constante de proporcionalidad \( \lambda(t) \).
+\end{enumerate}
+:::
+
+De manera equivalente, podemos plantear la siguiente Definición.
+<!--
+::: {.definition #def14 name="Proceso de Poisson No Homogéneo (PPNH)"}
+Sea \( m \) una medida definida en los subconjuntos de los reales positivos. Un proceso de conteo \( N \) se llama Proceso de Poisson No Homogéneo de medida \( m \), y se denota \( N \sim \text{PPNH}(m) \), si:
+
+- Para todo intervalo \( J \subset \mathbb{R}_+ \), la variable \( N(J) \sim \text{Poisson}(m(J)) \).
+
+- Si \( J_1, J_2, \dots, J_k \) son intervalos disjuntos, entonces \( N(J_1), N(J_2), \dots, N(J_k) \) son variables aleatorias independientes.
+:::
+
+Si la medida \( m \) admite una densidad respecto de la medida de Lebesgue, es decir, si existe una función no negativa \( \lambda(t) \) tal que
+\[
+m([a,b]) = \int_a^b \lambda(t)\,dt,
+\]
+entonces \( N \) es un Proceso de Poisson No Homogéneo con función de intensidad \( \lambda(t) \), y cumple
+
+- \( N(0) = 0 \),
+- Incrementos independientes,
+- Para \( h \to 0 \),
+  \[
+  \mathbb{P}(N(t+h) - N(t) = 1) = \lambda(t) h + o(h), \quad \mathbb{P}(N(t+h) - N(t) \geq 2) = o(h).
+  \]
+
+Este enfoque es útil cuando la función de intensidad \( \lambda(t) \) tiene una expresión conocida, lo que permite modelar y simular el proceso más fácilmente.
+-->
 
 ```{definition, label="def14", name="Proceso de Poisson No Homogéneo"}
 Si $N$ es un proceso de conteo y $m$ es una medida que no puede expresarse como una constante por la longitud, diremos que $N$ es un Proceso de Poisson No Homogéneo de medida $m$ ($N$ es $PPNH(m)$ ) si se cumple:
@@ -253,15 +478,47 @@ b) Si $J, L, M, \dots$ es una cantidad arbitraria de intervalos positivos DISJUN
 ```
 
 
-Queda claro que el proceso de Poisson podría verse de la manera a) y b) anterior cuando $m=$ constante por longitud, por eso, para no confundir, se excluye a título expreso que $m$ pueda ser constante por longitud.
+La Definición \@ref(def:def14)  usa una medida $m$ para definir la intensidad. Si esa medida fuera simplemente proporcional a la longitud (como pasa en el Poisson homogéneo), entonces el proceso sería homogéneo. Por eso, para evitar confusiones, en la definición de proceso de Poisson no homogéneo se aclara que $m$ no debe ser constante por longitud.
 
-Para dejar en claro la diferencia entre los $PPNH$ y los $PPC$ ( o el simple $PP$), recordemos que en los $PPC$, los tiempos inter-eventos son exponenciales de parámetro $\lambda>0$ e iid. El siguiente resultado muestra la diferencia de conceptos. Por su extrema simplicidad, lo detallaremos.
+Para dejar en claro la diferencia entre los $PPNH$ y los $PPC$ (o el simple $PP$), recordemos que en los $PPC$, los tiempos inter-eventos son exponenciales de parámetro $\lambda>0$ e $iid$. El siguiente resultado muestra la diferencia de conceptos. 
+
+Para destacar la diferencia entre los procesos de Poisson no homogéneos ($PPNH$) y los procesos de Poisson compuestos ($PPC$) —o incluso el proceso de Poisson simple ($PP$)— recordemos que en los $PPC$, los tiempos entre eventos son variables aleatorias exponenciales independientes e idénticamente distribuidas ($iid$) con parámetro $\lambda>0$.
+
 
 ```{theorem, label="th13", name="PPNH no es PPC"}
 Si $N$ es un $PPNH$ y $T_1$ es el tiempo del primer evento, la distribución de $T_1$ no es exponencial. Por lo tanto, un $PPNH$ no es $PPC$.
 ```
 
-__Demostración:__ 
+
+__Demostración:__
+
+\begin{align}
+P(T_1 \leq t) &= P(N((0,t)) \geq 1) \\
+&= 1 - P(N((0,t)) = 0) \\
+&= 1 - e^{-m((0,t))}, \quad \forall\, t > 0.
+\end{align}
+
+Si $T_1$ fuera una variable aleatoria exponencial, entonces, para algún $\lambda > 0$ y para todo $t > 0$, se tendría:
+
+\[
+P(T_1 \leq t) = 1 - e^{-\lambda t} \quad \Rightarrow \quad m((0,t)) = \lambda t.
+\]
+
+Entonces, para cualesquiera $a < b$,
+
+\begin{align}
+m((a,b)) &= m((0,b)) - m((0,a)) \\
+&= \lambda b - \lambda a = \lambda (b - a) \\
+&= \lambda \cdot \text{longitud}((a,b)).
+\end{align}
+
+Por lo tanto, $m = \lambda \times \text{longitud}$, lo cual contradice nuestra hipótesis de que $m$ **no** es una medida proporcional a la longitud. \hfill $\diamond$
+
+
+
+
+<!--
+__Demostración:__  texto de Gonza
 
 \begin{align}
 P(T_1\leq t)&= P(N((0,t))\geq 1)\\
@@ -279,25 +536,38 @@ m((a,b))&= m((0,b))-m((0,a))\\
 
 Por lo cual se concluye $m=\lambda x \;\text{longitud}$, lo cual es absurdo $\diamond$.
 
-__Observación 5.__ Si $n$ es grande y se dispone de una muestra $X_1,\dots,Xn,\dots$ donde se intenta describir eventos extremos de este tipo de datos, la técnica de
-pasajes de altos niveles, $HLE$ (High Level Exceedances, en inglés), implica hacer un
-“tunning” del umbral en función de $n$, respecto al cual se considerará un evento “extremo”, pues es lógico que para mayor n, sea posible distinguir con mayor precisión eventos de extremos de mayor o menor intensidad. Por lo tanto se supone una
-selección de umbral un tal que vale
+-->
 
 
-a) Existe $\lambda>0$ tal que, para $n$ tendiendo a infinito, $nP(X_1>u_n)$ tiende a $\lambda$.
+## Técnica de pasajes de altos niveles (HLE)
+<!--
+__Observación 5.__ Si $n$ es grande y se dispone de una muestra $X_1,\dots,Xn,\dots$ donde se intenta describir eventos extremos de este tipo de datos, la técnica de pasajes de altos niveles, $HLE$ (High Level Exceedances, en inglés), implica hacer un _tunning_ del umbral en función de $n$, respecto al cual se considerará un evento “extremo”, pues es lógico que para mayor $n$, sea posible distinguir con mayor precisión eventos de extremos de mayor o menor intensidad. 
+-->
 
-__Observación 6.__ Si se cumple a., entonces $P(X_1>u_n)\approx \lambda/n$, por lo cual, si $n$ es grande, el evento de que los datos observados superen el umbral un es un _evento raro_, con probabilidad muy baja, poco frecuente. Esto hace que al conteo de eventos extremos respecto a un tal umbral en la Literatura Estadística, algunos autores le llamen _Laws of Small Numbers_ (@flaws), pues se cuenta algo poco frecuente. Iremos a resultados concretos en tal dirección. Como se indicó en la observación 1, reescalamos el instante $j$ al instante $j/n$ de $[0,1]$. 
+__Observación 5.__ Cuando el tamaño muestral \( n \) es grande y se dispone de una secuencia de datos \( X_1, \dots, X_n \), una estrategia común para el análisis de eventos extremos es la técnica de \emph{pasajes de altos niveles}^[High Level Exceedances, HLE]. Esta consiste en fijar un umbral \( u_n \) dependiente de \( n \), a partir del cual se considera que una observación corresponde a un evento “extremo”. Dado que una muestra mayor permite discriminar mejor entre niveles de rareza, es natural que el umbral se ajuste con \( n \) para capturar eventos cada vez más extremos [@hle].
 
+En este enfoque, se suele asumir que el umbral \( u_n \) se elige de modo tal que:
+
+\begin{equation}
+n \, P(X_1 > u_n) \to \lambda, \quad \text{cuando } n \to \infty, \quad \text{con } \lambda > 0.
+\end{equation}
+
+__Observación 6.__ Si se cumple la condición anterior, entonces asintóticamente \( P(X_1 > u_n) \approx \lambda/n \). Es decir, el evento de que una observación supere el umbral \( u_n \) se vuelve cada vez más raro a medida que crece \( n \). Por este motivo, en la literatura estadística algunos autores denominan a este tipo de enfoques \emph{Leyes de los pequeños números}^[Laws of Small Numbers, @flaws], ya que se enfocan en contar eventos poco frecuentes.
+
+En lo que sigue, desarrollaremos resultados concretos bajo este paradigma. Para facilitar el tratamiento asintótico, reescalaremos el índice \( j \) de cada observación al intervalo unitario mediante la transformación \( j \mapsto j/n \in [0,1] \).
+
+
+<!--
+Si se cumple a., entonces $P(X_1>u_n)\approx \lambda/n$, por lo cual, si $n$ es grande, el evento de que los datos observados superen el umbral un es un _evento raro_, con probabilidad muy baja, poco frecuente. Esto hace que al conteo de eventos extremos respecto a un tal umbral en la Literatura Estadística, algunos autores le llamen _Laws of Small Numbers_ (@flaws), pues se cuenta algo poco frecuente. Iremos a resultados concretos en tal dirección. Reescalamos el instante $j$ al instante $j/n$ de $[0,1]$. 
+-->
 
 ```{theorem, label="th14", name="HLE en el caso iid"}
-Si $X_1,\dots,X_n,\dots$ iid, se cumple la condición a. y se
+Si $X_1,\dots,X_n,\dots$ iid, se cumple la condición de la Observación $5$ y se
 considera el proceso puntual $N_n$ de _pasajes de altos niveles_, definido para todo intervalo $J$ de $[0,1]$ por
 $$
 N_n(J)= \text{Cantidad de i en}\; nJ\; \text{tales que} X_i>u_n,
 $$
 entonces cuando $n$ tiende a infinito, $N_n$ tiende a un $PP( \lambda )$.
-
 ```
 
 
@@ -306,7 +576,7 @@ datos, aunque sea débil, es el “clustering” o agrupamiento de los datos muy
 
 
 ```{theorem, label="th15", name="HLE para procesos estacionarios débilmente dependiente"}
-Si $X_1,\dots,X_n,\dots$ es un proceso estacionario y débilmente dependiente que cumple la condición a. y se considera el proceso puntual $N_n$ de “pasajes de altos niveles” como antes, entonces si
+Si $X_1,\dots,X_n,\dots$ es un proceso estacionario y débilmente dependiente que cumple la condición de la Observación $5$ y se considera el proceso puntual $N_n$ de “pasajes de altos niveles” como antes, entonces si
 
 $$
 \lim_{n \to \infty} N_n=PPC( \lambda;G )
@@ -317,9 +587,9 @@ y $G$ puede ser identificado por una fórmula (o bien estimada a partir de la mu
 
 Esto brinda un modelo razonablemente realista en muchas situaciones. Sin embargo, para modelar contaminación urbana por $O_3$, dada la presencia de covariables muy influyentes debimos lidiar con un modelo más complejo que veremos más adelante.
 
-## Ejemplos concretos de HLE
+### Ejemplos concretos de HLE
 
-### Datos $iid$
+#### Datos $iid$
 
 <!---  [Text to display](https://otexts.com/fpp3/decomposition.html) 
 Para “bajar a tierra” los conceptos vistos vamos a ver ejemplos concretos de HLE. Todos los ejemplos que veremos los instantes de registro de datos $n=5000$ y como se indicó en la observación 1, reescalaremos el tiempo para llevarlo a $[0,1]$.

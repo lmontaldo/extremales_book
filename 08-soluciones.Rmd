@@ -375,5 +375,28 @@ d_n = M - \frac{\alpha}{\log n}, \quad c_n = \frac{\alpha}{(\log n)^2}
 
 Así se verifica que \( F \) pertenece al **DAM de Gumbel**, y se determinan explícitamente las sucesiones de normalización.
 
+## Solución Ejercicio \@ref(exr:ppc) {.unnumbered .unlisted}
 
 
+Sea $N(t)$ un proceso de Poisson homogéneo con tasa $\lambda > 0$. Entonces el tiempo entre arribos, es decir, los incrementos entre eventos consecutivos, son variables aleatorias independientes e idénticamente distribuidas con distribución exponencial de parámetro $\lambda$. Por lo tanto, el tiempo medio entre arribos es:
+\[
+\mathbb{E}[T] = \frac{1}{\lambda}.
+\]
+
+Ahora, consideramos un proceso de Poisson compuesto $M(t)$, definido como:
+\[
+M(t) = \sum_{i=1}^{N(t)} S_i,
+\]
+donde $\{S_i\}_{i=1}^{\infty}$ es una sucesión de variables aleatorias i.i.d.\ con distribución $G$ (discreta sobre los naturales) y esperanza finita $\mathbb{E}[G]$.
+
+Dado que $N(t)$ y $\{S_i\}$ son independientes, el valor esperado del proceso compuesto se calcula como
+\[
+\mathbb{E}[M(t)] = \mathbb{E}\left[ \sum_{i=1}^{N(t)} S_i \right] = \mathbb{E}[N(t)] \cdot \mathbb{E}[G] = \lambda t \cdot \mathbb{E}[G].
+\]
+
+Luego, la tasa media de eventos del proceso compuesto, es decir, la cantidad promedio de eventos (sumando los tamaños de los saltos) por unidad de tiempo, es
+\[
+\frac{\mathbb{E}[M(t)]}{t} = \lambda \cdot \mathbb{E}[G].
+\]
+
+Por lo tanto, el tiempo promedio entre arribos sigue siendo $1/\lambda$, y la tasa de incidencia promedio de eventos es $\lambda \, \mathbb{E}[G]$.
