@@ -30,6 +30,18 @@ Suponiendo que \( J = [j_1, x_1) \times \dots \times [j_k, x_k) \subset \mathbb{
 
 se denomina __función de intensidad (densidad)__ del proceso.
 
+A continucación veremos el Proceso de Poisson es el modelo más simple, natural y tractable de un proceso de conteo cuando los eventos cumplen ciertan condiciones.
+
+<!--
+1. Ocurren al azar: Los eventos son independientes unos de otros.
+
+2. No tienen memoria (independencia de incrementos): El número de eventos en intervalos disjuntos es independiente.
+
+3. Tienen una tasa constante (homogéneo):  
+  - La probabilidad de un evento en un intervalo de longitud $h$ es aproximadamente $\lambda h$.
+  - La probabilidad de más de un evento es de orden $o(h)$ (ver Def. \@ref(def:oh)).
+-->
+
 
 ### Proceso de Poisson homogéneo unidimensional
 
@@ -89,6 +101,119 @@ Supondremos que la función de intensidad \( \lambda(\cdot) \) pertenece a una f
 
 <!--
 La verosimilitud se obtiene considerando la probabilidad de los datos observados como una función del parámetro desconocido \( \theta \)^[Presentamos el desarrollo en el caso más simple, donde el conjunto \( J \) es unidimensional, aunque el razonamiento es análogo para procesos de Poisson en dimensiones superiores.].
+-->
+
+
+### Estimación por MV
+
+Supongamos que se han observado puntos $X_1, \ldots, X_n$ en una región $J \subset \mathbb{R}$, y que son una realización de un proceso de Poisson sobre $J$, con función de intensidad $\lambda(\cdot; \theta)$, para algún valor del parámetro $\theta$.
+
+De los datos se sabe que algunos puntos ocurrieron para una cantidad de ubicaciones conocidas, pero en ningún otro lugar de la región. La verosimilitud se deriva utilizando estas dos informaciones.
+
+Sea $I_i = [X_i, X_i + \delta_i]$, para $i = 1, \ldots, n$, un conjunto de pequeños intervalos centrados en las observaciones, y definimos $I = J \setminus \bigcup_{i=1}^n I_i$. Por la propiedad del proceso de Poisson,
+
+\begin{equation}
+\Pr\{N(I_i) = 1\} \approx \lambda(X_i)\delta_i,
+\end{equation}
+
+donde
+
+\begin{equation}
+\lambda(I_i; \theta) = \int_{I_i} \lambda(u; \theta) \, du \approx \lambda(X_i; \theta)\delta_i.
+\end{equation}
+
+Sustituyendo en la expresión anterior se obtiene
+
+\[
+\Pr\{N(I_i) = 1\} \approx \exp\{-\lambda(X_i)\delta_i\} \lambda(X_i)\delta_i \approx \lambda(X_i)\delta_i,
+\]
+
+donde usamos que $\exp\{-\lambda(X_i)\delta_i\} \approx 1$ para $\delta_i$ pequeños.
+
+También,
+
+\[
+\Pr\{N(I) = 0\} = \exp\{-\lambda(I)\} \approx \exp\{-\lambda(A)\},
+\]
+
+ya que todos los $\delta_i$ son pequeños.
+
+Por lo tanto, la verosimilitud es
+
+\[
+\Pr\{N(I) = 0, N(I_1) = 1, \ldots, N(I_n) = 1\} = \Pr\{N(I) = 0\} \prod_{i=1}^n \Pr\{N(I_i) = 1\}
+\]
+
+\[
+\approx \exp\{-\Lambda(A; \theta)\} \prod_{i=1}^n \lambda(X_i; \theta)\delta_i.
+\]
+
+
+Dividiendo entre los $\delta_i$ para obtener una densidad, se llega a:
+
+\begin{equation}
+L(\theta; X_1, \ldots, X_n) = \exp\{-\Lambda(J; \theta)\} \prod_{i=1}^n \lambda(X_i; \theta)
+(\#eq:73)
+\end{equation}
+
+
+
+donde
+
+\[
+\Lambda(A; \theta) = \int_A \lambda(x; \theta) \, dx.
+\]
+
+La verosimilitud dada en \@ref(eq:73) también es válida en el caso más general de un proceso de Poisson sobre un conjunto $J$ de dimensión $k$.
+
+La aplicación más sencilla de la Eq. \@ref(eq:73) es la situación en la que $X_1, \ldots, X_n$ son los puntos de un proceso de Poisson homogéneo unidimensional, con parámetro de intensidad desconocido $\lambda$, observado sobre un intervalo $J = [0, t)$. En ese caso, $\Lambda(J; \lambda) = \lambda t$, entonces $L(\lambda,X_1,\dots,X_n)=exp\left\{ -\lambda t \right\}\lambda^n$.
+
+Por lo tanto, como es habitual, es más sencillo maximizar el logaritmo de la verosimilitud
+
+\begin{equation}
+\ell(\lambda) = \log L(\lambda; X_1, \ldots, X_n) = -\lambda t + n \log \lambda,
+\end{equation}
+
+lo que conduce al estimador de máxima verosimilitud, tal que
+
+\[
+\hat{\lambda} = \frac{n}{t},
+\]
+
+que representa la tasa empírica de ocurrencia de puntos.
+
+La maximización de la Eq. \@ref(eq:73) para modelos de procesos de Poisson no homogéneos generalmente requiere técnicas numéricas [@coles2001introduction].
+
+<!--
+
+\bigskip
+
+Para aprovechar los procesos puntuales como representación de valores extremos, necesitamos una noción de convergencia que sea análoga a la convergencia de variables aleatorias.
+
+\medskip
+
+\noindent \textbf{Definición 7.1.} Sea $N_1, N_2, \ldots$ una sucesión de procesos puntuales sobre $J$. Se dice que la sucesión converge en distribución a un proceso $N$, denotado
+
+\[
+N_n \xrightarrow{d} N,
+\]
+
+si, para toda elección de $m$ y para todo conjunto acotado $A_1, \ldots, A_m$ tal que
+
+\[
+\Pr\{N(\partial A_j) = 0\} = 1, \quad j = 1, \ldots, m,
+\]
+
+donde $\partial A_j$ denota la frontera del conjunto $A_j$, la distribución conjunta
+
+\[
+(N_n(A_1), \ldots, N_n(A_m)) \xrightarrow{d} (N(A_1), \ldots, N(A_m)).
+\]
+
+\medskip
+
+De forma menos formal, decimos que $N_n \xrightarrow{d} N$ si las propiedades probabilísticas de $N_n$ y $N$ son arbitrariamente similares para valores grandes de $n$.
+
 -->
 
 
@@ -396,10 +521,7 @@ necesariamente de integral total 1, puede ser incluso infinita). La longitud es 
 
 #### Procesos de Poisson no-homogéneos
 
-Una función \( f(h) \) se dice que es \( o(h) \) si
-\[
-\lim_{h \to 0} \frac{f(h)}{h} = 0.
-\]
+
 
 ::: {.definition #oh name="Orden pequeño respecto de h"}
 Una función \( f(h) \) se dice que es \( o(h) \) si
@@ -537,22 +659,102 @@ m((a,b))&= m((0,b))-m((0,a))\\
 Por lo cual se concluye $m=\lambda x \;\text{longitud}$, lo cual es absurdo $\diamond$.
 
 -->
-
+\newpage
 
 ## Técnica de pasajes de altos niveles (HLE)
+
+### Distribución Generalizada de Pareto
+
+Esta aproximación se basa en la Distribución de Pareto Generalizada (Def. \@ref(def:dgp)), la cual tiene una interpretación como distribución límite, similar a la distribución Gumbel (@gumbel1958). Esta idea fue sugerida por primera vez por @pickands1975 y ha sido desarrollada en la literatura [@davison1990]. 
+
+Los modelos más simples de excedencias sobre umbrales se basan en procesos de Poisson de tiempos de excedencia combinado con excedencias independientes sobre el umbral. En este sentido, se fija un umbral $u$ y sea $N$ la cantidad de excedencias sobre $u$ en un período de $m$ años. Por ejemplo, muchas aplicaciones medioambientales consideran un año como la unidad temporal [@davison1990].
+
+Supongamos que las excedencias, o diferencias entre las observaciones por encima del umbral y el propio umbral, son independientes y comparten una función de distribución común $G$.  
+
+
+Asumimos que $G$ es una Distribución Generalizada de Pareto dada por
+
+
 <!--
-__Observación 5.__ Si $n$ es grande y se dispone de una muestra $X_1,\dots,Xn,\dots$ donde se intenta describir eventos extremos de este tipo de datos, la técnica de pasajes de altos niveles, $HLE$ (High Level Exceedances, en inglés), implica hacer un _tunning_ del umbral en función de $n$, respecto al cual se considerará un evento “extremo”, pues es lógico que para mayor $n$, sea posible distinguir con mayor precisión eventos de extremos de mayor o menor intensidad. 
+Supongamos que las excedencias, o diferencias entre las observaciones por encima del umbral y el propio umbral, son independientes y comparten una función de distribución común $G$.  Asumimos que $G$ es una Distribución Generalizada de Pareto dada por 
+
+
+\begin{equation}
+G(x; \alpha, \kappa) = 1 - \left(1 - \frac{\kappa x}{\alpha} \right)^{1/\kappa},
+(\#eq:pickands)
+\end{equation}
+
+donde \( \alpha > 0 \) y \( \kappa \) es un parámetro arbitrario. 
+
+- El rango de \( x \) es \( 0 < x < \infty \) si \( \kappa \leq 0 \), y \( 0 < x < \alpha / \kappa \) si \( \kappa > 0 \).
+
+- El caso \( \kappa = 0 \) se interpreta como el límite cuando \( \kappa \to 0 \), es decir, la distribución exponencial con media \( \alpha \). 
+
+- El caso \( \kappa < 0 \) es simplemente una reparametrización de una de las formas usuales de la distribución de Pareto, pero la extensión para \( \kappa \geq 0 \) fue dada por @pickands1975.
+
 -->
 
-__Observación 5.__ Cuando el tamaño muestral \( n \) es grande y se dispone de una secuencia de datos \( X_1, \dots, X_n \), una estrategia común para el análisis de eventos extremos es la técnica de \emph{pasajes de altos niveles}^[High Level Exceedances, HLE]. Esta consiste en fijar un umbral \( u_n \) dependiente de \( n \), a partir del cual se considera que una observación corresponde a un evento “extremo”. Dado que una muestra mayor permite discriminar mejor entre niveles de rareza, es natural que el umbral se ajuste con \( n \) para capturar eventos cada vez más extremos [@hle].
+```{definition, label="dgp", name="Distribución Pareto Generalizada."}
+Si $k$ real y $\sigma >0$, la Distribución de Pareto Generalizada $G_{k, \sigma}$ se define de la siguiente manera
+
+\begin{equation}
+G_{k,\sigma}(x) = 
+\begin{cases}
+1 - \left(1 + \dfrac{kx}{\sigma} \right)^{-1/k} & \text{si } k \neq 0,\quad
+\begin{cases}
+x \geq 0 & \text{si } k > 0 \\
+0 \leq x \leq -\sigma/k & \text{si } k < 0
+\end{cases} \\
+1 - e^{-x/\sigma} & \text{si } k = 0,\quad x \geq 0
+\end{cases}
+(\#eq:dpg)
+\end{equation}
+
+```
+
+
+- Cuando $k=0$ la Eq.\@ref(eq:dpg) corresponde a la distribución
+exponencial de parámetro $1/\sigma$, por lo cual $\sigma$ sería la media de la distribución. 
+
+- El caso $k=-1$ corresponde a la distribución uniforme en $[0, \sigma]$, por lo cual la media sería $\sigma/2$. 
+
+- El caso $k>0$ corresponde a la distribución de Pareto.
+
+La familia de Distribuciones de Pareto Generalizada es continua, en el sentido que cuando $k$ tiende a cero por derecha o izquierda, $G_{k, \sigma}$ tiende a $G_{0,\sigma}$. Lo mismo ocurre con las distribuciones extremales vistas en el capítulo 1, como el lector puede verificar.
+
+
+
+@pickands1975 demostró que la Eq.\@ref(eq:dpg) surge como una distribución límite de las excedencias sobre umbrales si y solo si la distribución original pertenece al dominio de atracción de una de las distribuciones de valores extremos. 
+
+__Propiedad 1. (Estabilidad respecto al umbral)__ Si \( X \) sigue una distribución de Pareto generalizada y \( u > 0 \), entonces la distribución condicional de \( X - u \) dado que \( X > u \), también es una distribución de Pareto generalizada. 
+
+__Propiedad 2. (Del máximo con Poisson)__ Si \( N \) tiene una distribución de Poisson y, condicionalmente a \( N \), \( X_1, \ldots, x_N \) son variables aleatorias $iid$ con distribución de Pareto generalizada, entonces el máximo \( \max(X_1, \ldots, X_N) \) sigue una distribución de valores extremos generalizada. Por lo tanto, un proceso de Poisson de tiempos de excedencia con excedencias de Pareto generalizada implica las distribuciones clásicas de valores extremos.
+
+
+Ambas propiedades caracterizan a la Distribución de Pareto Generalizada en el sentido de que ninguna otra familia las posee. Estas propiedades sugieren que la distribución de Pareto generalizada será una familia útil para la estimación estadística, siempre que se tome un umbral suficientemente alto. 
+
+Una pregunta importante es cuán alto debe ser ese umbral. Si bien existen en la literatura resultado teóricos, no se han desarrollado lo suficiente como para tener un valor práctico. En su lugar, adoptaremos un enfoque más pragmático en el que se emplea un conjunto de técnicas diagnósticas para evaluar el ajuste del modelo [@davison1990].
+
+
+<!--
+__Observación 5.__ Si $n$ es grande y se dispone de una muestra $X_1,\dots,Xn,\dots$ donde se intenta describir evento
+s extremos de este tipo de datos, la técnica de pasajes de altos niveles, $HLE$ (High Level Exceedances, en inglés), implica hacer un _tunning_ del umbral en función de $n$, respecto al cual se considerará un evento “extremo”, pues es lógico que para mayor $n$, sea posible distinguir con mayor precisión eventos de extremos de mayor o menor intensidad. 
+-->
+
+__En suma:__ Cuando el tamaño muestral \( n \) es grande y se dispone de una secuencia de datos \( X_1, \dots, X_n \), una estrategia común para el análisis de eventos extremos es la técnica de \emph{pasajes de altos niveles}^[High Level Exceedances, HLE]. Esta consiste en fijar un umbral \( u_n \) dependiente de \( n \), a partir del cual se considera que una observación corresponde a un evento “extremo”. Dado que una muestra mayor permite discriminar mejor entre niveles de rareza, es natural que el umbral se ajuste con \( n \) para capturar eventos cada vez más extremos [@hle].
 
 En este enfoque, se suele asumir que el umbral \( u_n \) se elige de modo tal que:
 
 \begin{equation}
 n \, P(X_1 > u_n) \to \lambda, \quad \text{cuando } n \to \infty, \quad \text{con } \lambda > 0.
+(\#eq:condicion)
 \end{equation}
 
-__Observación 6.__ Si se cumple la condición anterior, entonces asintóticamente \( P(X_1 > u_n) \approx \lambda/n \). Es decir, el evento de que una observación supere el umbral \( u_n \) se vuelve cada vez más raro a medida que crece \( n \). Por este motivo, en la literatura estadística algunos autores denominan a este tipo de enfoques \emph{Leyes de los pequeños números}^[Laws of Small Numbers, @flaws], ya que se enfocan en contar eventos poco frecuentes.
+__Observación 5.__ Si se cumple la condición anterior, entonces asintóticamente 
+
+$$ P(X_1 > u_n) \approx \lambda/n.$$ 
+
+Es decir, el evento de que una observación supere el umbral \( u_n \) se vuelve cada vez más raro a medida que crece \( n \). Por este motivo, en la literatura estadística algunos autores denominan a este tipo de enfoques \emph{Leyes de los pequeños números}^[Laws of Small Numbers, @flaws], ya que se enfocan en contar eventos poco frecuentes.
 
 En lo que sigue, desarrollaremos resultados concretos bajo este paradigma. Para facilitar el tratamiento asintótico, reescalaremos el índice \( j \) de cada observación al intervalo unitario mediante la transformación \( j \mapsto j/n \in [0,1] \).
 
@@ -562,8 +764,8 @@ Si se cumple a., entonces $P(X_1>u_n)\approx \lambda/n$, por lo cual, si $n$ es 
 -->
 
 ```{theorem, label="th14", name="HLE en el caso iid"}
-Si $X_1,\dots,X_n,\dots$ iid, se cumple la condición de la Observación $5$ y se
-considera el proceso puntual $N_n$ de _pasajes de altos niveles_, definido para todo intervalo $J$ de $[0,1]$ por
+Si $X_1,\dots,X_n,\dots$ es $iid$, se cumple la condición de la Eq. \@ref(eq:condicion) y se
+considera el proceso puntual $N_n$ de pasajes de altos niveles, definido para todo intervalo $J$ de $[0,1]$ por
 $$
 N_n(J)= \text{Cantidad de i en}\; nJ\; \text{tales que} X_i>u_n,
 $$
@@ -571,7 +773,7 @@ entonces cuando $n$ tiende a infinito, $N_n$ tiende a un $PP( \lambda )$.
 ```
 
 
-__Observación 7.__ Uno de los elementos más notorios que produce la dependencia entre los
+__Observación 6.__ Uno de los elementos más notorios que produce la dependencia entre los
 datos, aunque sea débil, es el “clustering” o agrupamiento de los datos muy grandes. Esto se traduce a que los pasajes altos se disparan de acuerdo a Proceso de Poisson, pero cuando se disparan, pueden dispararse varios juntos. Esta es la base intuitiva del siguiente resultado.
 
 
@@ -587,16 +789,195 @@ y $G$ puede ser identificado por una fórmula (o bien estimada a partir de la mu
 
 Esto brinda un modelo razonablemente realista en muchas situaciones. Sin embargo, para modelar contaminación urbana por $O_3$, dada la presencia de covariables muy influyentes debimos lidiar con un modelo más complejo que veremos más adelante.
 
+
+\newpage
+
 ### Ejemplos concretos de HLE
+
+Para “bajar a tierra” los conceptos vistos vamos a ver ejemplos concretos de HLE.  En todos los casos vamos a suponer que $n=5000$ y reescalemos el tiempo para llevarlo a $[0,1]$.
 
 #### Datos $iid$
 
-<!---  [Text to display](https://otexts.com/fpp3/decomposition.html) 
-Para “bajar a tierra” los conceptos vistos vamos a ver ejemplos concretos de HLE. Todos los ejemplos que veremos los instantes de registro de datos $n=5000$ y como se indicó en la observación 1, reescalaremos el tiempo para llevarlo a $[0,1]$.
+<!---  [Text to display](https://otexts.com/fpp3/decomposition.html) -->
 
-Comenzaremos por un ejemplo en que los datos registrados son $iid$.
--->
 
+::: {.example #pyth name="HLE para datos iid"}
+
+- Simulamos datos i.i.d.
+- Introducimos \textit{outliers} grandes (por ejemplo, 20 valores artificialmente altos).
+- Elegimos un umbral \( u_n \) tal que aproximadamente
+    \[
+    \mathbb{P}(X > u_n) \approx \frac{\lambda}{n}
+    \]
+    Por ejemplo, con \( \lambda = 20 \), entonces usamos \( u_n \) tal que:
+    \[
+    \texttt{quantile}(X, \texttt{probs} = 1 - 20/n)
+    \]
+    
+:::
+
+
+```{r echo=TRUE}
+set.seed(123)
+
+# Parámetro del proceso de Poisson (intensidad esperada de eventos)
+lambda <- 20
+n <- 5000
+
+# 1. Simular 20 tiempos inter-evento exponenciales
+inter_event_times <- rexp(lambda, rate = lambda)
+
+# 2. Obtener los tiempos acumulados y reescalarlos a [0,1]
+rescaled_event_times <- cumsum(inter_event_times)
+rescaled_event_times <- rescaled_event_times / max(rescaled_event_times)  
+
+# 3. Generar una señal de fondo i.i.d. normal
+X <- rnorm(n)
+
+# 4. Convertir los tiempos de ocurrencia a posiciones de índice
+event_idx <- as.integer(rescaled_event_times * n)
+# asegurar que estén dentro de [1, n]
+event_idx <- pmin(pmax(event_idx, 1), n)  
+
+# 5. Insertar outliers en esos puntos
+X[event_idx] <- rnorm(lambda, mean = 8, sd = 2)
+
+# 6. Definir umbral
+u_n <- quantile(X, probs = 1 - lambda / n)
+
+# 7. Obtener los tiempos donde hay excedencias
+exceed_idx <- which(X > u_n)
+rescaled_times <- exceed_idx / n
+
+# 8. Calcular los tiempos inter-eventos reales
+inter_times <- diff(rescaled_times)
+```
+
+
+
+```{r hleiid, fig.cap = "Datos i.i.d. + outliers aleatorios y espaciados", echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+plot((1:n)/n, X, type = "l", col = "grey40",
+     xlab = "Tiempo reescalado", ylab = "Valor")
+
+abline(h = u_n, col = "red", lwd = 2, lty = 2)
+points(rescaled_times, X[exceed_idx], col = "blue", pch = 19)
+
+legend("topright", legend = paste("Umbral u_n =", round(u_n, 2)),
+       col = "red", lty = 2, lwd = 2, bty = "n")
+```
+El umbral es \( u_n \) y se observan 20 pasajes de dicho umbral, claramente separados. 
+Parece razonable intentar modelarlo mediante un proceso de Poisson. 
+Esto será posible si los tiempos inter-eventos son independientes e idénticamente distribuidos (i.i.d.) con distribución exponencial.
+
+Veamos primero en qué instantes se dan los pasajes del umbral  (recordar que reescalamos el tiempo dividiendo por \( n = 5000 \))  y luego analizaremos los tiempos inter-eventos.
+
+
+
+Los eventos (excedencias del umbral \( u_n \)) ocurren en los siguientes instantes de tiempo reescalado $\{ t_1, t_2, \dots, t_{20} \}$, donde cada \( t_i \in [0,1] \) indica el momento en que un valor \( X_i > u_n \).
+
+
+```{r echo=TRUE}
+# Mostrar los tiempos de ocurrencia de eventos (excedencias)
+round(rescaled_times, 4)
+```
+
+
+Los tiempos inter-eventos se calculan como las diferencias entre los instantes de ocurrencia de las excedencias del umbral:
+\[
+\Delta_i = t_{i+1} - t_i, \quad i = 1, \dots, 19.
+\]
+
+```{r echo=TRUE}
+# 1. Calcular los tiempos inter-eventos
+inter_times <- diff(rescaled_times)
+# 2. Mostrar los tiempos inter-eventos con 4 decimales
+round(inter_times, 4)
+```
+
+Obsérvese que el tiempo promedio entre eventos es
+\[
+\bar{\Delta} = \frac{1}{19} \sum_{i=1}^{19} (t_{i+1} - t_i), 
+\]
+dando un valor aproximado de \( \bar{\Delta} \approx x \).  
+
+La estimación del parámetro \( \lambda \) de una distribución exponencial es entonces $\hat{\lambda} = \frac{1}{\bar{\Delta}}$.
+
+
+```{r echo=TRUE}
+mean_inter <- mean(inter_times)
+lambda_hat <- 1 / mean_inter
+
+# Mostrar resultados
+cat("Tiempo promedio inter-eventos:", round(mean_inter, 4), "\n")
+cat("Estimación del parámetro de la exponencial:", round(lambda_hat, 2), "\n")
+```
+
+
+
+Tests de aleatoriedad a los tiempos inter-eventos:
+
+1- Prueba de Kolmogorov-Smirnov (KS): Verifica si los tiempos inter-eventos provienen de una distribución exponencial (como en un Proceso de Poisson Homogéneo).
+
+
+
+```{r}
+# Estimar parámetro lambda
+lambda_hat <- 1 / mean(inter_times)
+
+# Prueba KS: ¿los tiempos inter-evento siguen Exp(lambda_hat)?
+ks_result <- ks.test(inter_times, "pexp", rate = lambda_hat)
+
+# Mostrar resultado
+print(ks_result)
+```
+
+
+Dado que el p-valor es alto ($0.6686 > 0.05=\alpha$), no se rechaza $H_0)$. Por lo tanto, los datos son compatibles con una distribución exponencial, lo cual respalda el supuesto de que los tiempos inter-evento pueden haber sido generados por un proceso de Poisson
+
+2- Prueba de Runs (Rachas)
+
+
+```{r warning=FALSE}
+# install.packages("randtests")
+# Runs test
+library(randtests)
+runs.test(inter_times)
+```
+No se rechaza la hipótesis nula de aleatoriedad ($p-value = 0.1449>0.05=\alpha$).
+Es decir, no hay evidencia suficiente para afirmar que los tiempos inter-eventos no sean aleatorios. Esto es coherente con la hipótesis de que los eventos siguen un proceso de Poisson, donde los tiempos entre eventos son $iid$ exponenciales.
+
+
+
+```{r hleiidacf, fig.cap = "ACF de los tiempos inter-eventos", echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+# ACF
+acf(inter_times, main="")
+```
+
+La Fig. \@ref(fig:hleiidacf) para los tiempos inter-eventos permite visualizar si hay dependencia serial entre los valores. En un proceso de Poisson, los tiempos inter-eventos deberían ser $iid$ exponenciales y por lo tanto, sin autocorrelación.
+
+
+
+```{r histiid, fig.cap = "Histograma de los tiempos inter-eventos", echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+breaks <- c(0, 0.025, 0.05, 0.075, 0.1, 0.125, Inf)
+classes <- cut(inter_times, breaks = breaks, right = TRUE)
+plot(classes)
+```
+
+La Fig. \@ref(fig:histiid) muestra una alta concentración cerca de cero y una rápida caída, lo cual sería es compatible con una distribución exponencial, aunque hay poca cantidad de datos, lo que limita la evidencia visual.
+
+
+
+Para tener mayor rigurosidad,  se podria realizar un __test de Lilliefors__ de ajuste a la distribución exponencial sobre los datos inter-eventos.
+
+
+
+
+
+
+
+
+
+<!--
 ```{r echo=FALSE, warning=TRUE}
 # Parámetros
 n <- 5000                # Número de observaciones
@@ -887,5 +1268,5 @@ Intervalo al $95\%$ de Confianza para $\lambda(x)$ tal que $\left[ A(x), B(x) \r
 &A(x)=\lambda_n(x)-1.96\left\{ \frac{\lambda_n(x)}{n\cdot h(n)} \right\}^{1/2}+\frac{0.98^2}{n\cdot h(n)},\\
 &B(x)=\lambda_n(x)+1.96\left\{ \frac{\lambda_n(x)}{n\cdot h(n)} \right\}^{1/2}+\frac{0.98^2}{n\cdot h(n)}.
 \end{align}
-
+-->
 

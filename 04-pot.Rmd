@@ -1,4 +1,4 @@
-# Peaks Over Treshold y variantes
+# Peaks Over Treshold y variantes 
 
 ## Peaks Over Treshold (POT)
 
@@ -13,11 +13,13 @@ valores muy elevados (por encima del umbral). Dicho de otra manera, si $u$ es el
 nuestro registro, cuando $X>u$ tendremos un _evento_ y queremos estudiar estadísticamente el
 $\text{exceso}=X-u$. Esto es el método POT, que se apoya en un resultado muy relevante, a menudo referido como Segundo Teorema de la Teoría Clásica de Valores Extremos (el primero es el FTG).
 
+
+<!--
 Esto requiere alguna definición previa.
 
 
 
-```{definition, label="df1", name="Distribución Pareto Generalizada."}
+```{definition, label="DGP1", name="Distribución Pareto Generalizada."}
 Si $k$ real y $\sigma >0$, la Distribución de Pareto Generalizada $G_{k, \sigma}$ se define de la siguiente manera
 
 \begin{equation}
@@ -40,6 +42,7 @@ exponencial de parámetro $1/\sigma$, por lo cual $\sigma$ sería la media de la
 
 __Observación 2.__ Observar que la familia de Distribuciones de Pareto Generalizada es continua, en el sentido que cuando $k$ tiende a cero por derecha o izquierda, $G_{k,\sigma} tiende a $G_{0,\sigma}$. Lo mismo ocurre con las distribuciones extremales vistas en el capítulo 1, como el lector puede verificar.
 
+-->
 
 ```{theorem, label="th1", name="de Pickands-Balkema-de Haan (PBdH)"}
 Consideremos una distribución $F$ que admite DEA, es decir que pertenece al DAM de alguna distribución extremal. Dado un umbral $u>0$, consideremos la distribución condicional de
