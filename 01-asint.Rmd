@@ -1402,6 +1402,15 @@ Se concluye entonces que la log-normal está en el DAM Gumbel, o, lo que es lo m
 
 <!---  transicion a  Tiempos y Valores de Retorno --->
 
+
+
+::: {.example name="Máximos de abundancia poblacional de fitoplancton"}
+Una aplicación relevante del enfoque de valores extremos generalizados (GEV) se presenta en @segura2023metabolic, donde se modelan máximos de abundancia poblacional de fitoplancton como función del tamaño corporal y recursos ambientales. El ajuste de modelos GEV por clases de tamaño permitió evidenciar escalamiento negativo de la abundancia máxima con el tamaño corporal, en línea con predicciones teóricas basadas en restricciones metabólicas.
+
+Además, se modelaron los parámetros de la distribución GEV como funciones de temperatura y nutrientes, permitiendo capturar la variabilidad residual con mayor precisión que usando modelos gaussianos. Este enfoque ilustra cómo incorporar covariables ecológicas relevantes en el modelado de extremos y cómo evitar sesgos importantes en la estimación de tiempos de retorno.
+:::
+
+
 ## Estimación por Máxima Verosimilitud (MV)
  
 Una vez que decidimos usar una distribución GEV para modelar los máximos por bloques (por ejemplo, las máximas anuales de temperatura o precipitación), el siguiente paso es ajustar el modelo a los datos. Esto significa estimar los tres parámetros de la GEV:
@@ -1889,9 +1898,6 @@ round(periodo_retorno, 0)
 ```
 
 O sea que, podríamos esperar una precipitación máxima diaria de 72 mm, por término medio, cada 68 años.
-
-
-
 
 
 

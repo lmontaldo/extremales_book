@@ -796,12 +796,10 @@ Esto brinda un modelo razonablemente realista en muchas situaciones. Sin embargo
 
 Para “bajar a tierra” los conceptos vistos vamos a ver ejemplos concretos de HLE.  En todos los casos vamos a suponer que $n=5000$ y reescalemos el tiempo para llevarlo a $[0,1]$.
 
-#### Datos $iid$
+#### HLE para datos iid
 
 <!---  [Text to display](https://otexts.com/fpp3/decomposition.html) -->
 
-
-::: {.example #pyth name="HLE para datos iid"}
 
 - Simulamos datos i.i.d.
 - Introducimos \textit{outliers} grandes (por ejemplo, 20 valores artificialmente altos).
@@ -814,7 +812,7 @@ Para “bajar a tierra” los conceptos vistos vamos a ver ejemplos concretos de
     \texttt{quantile}(X, \texttt{probs} = 1 - 20/n)
     \]
     
-:::
+
 
 
 ```{r echo=TRUE}
@@ -912,6 +910,9 @@ cat("Tiempo promedio inter-eventos:", round(mean_inter, 4), "\n")
 cat("Estimación del parámetro de la exponencial:", round(lambda_hat, 2), "\n")
 ```
 
+La estimación de $\lambda$ es $1/ 0.0499=20.04.$
+
+
 
 
 Tests de aleatoriedad a los tiempos inter-eventos:
@@ -965,14 +966,439 @@ plot(classes)
 
 La Fig. \@ref(fig:histiid) muestra una alta concentración cerca de cero y una rápida caída, lo cual sería es compatible con una distribución exponencial, aunque hay poca cantidad de datos, lo que limita la evidencia visual.
 
-
-
 Para tener mayor rigurosidad,  se podria realizar un __test de Lilliefors__ de ajuste a la distribución exponencial sobre los datos inter-eventos.
 
+En conclusión, en este caso de HLE se puede modelar el conteo de eventos por un PP(20.04).
+
+#### Datos no iid, estacionarios y débilmente dependientes
+ 
+
+Vayamos ahora a un caso en que los datos no son $iid$ pero son estacionarios y débilmente dependientes, por lo cual veremos si podemos aplicar un modelo PPC.
+
+Esto será posible si los tiempos interventos son $iid$ y con distribución exponencial nuevamente, pero deberíamos también informar sobre $G$, la distribución que indica cuántos se producen simultáneamente.
+
+
+```{r}
+set.seed(123)
+
+# Parámetros
+n <- 5000
+lambda <- 20
+grupo_max <- 4
+media_outlier <- 200
+
+# 1. Proceso AR para datos dependientes
+phi <- 0.8
+X <- arima.sim(model = list(ar = phi), n = n)
+
+# 2. Insertar outliers agrupados en bloques separados
+bloques <- split(1:n, cut(1:n, lambda))
+outlier_idx <- c()
+
+for (b in bloques) {
+  k <- sample(1:grupo_max, 1)
+  idxs <- sample(b, k)
+  outlier_idx <- c(outlier_idx, idxs)
+}
+
+X[outlier_idx] <- rnorm(length(outlier_idx), mean = media_outlier, sd = 300)
+
+# 3. Definir umbral
+u_n <- 150
+```
+
+
+```{r datosnoiid, fig.cap = "Datos no iid, estacionarios y débilmente dependientes", echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+# 4. Graficar señal con umbral
+plot(X, type = "h", col = "darkgrey", ylab = "valor", xlab = "tiempo")
+abline(h = u_n, col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+
+El umbral ahora es 150 y se observan algunos  _clusters_ de eventos. Esto quedará en evidencia al
+ver los tiempos en que ocurren los eventos, lo cual nos hará nuevamente estudiar la distribución de los tiempos inter-eventos, el orden de los mismos (si son eventos simples, dobles, triples, etc.) y qué podemos decir de su distribución $G$.
+
+```{r echo=TRUE}
+# 1. Obtener los tiempos (índices) de excedencia
+exceed_idx <- which(X > u_n)
+# 2. Reescalar a [0,1] 
+rescaled_times <- exceed_idx / n
+```
+
+
+```{r echo=TRUE}
+# Calcular tiempos entre eventos
+inter_event_times <- diff(rescaled_times)
+mean_inter <- mean(inter_event_times)
+```
+
+
+
+```{r echo=FALSE}
+cat("Tiempo promedio inter-evento:", round(mean_inter, 4), "\n")
+cat("Estimación parámetro exponencial (1/prom):", round(1 / mean_inter, 2), "\n")
+```
+
+
+
+Ahora, calculamos el orden de los eventos es decir, el tamaño del clúster.
+
+```{r echo=TRUE}
+# 6. Detectar clústers (eventos con separación < 0.02)
+delta <- 0.02
+clust_id <- rep(1, length(rescaled_times))
+for (i in 2:length(rescaled_times)) {
+  if ((rescaled_times[i] - rescaled_times[i - 1]) < delta) {
+    clust_id[i] <- clust_id[i - 1]
+  } else {
+    clust_id[i] <- clust_id[i - 1] + 1
+  }
+}
+
+# 7. Calcular orden de cada evento
+orden <- as.numeric(table(clust_id))
+orden_evento <- rep(orden, orden)
+
+```
+\newpage
+
+```{r echo=FALSE}
+# 8. Mostrar salida como tabla
+df <- data.frame(
+  T = round(rescaled_times, 3),
+  Event = 1:length(rescaled_times),
+  Orden = orden_evento
+)
+print("Tiempos de ocurrencia y orden de eventos:")
+print(df)
+
+# 9. Tiempos inter-eventos
+cat("\nTiempos inter-eventos:\n")
+print(round(inter_event_times, 3))
+```
+
+
+```{r echo=FALSE}
+runs.test(inter_event_times)
+```
+No se rechaza la hipótesis nula de aleatoriedad ($p-value>0.05=\alpha$).
+Es decir, no hay evidencia suficiente para afirmar que los tiempos inter-eventos no sean aleatorios.
 
 
 
 
+```{r hlenoiidacf, fig.cap = "ACF de los tiempos inter-eventos", echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+# ACF
+acf(inter_event_times, main="")
+```
+
+
+
+
+Hipótesis del test de Kolmogorov–Smirnov para exponencialidad: 
+
+- $H_0)$ los datos siguen una distribución exponencial con parámetro estimado $\hat{\lambda} = \frac{1}{\bar{X}}$.
+- $H_1)$ los datos no siguen una distribución exponencial.
+
+
+
+```{r warning=FALSE}
+lambda_hat <- 1 / mean(inter_event_times)
+ks.test(inter_event_times, "pexp", rate = lambda_hat)
+```
+Como $p-value > 0.05$, no se rechaza la hipótesis nula.
+
+Conclusión: los datos de tiempos inter-evento son compatibles con una distribución exponencial (al menos según este test). Entonces, con estos datos estaríamos en codiciones de aplicar conteo de eventos con un modelo $PPC$.
+
+
+
+
+Moralejas:
+
+1) Los datos originales o bien no son estacionarios, o bien no son débilmente dependientes (o ni lo uno ni lo otro).
+
+2) Es natural preguntarse si no hay modelos de HLE más generales.
+
+
+
+#### Modelo HLE basado en mezclas de procesos puntuales de conteo (PPC)
+
+Un análisis de datos de polución por ozono en la región parisina reveló una marcada influencia de covariables climáticas. Estas covariables, además de ser no estacionarias y presentar una estructura compleja de dependencia, demostraron tener un alto valor predictivo. Por lo tanto, su incorporación al modelo resultaba fundamental.
+
+En este contexto, se desarrolló un modelo HLE basado en mezclas de procesos puntuales de conteo (PPC), una herramienta ampliamente utilizada en estadística moderna. Se consideró un proceso $Y$ que en cada día registra los valores de un conjunto de covariables relevantes (como distintas medidas de temperatura).
+
+Se buscó un modelo en el cual, dada una trayectoria completa del proceso de covariables, el número de eventos extremos de polución pudiera aproximarse mediante un PPC condicional. Es decir, se modeló la variable $N_n|Y=y$ como un proceso puntual de conteo cuya estructura depende de la trayectoria $y$. 
+
+Como consecuencia, $N_n$ se aproxima a una mezcla de PPC, de acuerdo con las probabilidades de las distintas trayectorias posibles (lo que se corresponde con la fórmula de descondicionamiento). En el caso en que el proceso $Y$ sea débilmente dependiente y estacionario, la mezcla se reduce a un PPC clásico.
+
+Sin embargo, se presentaron ejemplos teóricos y empíricos donde el proceso de covariables no es ni estacionario ni débilmente dependiente, y en los que se obtiene naturalmente una mezcla de varios PPC.
+
+Los fundamentos teóricos del método, así como su demostración de aplicabilidad, se encuentran desarrollados en el trabajo @bellanger2003, incluido en la bibliografía del curso. Esta metodología resulta especialmente recomendable cuando se dispone de un volumen considerable de datos y hay evidencia de que el enfoque clásico basado en PPC no es adecuado.
+
+
+
+
+<!--
+::: {.remark}
+Esta es una observación.
+:::
+-->
+
+#### Proceso Puntual de Poisson No Homogéneo (PPNH)
+
+__Observación 8:__ Brindaremos alguna información adicional sobre los $PPNH(m)$. Supondremos que
+existe una función __no constante__ $\lambda(x)≥0$ para todo $x>0$, continua por derecha tal que
+
+\begin{equation}
+m(A)=\int_A \lambda (x)\;dx
+\end{equation}
+
+y supondremos que la integral de la derecha es finita cuando \( A \) es un conjunto acotado, y que, por otro lado, la integral tiende a infinito cuando \( A \) es el conjunto de todos los reales positivos. 
+
+
+Observar que, si la función \( \lambda \) fuera constante, se obtendría un proceso puntual de Poisson homogéneo (PPH), motivo por el cual esa posibilidad se excluye explícitamente.
+
+
+
+Bajo las hipótesis anteriores, veremos que los \emph{tiempos inter-evento} no solo no siguen una distribución exponencial (como ya se demostró), sino que tampoco pueden considerarse independientes ni idénticamente distribuidos. Esta situación puede generar diversas dudas: ¿cómo simular un proceso de este tipo?, ¿cómo verificar si se ajusta a un conjunto de datos?, ¿cómo estimar la medida \( m \) (o la función de intensidad \( \lambda \)) a partir de observaciones?, entre otras. En lo que sigue, intentaremos abordar estas cuestiones.
+
+De manera intuitiva, la función \( \lambda(t) \) representa la \emph{intensidad del evento en el instante \( t \)}.
+
+
+
+Por tanto, un modelo razonable en muchos fenómenos climáticos consiste en considerar una función \( \lambda \) \emph{constante a trozos}, que alterna entre cuatro valores fijos: uno correspondiente a todos los días del verano, otro para el otoño, otro para el invierno y otro para la primavera.
+
+Para ilustrarlo con mayor claridad, supongamos que la unidad de tiempo es el día, y que se dispone de datos durante 8 años. En ese caso, se puede graficar una función \( \lambda \) que tome valores distintos en función de la estación del año correspondiente a cada día (Fig. \@ref(fig:trozos)).
+
+
+
+```{r trozos, fig.cap = "Lambda diario 2008–2015", echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+# Parámetros
+anios <- 2008:2015
+dias_por_anio <- 365
+total_dias <- length(anios) * dias_por_anio
+
+# Crear vector de días
+dia <- 1:total_dias
+
+# Crear lambda constante a trozos por estaciones
+lambda <- rep(NA, total_dias)
+
+# Valores por estación (invierno, primavera, verano, otoño)
+valores_estacion <- c(1, 4, 8, 6)
+
+# Asignar valores por día
+for (i in seq_along(anios)) {
+  base <- (i - 1) * dias_por_anio
+  lambda[base + 1 : 90]     <- valores_estacion[1]  # Invierno
+  lambda[base + 91 : 181]   <- valores_estacion[2]  # Primavera
+  lambda[base + 182 : 273]  <- valores_estacion[3]  # Verano
+  lambda[base + 274 : 365]  <- valores_estacion[4]  # Otoño
+}
+
+# Graficar
+plot(dia, lambda, type = "s", lwd = 2,
+     xlab = "día", ylab = "valor")
+```
+
+
+En la Fig. \@ref(fig:trozos), la intensidad de ocurrencia de eventos extremos (por ejemplo, de polución) cambia según la estación del año. En cada estación, $\lambda(t)$ se mantiene constante, reflejando que el comportamiento del proceso se estabiliza en ese período. Pero como $\lambda(t)$ no es constante en el tiempo, el proceso es no homogéneo. Por último, se asume que el patrón estacional se repite cada año, es decir, hay periodicidad anual.
+
+
+
+Ahora, si se dispone de los datos observados durante esos 8 años (no graficados aquí), es claro cómo estimar el valor de \( \lambda \) correspondiente a cada estación. La submuestra de eventos correspondiente a una estación dada puede modelarse, de manera razonable, como un proceso de Poisson homogéneo, cuyo parámetro es precisamente el valor de \( \lambda \) en esa estación. 
+
+Dado que conocemos la forma de estimar el parámetro de un proceso de Poisson homogéneo, podemos aplicar ese conocimiento para obtener una estimación de \( \lambda \) para cada estación del año. En particular, si \( n \) es el número de eventos observados en una estación y \( T \) es la cantidad total de días de esa estación a lo largo del período de observación, entonces:
+\[
+\hat{\lambda} = \frac{n}{T}
+\]
+proporciona una estimación natural del valor de la función de intensidad durante dicha estación.
+
+<!--
+Pero además, tenemos una forma de chequear que el modelo $PPNH(m)$ se ajusta a los registros observados, simplemente verificando que las 4
+submuestras estacionales se ajustan cada una a un $PP$, cosa que ya sabemos hacer también!
+-->
+
+Continuando ahora con los $PPNH$ con las suposiciones adicionales que hicimos sobre la
+medida $m$ al principio de esta observación, puede demostrarse fácilmente que la densidad de $T_1$, instante del primer evento es
+
+
+\begin{equation}
+f_1(t)=\lambda(t)\; e^{-\int_0^t \lambda(x)\;dx}
+(\#eq:f1)
+\end{equation}
+
+o sea,  $f_1(t)$ es la densidad del primer tiempo de ocurrencia del evento, donde $\lambda(t)$ es intensidad instantánea en el tiempo $t$ y $\int_0^t \lambda(x)\;dx$
+la acumulación de la intensidad hasta el tiempo $t$. La función $e^{-\int_0^t \lambda(x)\;dx}$ es la función de supervivencia (probabilidad de que no haya ocurrido nada antes de $t$).
+
+
+Por otro lado, puede probarse que la densidad de $T_2$, tiempo que transcurre entre el primer evento y el segundo evento es
+
+
+\begin{equation}
+f_2(t)=\int_0^{\infty}\lambda(u+s)\; e^{-\int_u^{u+s} \lambda(x)\;dx} \;f_1(u) du
+(\#eq:f2)
+\end{equation}
+
+Puede probarse que $f_1(t)=f_2(t)$ solamente cuando la función $\lambda$ es constante, por lo cual en un $PPNH$ los dos primeros tiempos inter-eventos NO tienen idéntica distribución.
+
+Además, la distribución conjunta de dichos dos primeros tiempos inter-eventos es
+
+\begin{equation}
+f_{1,2}(t,s)=\lambda(t+s)\;e^{-\int_t^{t+s} \lambda(x)\;dx}\;f_1(t)
+(\#eq:f12)
+\end{equation}
+
+
+Puede probarse que $f_1(t)\:f_2(s)=f_{1,2}(t,s)$ para todo par $t>0$, $s>0$, solamente cuando la función $\lambda$ es constante, por lo cual en un $PPNH$ los dos primeros tiempos inter-eventos NO son independientes.
+
+Quedando claro las complejidades de los $PPNH$, puede entonces preguntarse cómo se hace para
+simular un $PPNH(m)$, con $m$ como supusimos al principio de la observación.
+Un tal método es bastante sencillo de implementar, como veremos en lo siguiente.
+
+Dividamos todo el eje del tiempo en intervalitos sucesivos de longitud $h$, llamémosle $\Delta_1, \Delta_2,\cdots$ y llamemos $t_j$ al extremo izquierdo de $\Delta_j$ . Simulemos
+entonces para cada $j$, $N_j$, un $PP(\lambda(t_j)\;h)$, de forma tal que los distintos $PP$ sean independientes entre sí, y definamos
+
+\begin{equation}
+N(A)=\sum_j N_j(A),\quad \forall\; A
+(\#eq:na)
+\end{equation}
+
+Si $h$ es muy pequeño entonces $N$ se aproxima a un $PPNH(m)$ y por lo tanto $N$ es lo que se simula.
+
+Finalmente, uno podría desear describir un proceso de eventos con la complejidad de un $PPNH$
+pero que además permita eventos múltiples, la respuesta es obviamente un Proceso de Poisson No
+Homegéneo Compuesto de medida temporal $m$ y distribución de multiplicidad $G$ ($PPNHC(m;G)$),
+donde un $PPNH(m)$ indica dónde se producen los eventos, e, independientemente, el orden de
+multiplicidad de los eventos siguen la distribución $G$ (en los naturales).
+
+El siguiente punto, por su relevancia práctica, amerita ser destacado.
+
+### Estimación de la intensidad de un $PPNH$
+
+__Observación 9:__ Estimación de la intensidad de un $PPNH$. Aquí veremos dos métodos diferentes, basados en distintos niveles de información previa y acceso a datos.
+Concretamente:
+
+a) Estimación paramétrica basada en una sola trayectoria del $PPNH$.
+
+b) Estimación no-paramétrica a partir de muchas réplicas del $PPNH$.
+
+Comenzaremos con el primer abordaje, basado en el método de máxima verosimilitud.
+
+__a) Estimación paramétrica basada en una sola trayectoria del $PPNH$__
+
+Cuando trabajamos con fenómenos donde los eventos ocurren en el tiempo de forma aleatoria pero con una frecuencia que puede variar, un modelo natural es el \textbf{Proceso de Poisson No Homogéneo} (PPNH). Este modelo generaliza el clásico proceso de Poisson, permitiendo que la \emph{intensidad de ocurrencia} —es decir, la frecuencia esperada de eventos por unidad de tiempo— sea una función del tiempo, en lugar de una constante.
+
+Supongamos entonces que observamos un PPNH \( N \) a lo largo de un intervalo temporal largo, concretamente \( [0, n) \), donde \( n \) es suficientemente grande. Supondremos también que el proceso tiene una intensidad \( \lambda(t) \), función continua del tiempo. Hasta aquí, el planteo es muy general: sólo estamos asumiendo que existe una función de intensidad que regula la aparición de los eventos.
+
+Sin embargo, para poder estimar esa intensidad, vamos a introducir una hipótesis adicional: supondremos que \( \lambda(t) \) pertenece a una \emph{familia paramétrica conocida}, que depende de un número finito de parámetros reales. Escribiremos esta familia como \( \lambda_{\theta}(t) \), donde \( \theta \in \mathbb{R}^d \) es el vector de parámetros desconocidos que queremos estimar.
+
+Una herramienta clásica para estimar parámetros en estadística es el \emph{método de máxima verosimilitud}. La idea es encontrar el valor de \( \theta \) que hace que los datos observados sean lo más “probables” posible bajo el modelo \( \lambda_{\theta} \). Para eso, debemos construir la función de verosimilitud.
+
+#### Dos enfoques para construir la verosimilitud
+
+Existen dos formas habituales de abordar la construcción de esta función de verosimilitud, que dependen de cómo se presenta la información observada:
+
+__1. Usando los tiempos exactos de ocurrencia de los eventos:__
+
+Si contamos con los tiempos exactos en los que ocurrieron los eventos (por ejemplo, los momentos precisos en que se superó un umbral de contaminación), y esos tiempos son \( x_1, x_2, \dots, x_m \) dentro del intervalo \( [0, n) \), entonces la verosimilitud tiene una forma elegante y bien conocida:
+
+\[
+L(\theta) = \exp\left( -\int_{0}^{n} \lambda_{\theta}(x)\, dx \right) \cdot \prod_{j=1}^{m} \lambda_{\theta}(x_j)
+\]
+
+Esta expresión tiene una interpretación clara: el primer factor representa la probabilidad de no observar eventos fuera de los tiempos registrados, y el segundo, la probabilidad de haber observado eventos en los tiempos registrados. Esta formulación es clásica y puede encontrarse, por ejemplo, en \cite{coles2001introduction} y en literatura sobre procesos puntuales.
+
+__2. Usando cuentas por intervalos disjuntos:__
+
+En muchos contextos prácticos —por ejemplo, cuando los datos se recolectan de forma agregada por día o por hora— no se observan los tiempos individuales, sino sólo la cantidad de eventos ocurridos en intervalos. En ese caso, dividimos \( [0,n) \) en subintervalos de longitud unitaria: \( [0,1), [1,2), \dots, [n-1, n) \), y observamos las cuentas \( N([i,i+1)) = n(i) \) en cada uno de ellos.
+
+Gracias a la independencia de los incrementos del proceso de Poisson, y al hecho de que \( N([i,i+1)) \sim \text{Poisson}(\mu_i) \) con \( \mu_i = \int_{i}^{i+1} \lambda_{\theta}(x)\, dx \), la función de verosimilitud se escribe como:
+
+\[
+L(\theta) = \prod_{i=0}^{n-1} \frac{\mu_i^{n(i)} e^{-\mu_i}}{n(i)!}
+\]
+
+Despreciando constantes que no dependen de \( \theta \) (como los factoriales), y tomando logaritmos para facilitar la maximización, obtenemos la \emph{log-verosimilitud}:
+
+\begin{equation}
+l(\theta)= \sum_{i=0}^{n-1} n(i)\; \log \left( \int_{i}^{i+1} \lambda_{\theta}(x)\, dx \right) - \int_{0}^{n} \lambda_{\theta}(x)\, dx
+(\#eq:lntheta)
+\end{equation}
+
+Este es el enfoque que desarrollamos en esta sección, especialmente útil cuando los datos están agrupados en bloques.
+
+__Equivalencia conceptual y uso práctico:__ Ambas formulaciones de la verosimilitud —la continua basada en los tiempos individuales, y la discreta basada en cuentas por intervalos— se apoyan en la misma estructura teórica: el proceso de Poisson con independencia en subconjuntos disjuntos del dominio. Cuando los intervalos son muy pequeños (por ejemplo, de longitud infinitesimal), ambas expresiones tienden a coincidir.
+
+En resumen:
+\begin{itemize}
+  \item Si se observan los \emph{tiempos exactos} de los eventos, se recomienda usar la formulación continua.
+  \item Si se observan \emph{cuentas agregadas}, se utiliza la formulación discreta, que lleva naturalmente a la expresión \@ref(eq:lntheta).
+\end{itemize}
+
+En ambos casos, se puede obtener una estimación de \( \theta \) —denotada \( \hat{\theta}_n \)— maximizando la verosimilitud con métodos numéricos, siempre que \( \lambda_{\theta} \) sea lo suficientemente regular (por ejemplo, dos veces diferenciable respecto a \( \theta \)).
+
+
+
+<!-- 
+
+
+Supondremos que observamos el $PPNH$ $N$ durante tanto tiempo como sea necesario, concretamente
+que observamos $N$ sobre $[0,n)$, con $n$ muy grande. Asumiremos que $N$ tiene intensidad $\lambda$ continua. Hasta aquí, no hemos supuesto casi nada, por lo cual el abordaje sería muy general. En este punto introducimos una suposición bastante restrictiva: asumiremos que sabemos que la intensidad pertenece a una familia paramétrica, que depende
+de $d$ parámetros reales para especificarse por completo. Escribiremos entonces que la intensidad es $\lambda_{\theta}$, donde $\theta$ es un parámetro $d$-dimensional, cuyo verdadero valor deseamos estimar de la forma más precisa posible. Para ello recurriremos al método de máxima verosimilitud.
+
+Supongamos que en la observación disponible del $PPNH$ tenemos que $N([i,i+1))=n(i)$ para $i=0,1,\dots,n-1$. Los $n(i)$ son los valores concretos observados en cada intervalo. 
+
+En máxima verosimilitud $\theta$ es estimado por $\theta_n$, valor que maximiza la función de $\theta$
+
+\begin{equation}
+L(\theta)= P(N([i, i+1))=n(i),\quad \text{para}\; i=0,1,….,n-1
+(\#eq:ltheta)
+\end{equation}
+
+
+Usando la independencia de intervalos disjuntos, la distribución de Poisson en cada intervalo,
+descartando factores que no dependen de $\theta$ y tomando la función estrictamente creciente $\log$, resulta que $\theta_n$ maximiza la siguiente función
+
+\begin{equation}
+l(\theta)=\left\{ \sum_{i=0}^{n-1} n(i)\; \log \left( \int_{[i,i+1)} \lambda_{\theta} (x) \;dx \right)\right\}-\left\{ \int_{[0,n)} \lambda_{\theta} (x) \;dx \right\}
+(\#eq:lntheta)
+\end{equation}
+
+Asumiendo que $\lambda_{\theta}$ tiene dos derivadas continuas respecto a $\theta$, esta maximización puede ser realizada computacionalmente.
+
+---->
+
+__b. Estimación no-paramétrica a partir de muchas réplicas del $PPNH$.__
+
+En este abordaje no supondremos el conocimiento previo de forma paramétrica alguna de la intensidad, por lo cual desde este punto de vista es un método más general que el anterior. En sentido contrario, supondremos que tenemos una cantidad $n$ muy grande de 'réplicas' de $N$. Esto significa que disponemos de trayectorias de $N(1),\dots,N(n)$ donde cada $N(i)$ es un $PPNH$ con la misma estructura (en particular misma intensidad, que $N$) y que $N(1),\dots,N(n)$ son independientes entre sí. El método a utilizar está basado en la estimación de densidades a partir de un núcleo (kernel). Antes de presentar el método puntualicemos que si $N$ es un $PPNH$ se pueden definir integrales (estocásticas, aleatorias) del tipo $\int_J f(x)\;dN(x)$ para $f$ continua en el intervalo $J$, como límite de sumas a la Riemann $\sum_{i=0}^{n-1}f(x(i)) \cdot N(\Delta(i))$ donde $\Delta(1),\dots,\Delta(n)$ es la partición del intervalo $J$ en intervalos muy pequeños y $x(i)$ punto intermedio de $\Delta(i)$.
+
+El estimador que consideraremos es 
+
+\begin{equation*}
+\lambda_n(x) = \left\{ \frac{1}{n h(n)} \right\} \sum_{i=0}^{n-1} \int_{\mathbb{R}} K\left( \frac{x - t}{h(n)} \right) dN^{(i)}(t),
+\end{equation*}
+
+donde, para $n$ tendiendo a infinito, la 'ventana' $h(n)$ tiende a $0$ y $n h(n)$ tiende a infinito, y donde la función $K$ (kernel) debe ser no-negativa, par, nula fuera del intervalo $[-1,1]$ (lo cual implica que las integrales estocásticas no son sobre $\mathbb{R}$, sino sobre un intervalo acotado) y con derivadas de todos los órdenes.
+
+
+En tales condiciones $\lim_{n \to 0} \lambda_n(x)=\lambda(x),\; \forall x$.
+
+Si además se supone que $\lim_{n \to 0} \;n \cdot  h(n)^5=0$ (un ejemplo de $h(n)$ que
+cumple con todas las condiciones impuestas es $h(N)= 1/nb$, con $1/5<b<1$), entonces cuando $n$ tiende
+a infinito, la distribución de $\left\{ n\cdot h(h) \right\}^{1/2}\; \left\{\lambda_n(x)-\lambda (x)  \right\}$ tiende a $N(0,\lambda (x))$.
+
+Usando la fórmula de Taylor se deduce que si $g$ tiene dos derivadas continuas en un entorno de $\lambda (x)$, entonces la distribución de $\left\{ n\cdot h(h) \right\}^{1/2}\; \left\{g\left( \lambda_n(x) \right)-g\left( \lambda (x) \right)  \right\}$ tiende a una $N\left( 0,g^{\prime}\left( \lambda(x) \right)^2\;\lambda(x) \right)$. 
+
+Tomando entonces $g(x)=2\sqrt{x}$, resulta entonces que la distribución de $2\;\left\{ n \cdot h(n)) \right\}^{1/2} \left\{ \sqrt{\lambda_n(x)} \;\sqrt{\lambda(x)}\right\}$ tiende a una $N(0,1)$.
+
+De aquí se deduce un Intervalo al $95\%$ de confianza para $\sqrt{\lambda(x)}$ y por lo tanto, el siguiente
+Intervalo al $95\%$ de Confianza para $\lambda(x)$ tal que $\left[ A(x), B(x) \right]$ donde
+
+\begin{align}
+&A(x)=\lambda_n(x)-1.96\left\{ \frac{\lambda_n(x)}{n\cdot h(n)} \right\}^{1/2}+\frac{0.98^2}{n\cdot h(n)},\\
+&B(x)=\lambda_n(x)+1.96\left\{ \frac{\lambda_n(x)}{n\cdot h(n)} \right\}^{1/2}+\frac{0.98^2}{n\cdot h(n)}.
+\end{align}
 
 
 
