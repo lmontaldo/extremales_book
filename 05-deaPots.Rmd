@@ -1,6 +1,6 @@
 # DEA y POT para datos no estacionarios
 
-## DEA y POT para datos no estacionarios y/o con fuertes dependencias: el rol de las covariables.
+## DEA y POT para datos no estacionarios y/o con fuertes dependencias: el rol de las covariables
 
 Recordemos que si $H$ es una distribución extremal y $X_1,...,X_n$ son iid con distribución $F$, decimos que $F$ pertenece al $DAM(H)$, si existen dos sucesiones de números reales, $d_n$ y $c_n>0$, tales que la distribución de
 
@@ -143,6 +143,64 @@ POT se aplica CON modificaciones
 sustanciales: la distribución condicionales de
 los excesos del umbral es una mezcla de DPG.
 
+## DEA^[DEA: Distribución Extremal Asintótica.] para Datos No Estacionarios y Fuertemente Dependientes {#caro}
+
+Vamos a tomar de ejemplo el articulo  de @crisci2022asymptotic.  La teoría clásica de valores extremos —como el teorema de Fisher-Tippett-Gnedenko— se basa en secuencias de variables aleatorias independientes e idénticamente distribuidas (iid). Sin embargo, en muchos contextos reales como el clima o el tráfico, los datos muestran propiedades **no estacionarias** y **fuerte dependencia temporal**, lo que limita el uso de dicha teoría.
+
+
+El objetivo del artículo es extender los resultados de convergencia en distribución para los máximos \( M_n = \max(X_1, \dots, X_n) \), cuando los datos \( X_i \) provienen de una estructura con:
+
+- Covariables \( Y_i \) fuertemente dependientes y posiblemente no estacionarias 
+
+- Una ley de generación \( X_i = f(Y_i, \varepsilon_i) \), donde \( \varepsilon_i \sim \text{iid} \)
+
+__Modelo Propuesto__ 
+
+Sea \( Y_i \in \{y_1, y_2, \dots\} \) un proceso latente que condiciona la ley de \( X_i \). Supongamos que
+
+- Condicionalmente a \( Y_i = y_j \), los \( \varepsilon_i \) provienen de una distribución de atracción extremal (Fréchet, Gumbel, Weibull)
+
+- El comportamiento de los máximos se obtiene como una mezcla tal que
+  
+\[
+F_Z(x) = \sum_{j} p_j \Phi_{\alpha_j}(x/v_j),
+\]
+
+donde \( p_j \) es la proporción de tiempo en el estado \( y_j \), y \( \Phi_{\alpha_j} \) es la distribución extremal correspondiente (por ejemplo, Fréchet).
+
+
+Bajo ciertas condiciones:
+
+- La distribución de los máximos normalizados no converge a una ley extremal única
+
+- En su lugar, converge a una combinación ponderada de varias leyes extremales
+
+- Esto depende de la mezcla inducida por los \( Y_i \) en el tiempo
+
+__Simulaci[n y aplicaciones:__
+
+Se presenta una simulación donde:
+
+- El proceso \( Y_i \) alterna entre dos estados
+
+- En cada estado, los \( X_i \) provienen de distintas distribuciones extremales
+
+- Se muestra que ajustar una sola Fréchet resulta en un mal ajuste
+
+- En cambio, una mezcla de Fréchet modela mejor la cola de los datos simulados
+
+
+Este enfoque permite modelar correctamente datos extremos cuando:
+
+- Hay cambios estructurales o de régimen en el tiempo
+
+- El proceso generador de los datos no es homogéneo ni estacionario
+
+- Es necesario usar mezclas de leyes extremales para capturar la heterogeneidad
+
+
+
+__Conclusión :__ Este artículo generaliza la teoría clásica de máximos a escenarios con fuerte dependencia y no estacionaridad, proponiendo mezclas de distribuciones extremales como una solución natural y efectiva.
 
 
 

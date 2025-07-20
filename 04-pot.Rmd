@@ -3,15 +3,31 @@
 ## Peaks Over Treshold (POT)
 
 Vamos ahora a volver a cambiar el enfoque de
-manera importante. Como en el capítulo anterior, fijaremos un cierto
+manera importante y vamos a ver el método POT (@Evpot, @goda1988). 
+
+Como en el capítulo anterior, fijaremos un cierto
 umbral, llamaremos _evento_ a cuando la variable observada supera ese umbral, nos concentraremos
 en los eventos, pero, a diferencia del capítulo anterior, no nos quedaremos con el conteo de
 eventos, sino que no sinteresa ver cómo se comporta el “exceso” de nuestro registro. De este
 modo pretendemos obtener información más fina que con HLE o con DEA, ya que no miramos como
 se distribuye el valor más grande registrado sino que pretendemos ver cómo se distribuyen los
-valores muy elevados (por encima del umbral). Dicho de otra manera, si $u$ es el umbral y $X$ es
-nuestro registro, cuando $X>u$ tendremos un _evento_ y queremos estudiar estadísticamente el
-$\text{exceso}=X-u$. Esto es el método POT, que se apoya en un resultado muy relevante, a menudo referido como Segundo Teorema de la Teoría Clásica de Valores Extremos (el primero es el FTG).
+valores muy elevados (por encima del umbral). 
+
+Dicho de otra manera, si $u$ es el umbral y $X$ es la variable aleatoria, cuando $X>u$ tendremos un evento y queremos estudiar estadísticamente el “exceso” definido por $Y = X - u$. Esto es el método POT, que se apoya en un resultado muy relevante, a menudo referido como Segundo Teorema de la Teoría Clásica de Valores Extremos (el primero es el FTG).
+
+
+Imaginemos que contamos con los datos observados de altura de ola [@Evpot], se puede ajustar un modelo GPD como el de la Def. \@ref(def:dgp) si se cumple que:
+
+
+\begin{itemize}
+  \item Los datos se consideran como excedencias sobre un umbral específico, que constituyen una secuencia de mediciones $iid$ tales que \( x_1,...,x_k \).
+  \item Si los datos que exceden un umbral particular \( u \) se definen como
+  
+$$ y_j = x_j - u ,\quad\text{para} \; j = 1,\dots,k,$$ 
+  
+entonces, por definición, una variable aleatoria \( y_j \) puede considerarse como una realización independiente cuya distribución se aproxima a uno de los miembros de la familia de Pareto Generalizada [@coles2001introduction].
+\end{itemize}
+
 
 
 <!--
@@ -58,8 +74,7 @@ Entonces, cuando $u$ tiende a infinito, $F_u$ tiende a una Distribución de Pare
 ```
      
 
-__Observación 3.__ El método POT para datos $iid$, se
-desarrolla siguiendo estos pasos:
+__Observación 3.__ El método POT para datos $iid$, se esarrolla siguiendo estos pasos:
 
 1. Se elige adecuadamente un umbral grande $u$. 
 
@@ -186,34 +201,101 @@ estimaciones: $k$ solución computacional de
 
 
 <!-- EJERCICIO PAGINA 114 A 117: PREGUNTAR A ANGEL Y PONER ACA -->
-
+\newpage
 
 ## Variantes del POT
 
 Acabamos de ver que $POT$ puede aplicarse en el caso de datos débilmente dependientes. Hay dos resultados que merecen destacarse como variantes
 muy claras respecto al $POT$.
 
-A. POT para datos condicionalmente iid (similares a HLE Bellanger-GP): La distribución de excesos se ajusta a una MEZCLA de Paretos Generalizadas. Se verá en el próximo capitulo (Poner referencia bibio: trabajo en coautoría con Carolina Crisci).
+### POT para datos condicionalmente $iid$  
 
-B. POM (Peaks Over a Manifold).
+Se plantean modelos similares a @bellanger2003. En paticular, en la próxima Sección \@ref(caro) veremos un ejemplo: la distribución de excesos se ajusta a una MEZCLA de Paretos Generalizadas [@crisci2022asymptotic].
+
+### Peaks Over a Manifold (POM)   
+
+El método POM es una extensión moderna de la teoría de valores extremos, diseñada para analizar eventos extremos que afectan superficies o variedades espaciales. Se trata de una generalización del enfoque clásico Peaks Over Threshold (POT), que usualmente se aplica a series temporales univariadas.
+
+A diferencia del POT, que estudia el exceso de una variable sobre un umbral alto en una dimensión, POM está pensado para estudiar flujos extremos que se propagan sobre áreas geográficas. Ejemplos típicos incluyen:
+
+- Mareas muy altas que cubren zonas costeras.
+- Inundaciones que se expanden en territorios habitados.
+- Reducción o avance de cobertura de hielo en regiones polares.
+
+
+
+Para cuantificar el impacto de un flujo sobre la superficie \( S \), se define una función de densidad \( a(x) \geq 0 \), que representa la importancia o peso asignado a cada punto \( x \in S \). Esta densidad puede incorporar criterios subjetivos:
+
+- Si \( a(x) = 1 \): la medida representa simplemente el área afectada
+- Si \( a(x) = d(x) \): pondera por la densidad poblacional
+- Si \( a(x) = \alpha d(x) + \beta c(x) \): pondera en función de la población y la importancia ecológica
+
+A partir de esta densidad, se define la medida de afectación de una región \( A \subset S \) como
+
+$$
+\mu(A) = \int_A a(x)\, d\sigma(x),
+$$
+
+donde \( \sigma \) es la medida de área sobre la superficie.
+
+__Construcción del modelo:__
+
+1. Se parte de una curva \( C \) que representa el borde inicial del flujo (por ejemplo, la línea de costa)
+2. Se define una región afectada \( C(r) \) como el conjunto de puntos a una distancia intrínseca menor o igual a \( r \) de \( C \)
+
+$$
+C(r) = \{ x \in \text{ext}_C : d(x, C) \leq r \}.
+$$
+
+3. La medida total de afectación hasta una distancia \( r \) es
+
+$$
+I(r) = \mu(C(r)) = \int_{C(r)} a(x)\, d\sigma(x).
+$$
+
+Este valor representa el impacto acumulado si el flujo se extiende hasta una distancia \( r \) desde su borde inicial.
+
+
+
+Sea \( X \) una variable aleatoria que representa el impacto observado de un evento. Bajo ciertas condiciones (H1–H5 en el artículo original de @pom2022), se cumple el siguiente resultado clave.
+
+
+::: {.theorem name="POM"}
+Si el impacto observado excede el umbral \( I(u) \), es decir \( X > I(u) \), entonces la distribución del exceso de afectación  
+
+ $$
+ X - I(u) \mid X > I(u)
+$$
+converge, cuando \( u \to \infty \), a una Distribución Generalizada de Pareto (GPD).
+:::
+
+
+Esto generaliza la teoría POT al contexto geométrico de flujos espaciales sobre superficies.
+
+
+
+El modelo fue probado con dos conjuntos de datos:
+
+- Simulación de mareas: Se generaron datos sintéticos de altura de marea sobre 100 km de costa. Se estimaron las áreas excedidas y se ajustó una GPD con el paquete `POT` en R. El ajuste fue muy satisfactorio.
+  
+- Cobertura de hielo en la Antártida: Se usaron datos satelitales (NCEP/NOAA) de concentración mensual de hielo desde 1981 hasta 2020. Se definió un umbral del 10% y se estudió la distribución de las áreas que exceden ese valor. Nuevamente, se obtuvo un buen ajuste con una GPD.
+
+Estos resultados confirman que POM es una herramienta potente para modelar procesos extremos sobre superficies, con aplicaciones en climatología, ecología, y evaluación de riesgos naturales.
+
+
+
+
+
+<!----
 Imaginemos un problema de escurrimiento o
-similares que transcurre en una superficie
-irregular, con distintos relieves (ejemplos obvios:
-mareas, inundaciones, avalanchas, etc.)
+similares que transcurre en una superficie irregular, con distintos relieves (ejemplos obvios:
+mareas, inundaciones, avalanchas, etc.). Lo _usual_ esta representado por una subvariedad
+con borde de una variedad Riemanniana (con distancia intrínseca) y el umbral $u$ es el
+desplazamiento exterior paralelo de su borde. Obviamente la geometría juega un papel muy
+relevante.
 
-Lo “usual” esta representado por una subvariedad
-con borde de una variedad Riemanniana (con
-distancia intrínseca) y el umbral u es el
-desplazamiento exterior paralelo de su borde.
-Obviamente la geometría juega un papel muy
-relevante. Será objeto del último capítulo de este
-curso (trabajo en coautoría con Angel Segura).
+---------------------------------------------
 
-
-
-<!------------------------------------------------------------------->
-<!------------------------------------------------------------------->
-<!------------------------------------------------------------------->
 #### Ejemplo
 
 Ejemplos de @coles2001introduction con el paquete _ismev_ de R :
@@ -232,4 +314,4 @@ plot(rain)
 ```
 
 Considerando la Figura \@ref(fig:nice-fig3), podemos definir un evento como extremo si supera un cierto nivel alto, quizás una precipitación diaria de $30\; mm$ en este caso. Entonces, los valores extremos son ahora aquellas observaciones que superan un cierto umbral alto (@coles2001introduction).
-
+--------------->

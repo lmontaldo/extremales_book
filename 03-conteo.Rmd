@@ -1287,6 +1287,41 @@ Comenzaremos con el primer abordaje, basado en el método de máxima verosimilit
 
 __a) Estimación paramétrica basada en una sola trayectoria del $PPNH$__
 
+
+
+Supondremos que observamos el $PPNH$ $N$ durante tanto tiempo como sea necesario, concretamente
+que observamos $N$ sobre $[0,n)$, con $n$ muy grande. Asumiremos que $N$ tiene intensidad $\lambda$ continua. Hasta aquí, no hemos supuesto casi nada, por lo cual el abordaje sería muy general. 
+
+En este punto introducimos una suposición bastante restrictiva: asumiremos que sabemos que la intensidad pertenece a una familia paramétrica, que depende de $d$ parámetros reales para especificarse por completo. 
+
+Escribiremos entonces que la intensidad es $\lambda_{\theta}$, donde $\theta$ es un parámetro $d$-dimensional, cuyo verdadero valor deseamos estimar de la forma más precisa posible. Para ello recurriremos al método de máxima verosimilitud.
+
+Supongamos que en la observación disponible del $PPNH$ tenemos que 
+$$N([i,i+1))=n(i), \;\text{para} \; i=0,1,\dots,\;n-1,$$
+donde los $n(i)$ son los valores concretos observados en cada intervalo. 
+
+En máxima verosimilitud $\theta$ es estimado por $\theta_n$, valor que maximiza la función de $\theta$
+
+\begin{equation}
+L(\theta)= P(N([i, i+1))=n(i),\quad \text{para}\; i=0,1,….,n-1
+(\#eq:ltheta)
+\end{equation}
+
+
+Usando la independencia de intervalos disjuntos, la distribución de Poisson en cada intervalo,
+descartando factores que no dependen de $\theta$ y tomando la función estrictamente creciente $\log$, resulta que $\theta_n$ maximiza la siguiente función
+
+\begin{equation}
+l(\theta)=\left\{ \sum_{i=0}^{n-1} n(i)\; \log \left( \int_{[i,i+1)} \lambda_{\theta} (x) \;dx \right)\right\}-\left\{ \int_{[0,n)} \lambda_{\theta} (x) \;dx \right\}
+(\#eq:lntheta)
+\end{equation}
+
+Asumiendo que $\lambda_{\theta}$ tiene dos derivadas continuas respecto a $\theta$, esta maximización puede ser realizada computacionalmente [@daley2003].
+
+
+
+
+<!-- 
 Cuando trabajamos con fenómenos donde los eventos ocurren en el tiempo de forma aleatoria pero con una frecuencia que puede variar, un modelo natural es el \textbf{Proceso de Poisson No Homogéneo} (PPNH). Este modelo generaliza el clásico proceso de Poisson, permitiendo que la \emph{intensidad de ocurrencia} —es decir, la frecuencia esperada de eventos por unidad de tiempo— sea una función del tiempo, en lugar de una constante.
 
 Supongamos entonces que observamos un PPNH \( N \) a lo largo de un intervalo temporal largo, concretamente \( [0, n) \), donde \( n \) es suficientemente grande. Supondremos también que el proceso tiene una intensidad \( \lambda(t) \), función continua del tiempo. Hasta aquí, el planteo es muy general: sólo estamos asumiendo que existe una función de intensidad que regula la aparición de los eventos.
@@ -1338,40 +1373,16 @@ En resumen:
 
 En ambos casos, se puede obtener una estimación de \( \theta \) —denotada \( \hat{\theta}_n \)— maximizando la verosimilitud con métodos numéricos, siempre que \( \lambda_{\theta} \) sea lo suficientemente regular (por ejemplo, dos veces diferenciable respecto a \( \theta \)).
 
+-->
 
 
-<!-- 
 
-
-Supondremos que observamos el $PPNH$ $N$ durante tanto tiempo como sea necesario, concretamente
-que observamos $N$ sobre $[0,n)$, con $n$ muy grande. Asumiremos que $N$ tiene intensidad $\lambda$ continua. Hasta aquí, no hemos supuesto casi nada, por lo cual el abordaje sería muy general. En este punto introducimos una suposición bastante restrictiva: asumiremos que sabemos que la intensidad pertenece a una familia paramétrica, que depende
-de $d$ parámetros reales para especificarse por completo. Escribiremos entonces que la intensidad es $\lambda_{\theta}$, donde $\theta$ es un parámetro $d$-dimensional, cuyo verdadero valor deseamos estimar de la forma más precisa posible. Para ello recurriremos al método de máxima verosimilitud.
-
-Supongamos que en la observación disponible del $PPNH$ tenemos que $N([i,i+1))=n(i)$ para $i=0,1,\dots,n-1$. Los $n(i)$ son los valores concretos observados en cada intervalo. 
-
-En máxima verosimilitud $\theta$ es estimado por $\theta_n$, valor que maximiza la función de $\theta$
-
-\begin{equation}
-L(\theta)= P(N([i, i+1))=n(i),\quad \text{para}\; i=0,1,….,n-1
-(\#eq:ltheta)
-\end{equation}
-
-
-Usando la independencia de intervalos disjuntos, la distribución de Poisson en cada intervalo,
-descartando factores que no dependen de $\theta$ y tomando la función estrictamente creciente $\log$, resulta que $\theta_n$ maximiza la siguiente función
-
-\begin{equation}
-l(\theta)=\left\{ \sum_{i=0}^{n-1} n(i)\; \log \left( \int_{[i,i+1)} \lambda_{\theta} (x) \;dx \right)\right\}-\left\{ \int_{[0,n)} \lambda_{\theta} (x) \;dx \right\}
-(\#eq:lntheta)
-\end{equation}
-
-Asumiendo que $\lambda_{\theta}$ tiene dos derivadas continuas respecto a $\theta$, esta maximización puede ser realizada computacionalmente.
-
----->
 
 __b. Estimación no-paramétrica a partir de muchas réplicas del $PPNH$.__
 
-En este abordaje no supondremos el conocimiento previo de forma paramétrica alguna de la intensidad, por lo cual desde este punto de vista es un método más general que el anterior. En sentido contrario, supondremos que tenemos una cantidad $n$ muy grande de 'réplicas' de $N$. Esto significa que disponemos de trayectorias de $N(1),\dots,N(n)$ donde cada $N(i)$ es un $PPNH$ con la misma estructura (en particular misma intensidad, que $N$) y que $N(1),\dots,N(n)$ son independientes entre sí. El método a utilizar está basado en la estimación de densidades a partir de un núcleo (kernel). Antes de presentar el método puntualicemos que si $N$ es un $PPNH$ se pueden definir integrales (estocásticas, aleatorias) del tipo $\int_J f(x)\;dN(x)$ para $f$ continua en el intervalo $J$, como límite de sumas a la Riemann $\sum_{i=0}^{n-1}f(x(i)) \cdot N(\Delta(i))$ donde $\Delta(1),\dots,\Delta(n)$ es la partición del intervalo $J$ en intervalos muy pequeños y $x(i)$ punto intermedio de $\Delta(i)$.
+En este abordaje no supondremos un conocimiento previo de forma paramétrica alguna de la intensidad, por lo cual desde este punto de vista es un método más general que el anterior. En sentido contrario, supondremos que tenemos una cantidad $n$ muy grande de __réplicas__ de $N$. Esto significa que disponemos de trayectorias de $N(1),\dots,N(n)$ donde cada $N(i)$ es un $PPNH$ con la misma estructura (en particular misma intensidad, que $N$) y que $N(1),\dots,N(n)$ son independientes entre sí. 
+
+El método a utilizar está basado en la estimación de densidades a partir de un núcleo (kernel). Antes de presentar el método puntualicemos que si $N$ es un $PPNH$ se pueden definir integrales (estocásticas, aleatorias) del tipo $\int_J f(x)\;dN(x)$ para $f$ continua en el intervalo $J$, como límite de sumas a la Riemann $\sum_{i=0}^{n-1}f(x(i)) \cdot N(\Delta(i))$ donde $\Delta(1),\dots,\Delta(n)$ es la partición del intervalo $J$ en intervalos muy pequeños y $x(i)$ punto intermedio de $\Delta(i)$.
 
 El estimador que consideraremos es 
 
@@ -1379,7 +1390,7 @@ El estimador que consideraremos es
 \lambda_n(x) = \left\{ \frac{1}{n h(n)} \right\} \sum_{i=0}^{n-1} \int_{\mathbb{R}} K\left( \frac{x - t}{h(n)} \right) dN^{(i)}(t),
 \end{equation*}
 
-donde, para $n$ tendiendo a infinito, la 'ventana' $h(n)$ tiende a $0$ y $n h(n)$ tiende a infinito, y donde la función $K$ (kernel) debe ser no-negativa, par, nula fuera del intervalo $[-1,1]$ (lo cual implica que las integrales estocásticas no son sobre $\mathbb{R}$, sino sobre un intervalo acotado) y con derivadas de todos los órdenes.
+donde, para $n$ tendiendo a infinito, la ventana $h(n)$ tiende a $0$ y $n h(n)$ tiende a infinito, y donde la función $K$ (kernel) debe ser no-negativa, par, nula fuera del intervalo $[-1,1]$ (lo cual implica que las integrales estocásticas no son sobre $\mathbb{R}$, sino sobre un intervalo acotado) y con derivadas de todos los órdenes.
 
 
 En tales condiciones $\lim_{n \to 0} \lambda_n(x)=\lambda(x),\; \forall x$.
@@ -1390,7 +1401,9 @@ a infinito, la distribución de $\left\{ n\cdot h(h) \right\}^{1/2}\; \left\{\la
 
 Usando la fórmula de Taylor se deduce que si $g$ tiene dos derivadas continuas en un entorno de $\lambda (x)$, entonces la distribución de $\left\{ n\cdot h(h) \right\}^{1/2}\; \left\{g\left( \lambda_n(x) \right)-g\left( \lambda (x) \right)  \right\}$ tiende a una $N\left( 0,g^{\prime}\left( \lambda(x) \right)^2\;\lambda(x) \right)$. 
 
-Tomando entonces $g(x)=2\sqrt{x}$, resulta entonces que la distribución de $2\;\left\{ n \cdot h(n)) \right\}^{1/2} \left\{ \sqrt{\lambda_n(x)} \;\sqrt{\lambda(x)}\right\}$ tiende a una $N(0,1)$.
+Tomando entonces $g(x)=2\sqrt{x}$, resulta entonces que la distribución de 
+
+$$2\;\left\{ n \cdot h(n)) \right\}^{1/2} \left\{ \sqrt{\lambda_n(x)} -\sqrt{\lambda(x)}\right\}\; \text{tiende a una }\;N(0,1).$$
 
 De aquí se deduce un Intervalo al $95\%$ de confianza para $\sqrt{\lambda(x)}$ y por lo tanto, el siguiente
 Intervalo al $95\%$ de Confianza para $\lambda(x)$ tal que $\left[ A(x), B(x) \right]$ donde
