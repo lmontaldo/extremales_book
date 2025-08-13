@@ -208,9 +208,7 @@ estimaciones: $k$ solución computacional de
 Acabamos de ver que $POT$ puede aplicarse en el caso de datos débilmente dependientes. Hay dos resultados que merecen destacarse como variantes
 muy claras respecto al $POT$.
 
-### POT para datos condicionalmente $iid$  
 
-Se plantean modelos similares a @bellanger2003. En paticular, en la próxima Sección \@ref(caro) veremos un ejemplo: la distribución de excesos se ajusta a una MEZCLA de Paretos Generalizadas [@crisci2022asymptotic].
 
 ### Peaks Over a Manifold (POM)   
 
@@ -263,8 +261,8 @@ Sea \( X \) una variable aleatoria que representa el impacto observado de un eve
 ::: {.theorem name="POM"}
 Si el impacto observado excede el umbral \( I(u) \), es decir \( X > I(u) \), entonces la distribución del exceso de afectación  
 
- $$
- X - I(u) \mid X > I(u)
+$$
+X - I(u) \mid X > I(u)
 $$
 converge, cuando \( u \to \infty \), a una Distribución Generalizada de Pareto (GPD).
 :::
@@ -281,6 +279,11 @@ El modelo fue probado con dos conjuntos de datos:
 - Cobertura de hielo en la Antártida: Se usaron datos satelitales (NCEP/NOAA) de concentración mensual de hielo desde 1981 hasta 2020. Se definió un umbral del 10% y se estudió la distribución de las áreas que exceden ese valor. Nuevamente, se obtuvo un buen ajuste con una GPD.
 
 Estos resultados confirman que POM es una herramienta potente para modelar procesos extremos sobre superficies, con aplicaciones en climatología, ecología, y evaluación de riesgos naturales.
+
+
+### POT para datos condicionalmente $iid$  
+
+Se plantean modelos similares a @bellanger2003. En paticular, en la próxima Sección \@ref(caro) veremos un ejemplo: la distribución de excesos se ajusta a una MEZCLA de Paretos Generalizadas [@crisci2022asymptotic].
 
 
 

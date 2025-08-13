@@ -2,13 +2,15 @@
 
 ## DEA y POT para datos no estacionarios y/o con fuertes dependencias: el rol de las covariables
 
+### Introducción
+
 Recordemos que si $H$ es una distribución extremal y $X_1,...,X_n$ son iid con distribución $F$, decimos que $F$ pertenece al $DAM(H)$, si existen dos sucesiones de números reales, $d_n$ y $c_n>0$, tales que la distribución de
 
 \begin{equation}
 \lim_{n \to \infty} \frac{max(X_1,...,X_n)- d_n}{c_n}=H
 \end{equation}
 
-Vimos que los DAM se caracterizan con precisión, al igual que las sucesiones $d_n$ y $c_n>0$.
+<!--Los DAM se caracterizan con precisión, al igual que las sucesiones $d_n$ y $c_n>0$. -->
 
 Para una distribución $F$, recordemos que $M_F= \text{sup}\left\{  t | F(t)<1\right\}$.
 
@@ -16,21 +18,24 @@ Los DAM eran:
 
 a. __Fréchet:__ $F$ pertenece al $DAM(\Phi_{\alpha})$ si y sólo si
 
-\begin{equation}
-\left\{ \begin{array}{cl}
-M_F&=\infty \\
-1-F(x)&=x^{-\alpha} L(x), \quad\text{para alguna }\; L\;\text{de variación lenta.}
-\end{array} \right.
-\end{equation}
+\begin{align}
+\left\{
+\begin{array}{cl}
+& M_F = \infty \\
+& 1 - F(x) = x^{-\alpha} L(x), \quad \text{para alguna } L \text{ de variación lenta.}
+\end{array}
+\right.
+\end{align}
+
 Además $d_n=0$ y $c_n=n$.
 
 b. __Weibull:__  $F$ pertenece al $DAM(\psi_{\alpha})$ si y sólo si 
-\begin{equation}
+\begin{align}
 \left\{ \begin{array}{cl}
-M_F&\;\text{es finito.}\\
-1-F(M_F-1/x)&=x^{-\alpha} L(x), \quad\text{para alguna }\; L\;\text{de variación lenta.}
+& M_F\;\text{es finito.}\\
+& 1-F(M_F-1/x)=x^{-\alpha} L(x), \quad\text{para alguna }\; L\;\text{de variación lenta.}
 \end{array} \right.
-\end{equation}
+\end{align}
 
 Además $d_n= M_F$ y $c_n=n$.
 
@@ -44,26 +49,24 @@ Mises con función auxiliar $h$ si existe $a < M_F$ ($M_F$ puede ser finito o in
 con $h$ positiva, con densidad $h^{\prime}$ y $h^{\prime}(x)$ tendiendo a $0$ para $x\rightarrow M_F$.  $F$ pertenece al $DAM(\Lambda)$ si y sólo si para $x\rightarrow M_F$, su cola $1-F(x)$ es equivalente a una función de Von Mises. Además, $d_n=F^{-1}(1-1/n)$, $c_n=h(d_n)$, donde 
 
 \begin{equation}
-F^{-1}(p)=\text{inf}\left\{t|F(t)\leq p \right\},\quad\text{para}\;0<p<1.\end{equation}
+F^{-1}(p)=\text{inf}\left\{t|F(t)\leq p \right\},\quad\text{para}\;0<p<1.
+\end{equation}
 
-En la práctica nuestros datos suelen involucrar
-covariables y ruido puro. Las covariables pueden tener una estructura compleja, muy a menudo no son estacionarias y en ocasiones presentan fuertes dependencias. Supongamos que nuestros datos son $X_i=f(W_i,Y_i)$ donde $W_1,\dots,W_n$ son iid y las $Y$ son categóricas (las covariables definen estados), pudiendo tomar los valores $1,2,\dots,k$.
+En la práctica nuestros datos suelen involucrar covariables y ruido puro. Las covariables pueden tener una estructura compleja, muy a menudo no son estacionarias y en ocasiones presentan fuertes dependencias. 
+
+Supongamos que nuestros datos son $X_i=f(W_i,Y_i)$ donde $W_1,\dots,W_n$ son iid y las $Y$ son categóricas (las covariables definen estados), pudiendo tomar los valores $1,2,\dots,k$.
 
 
-__EJEMPLO:__ Para el estudio de vientos extremos,
-cada estado puede corresponderse a: presiones
-atmosféricas dentro de determinado rango,
-temperatura dentro de determinado rango,
-previsiones meteorológicas según imagenología
-dentro de determinada configuración, etc.
 
-__IMPORTANTE:__ Aquí suponemos que los estados
-son visibles (vemos las covariables, sabemos las
-definiciones de los estados). Hay casos en que los
-estados no los vemos, quedan _escondidos_
-(hidden). Los resultados generales que veremos se
-aplican igual, pero su instrumentación es más
-compleja.
+
+```{example, label="foo1"}
+Para el estudio de vientos extremos, cada estado puede corresponderse a presiones atmosféricas dentro de determinado rango, temperatura dentro de determinado rango, previsiones meteorológicas según imagenología dentro de determinada configuración, etc.
+```
+
+
+__Importante:__ Aquí suponemos que los estados son visibles (vemos las covariables, sabemos las
+definiciones de los estados). Hay casos en que los estados no los vemos, quedan _escondidos_
+(hidden). Los resultados generales que veremos se aplican igual, pero su instrumentación es más compleja.
 
 Supondremos que al variar $j$, $f(W,j)$ pertenece a diversos $DAM$.
 
@@ -82,14 +85,14 @@ Supongamos además que $\alpha_1 > \dots >\alpha_f$
 Supongamos que $Y$ cumple:
 
 \begin{equation} \label{eq:empirical_freq}
-    \frac{1}{n} \sum_{i=1}^n \mathbf{1}\{Y_i = j\} \xrightarrow[n \to \infty]{} b(j), \quad \text{para todo } j = 1, \dots, k, 
+    \frac{1}{n} \sum_{i=1}^n \mathds{1}\{Y_i = j\} \xrightarrow[n \to \infty]{} b(j), \quad \text{para todo } j = 1, \dots, k, 
 \end{equation}
 
 con $b(j)>0$ pero no necesariamente determinístico.
 
 Esta hipótesis la cumple todo proceso estacionario, todo proceso que resulta de un estacionario con componentes cíclicas agregadas, etc., aún teniendo dependencias fuertes, como veremos.
 
-Consideremos la información que aportan las variables $Y$ de $t$ en adelante ($\sigma$-álgebra generada por) $I(t)=\sigma(Y_t,Y_{t+1},\dots)$. En Series de Tiempo suele trabajarse con índices negativos y de $t4 para atrás, que suena más natural. Es equivalente.
+Consideremos la información que aportan las variables $Y$ de $t$ en adelante ($\sigma$-álgebra generada por) $I(t)=\sigma(Y_t,Y_{t+1},\dots)$. En Series de Tiempo suele trabajarse con índices negativos y de $t$ para atrás, que suena más natural. Es equivalente.
 
 Consideremos la Información Permanente
 
@@ -99,7 +102,7 @@ I\left( \infty \right)=\bigcap_{t=1}^{\infty} I\left( t \right)
 
 Si $I(\infty)$ es trivial (sólo contiene eventos de probabilidad cero o uno), es que hay dependencia débil, y las funciones basadas en $I(\infty)$ son determinísticas, constantes.
 
-__IMPORTANTE:__ Las $b(j)$ dependen de la Información Permanente (límites de promedios no dependen de ninguna cantidad finita de índices). Por lo tanto, si $I(\infty)$ es trivial, las $b(j)$ son entonces determinísticas y vale que la distribución de
+__Importante:__ Las $b(j)$ dependen de la Información Permanente (límites de promedios no dependen de ninguna cantidad finita de índices). Por lo tanto, si $I(\infty)$ es trivial, las $b(j)$ son entonces determinísticas y vale que la distribución de
 \begin{equation}
 \frac{\max\left(X_1,\dots,X_n \right)}{n^{\alpha_1}}\quad\text{se aproxima a }\;b(1)^{\alpha_1}\;Z
 \end{equation}
@@ -122,12 +125,11 @@ Si no hubieran estados que generen datos en el DAM Fréchet, el resultado sería
 Si tampoco hubieran estados que generen datos en el DAM Gumbel, el resultado sería similar, pero con otra normalización distinta y con Weibull o mezcla de Weibull como límites.
 
 
-__IMPORTANTE:__ El hecho que los estados sean _visibles_ permite hacer análisis exploratorio para determinar, según estimación de las colas,
+__Importante:__ El hecho que los estados sean _visibles_ permite hacer análisis exploratorio para determinar, según estimación de las colas,
 cuáles son las componentes extremales presentes.
 
 
-Por ejemplo, $F4 es una distribución en el $DAM(\Phi_{\alpha})$,
-si y sólo sí para $x$ tendiendo a infinito,
+Por ejemplo, $F$ es una distribución en el $DAM(\Phi_{\alpha})$, si y sólo sí para $x$ tendiendo a infinito,
 $\frac{\log (1-F(x))}{\log(x)}$ tiende $a - \alpha$.
 
 Si nos vamos al contexto de POT con datos que
@@ -145,7 +147,7 @@ los excesos del umbral es una mezcla de DPG.
 
 ## DEA^[DEA: Distribución Extremal Asintótica.] para Datos No Estacionarios y Fuertemente Dependientes {#caro}
 
-Vamos a tomar de ejemplo el articulo  de @crisci2022asymptotic.  La teoría clásica de valores extremos —como el teorema de Fisher-Tippett-Gnedenko— se basa en secuencias de variables aleatorias independientes e idénticamente distribuidas (iid). Sin embargo, en muchos contextos reales como el clima o el tráfico, los datos muestran propiedades **no estacionarias** y **fuerte dependencia temporal**, lo que limita el uso de dicha teoría.
+Vamos a tomar de ejemplo el articulo  de @crisci2022asymptotic.  La teoría clásica de valores extremos, como el teorema de Fisher-Tippett-Gnedenko, se basa en secuencias de variables aleatorias independientes e idénticamente distribuidas (iid). Sin embargo, en muchos contextos reales como el clima o el tráfico, los datos muestran propiedades no estacionarias y fuerte dependencia temporal, lo que limita el uso de dicha teoría.
 
 
 El objetivo del artículo es extender los resultados de convergencia en distribución para los máximos \( M_n = \max(X_1, \dots, X_n) \), cuando los datos \( X_i \) provienen de una estructura con:

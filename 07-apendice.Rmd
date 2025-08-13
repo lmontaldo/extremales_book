@@ -21,7 +21,7 @@ $$
 ```
 
 
-__Importancia conceptual:__ El TCL nos dice que la suma de muchas variables aleatorias independientes es aproximadamente normal. Esto se observa en situaciones donde un efecto aleatorio es la suma de muchas influencias pequeñas e independientes. 
+__Importancia conceptual:__ El TCL nos dice que la suma de muchas variables aleatorias independientes, que cumplen ciertas características, es aproximadamente normal. Esto se observa en situaciones donde un efecto aleatorio es la suma de muchas influencias pequeñas e independientes. 
 
 __Importancia práctica:__ El TCL permite aproximar distribuciones sin conocer los detalles exactos de las funciones de masa o densidad. Basta con conocer la media y la varianza, lo que facilita el uso de la tabla de la normal estándar para cálculos de probabilidades, estimaciones e inferencias estadísticas.
 
@@ -85,7 +85,7 @@ para parámetros $a>0$, $b$, y en los casos 2) y 3) para $\alpha >0$. $\square$
 Cada familia tiene un parámetro de localización \( b \) y un parámetro de escala \( a \); además, las familias Fréchet y Weibull tienen un parámetro de forma \( \alpha \).
 
 El Teorema \@ref(thm:thap1) establece que los máximos muestrales reescalados $\frac{M_n - b_n}{a_n}$
-convergen en distribución hacia una variable cuya distribución pertenece a una de las tres familias mencionadas. Lo notable de este resultado es que los tres tipos de distribuciones extremales son los únicos límites posibles para las distribuciones de \( M_n \), independientemente de la distribución \( F \) de la población. En este sentido, el teorema proporciona un análogo del teorema central del límite para valores extremos. Es decir, no importa cuál sea la distribución original de los datos, cuando tomás muchos máximos muestrales ( valores máximos), y los reescalás de forma adecuada, su distribución siempre va a parecerse a una de tres formas posibles: Gumbel, Fréchet o Weibull [@coles2001introduction].
+convergen en distribución hacia una variable cuya distribución pertenece a una de las tres familias mencionadas. Lo notable de este resultado es que los tres tipos de distribuciones extremales son los únicos límites posibles para las distribuciones de \( M_n \), independientemente de la distribución \( F \) de la población. En este sentido, el teorema proporciona un análogo del teorema central del límite para valores extremos. Es decir, no importa cuál sea la distribución original de los datos, cuando tomás muchos máximos muestrales ( valores máximos), y los reescalás de forma adecuada, su distribución siempre va a parecerse a una de tres formas posibles: Gumbel, Fréchet o Weibull. Lo anterior es cierto en la medida que $F$ cumpla ciertos supuestos, es decir, no cualquier función cae en el DAM de esas tres funciones [@coles2001introduction].
 
 \clearpage
 

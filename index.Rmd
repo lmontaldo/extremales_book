@@ -36,8 +36,30 @@ lang: es-u-co-trad
 
 # Prefacio {.unnumbered .unlisted}
 
-Este es un libro de curso de posgrado pensado para introducir a lxs estudiantes a la estadística para datos extremales. 
-Agradecemos y recordamos son cariño a Gonzalo Perera, autor de las siguientes notas.
+Este es un libro de curso de posgrado pensado para introducir a lxs estudiantes a la
+estadística para datos extremales. Agradecemos y recordamos con cariño a Gonzalo
+Perera, autor de las siguientes notas de clase, quien partió tempranamente en septiembre de 2024, a la edad de 57 años.
+
+__Gonzalo Perera__ (Rocha, 15 de septiembre de 1966 - La Paloma, Rocha, 1 de septiembre de 2024), nació y se crió en la ciudad de Rocha para luego irse a estudiar a Montevideo. Su padre, militar retirado en dictadura y posteriormente profesor de matemática y dueño de una librería llamada Barlovento, y su madre ama de casa y pianista, fueron una gran influencia para él. En Montevideo, cursó la licenciatura en Matemática en Facultad de Ciencias de la Udelar, e hizo su Maestría y Doctorado en el PEDECIBA. Tanto su tesina de grado como las tesis de posgrado fueron dirigidas por Mario Wschebor, gran matemático e intelectual uruguayo. 
+
+Luego de su formación Gonzalo ha construido una enorme trayectoria de la que se destaca lo siguiente: docente de varios servicios de la Udelar (Facultad de Ingeniería, Facultad de Ciencias, Facultad de Ciencias Económicas y Administración, Facultad de Química, Centro Universitario Regional del Este -CURE-) de la que llegó tempranamente a ser profesor titular, profesor en diferentes Universidades de Francia, integrante del directorio fundador de ANII, vicepresidente de ANTEL, director del Departamento de Matemática y Estadística Rafael Laguardia (IMERL) de FING, refundador y director del y Laboratorio de Probabilidad y Estadística (IMERL,FING), fundador del Polo de Desarrollo Universitario -PDU- MAREN del CURE,  director Regional del CURE. Al momento de su fallecimiento ocupaba el cargo de director del Departamento Modelización Estadística de Datos e Inteligencia Artificial (MEDIA) del CURE, el cual fue fundado por él a partir de la confluencia del PDU MAREN, el PDU GEPEIA y de varixs investigadorxs de otros Departamentos y Carreras del CURE. 
+
+Se destaca también en la trayectoria de Gonzalo, la obtención del Premio Caldeyro Barcia que premia la excelencia académica en ciencias básicas, concedido a una trayectoria en ciencias básicas destacada por su impacto sobre otras disciplinas y problemas de la sociedad y el medio ambiente, la integración como miembro electo del International Statistical Institut, y el haber presidido para América Latina la principal sociedad de estadística a nivel mundial, la Bernoulli Society of Mathematical Statistics and Probability. Obtuvo también, el Premio de la Academia Nacional de Veterinaria por sus trabajos en hidatidosis. Ha sido reconocido por mentores, pares y estudiantes. En relación a esto último le otorgaron el premio Tiza de oro y el Einstein de palo en FING y FCIEN respectivamente, máximos reconocimientos por parte de los estudiantes a un docente. 
+
+A todos estos méritos se suma el rol de Gonzalo como ideador de las Jornadas de Estadística Aplicada que desde 2013 tienen lugar en La Paloma, este evento recibe hoy día cerca de 100 personas y cuentan con un lugar destacado en los eventos académicos del país. Otro aspecto a resaltar es la visión que tuvo Gonzalo en comenzar enseñar e investigar en Machine Learning, fue un pionero en la Udelar a este respecto, habiendo obtenido un reconocimiento por haber sido el primer docente en dictar cursos de posgrado en esta temática en el país.
+
+Hasta el final, Gonzalo siguió desarrollando trabajos en Estadística teórica y aplicada. Siempre mostró gran pasión por el estudio de eventos extremos los cuales suponen un gran desafío para la Estadística dada su naturaleza de raros, también lo eran para él, sobre todo cuando pensaba en las consecuencias humanas que ciertos eventos raros podían tener en la vida de las personas más vulnerables. Esa sensibilidad estaba presente en todos sus trabajos aplicados, alegando que detrás de los números, hay personas y que eso no hay que olvidarlo nunca.
+Gonzalo fue alguien de extrema generosidad con sus colegas, sus estudiantes, amigos. Como queda de manifiesto en los párrafos previos, fue un matemático y un intelectual excepcional, con un muy inusual y genuino interés por las aplicaciones. Muy respetuoso de la memoria institucional y de sus predecesores. Además, fue militante político, periodista, divulgador, amante de la música y padre de dos hermosxs hijxs, que fueron su máximo orgullo. 
+\vspace{1cm}
+
+__Te extrañamos Gonza__.
+
+\vspace{1.5cm}
+
+```{r rmarkdown, echo=FALSE, out.width='40%', fig.align='right'}
+knitr::include_graphics("images/gonzalo-perera.png")
+```
+
 
 # Introducción: la teoría de valores extremos {.unnumbered .unlisted}
 

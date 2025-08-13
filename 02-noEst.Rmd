@@ -20,8 +20,8 @@ Recordemos que si los datos no son $iid$ es porque los datos:
 -   su distribución no es la misma,
 -   no son independientes y su distribución no es la misma.
 
-Nota: Los tests que permiten contrastar la hipótesis $iid$ son:
-Spearman, runs up and down, etc. En R se encuentran como randtests.
+__Nota:__ Los tests que permiten contrastar la hipótesis $iid$ son:
+Spearman, runs up and down, etc. En `R` se encuentran como randtests.
 
 ```{=html}
 <!--
@@ -44,7 +44,7 @@ aspectos medulares que usemos.
 
 ## Procesos estacionarios
 
-Una secuencia de variables aleatorias independientes es, en general, estacionaria. Sin embargo, la estacionariedad admite dependecia en las variables de una serie pero implica que sus propiedades estocásticas sean homogéneas en el tiempo. Si $X_1,X_2, \dots$ es una serie estacionaria, entonces $X_1$ tiene la misma distribución que $X_{60}$, la distribución conjunta de $(X_1, X_2)$ es la misma que $X_{101}$ y $X_{102}$ pero no es necesario que $X_1$ sea independiente de $X_2$ o de $X_102$. La dependencia en las series estacionarias puede tomar múltiples formas por lo que se hace dificil realizar generalizaciones. Para el caso extremal, es necesario imponer restricciones: se puede suponer que los valores extremos son independientes cuando están lo suficientemente apartados en el tiempo. Muchas series estacionarias satisfacen esto y además es una condición posible para muchos procesos físicos. Eliminar la dependencia de largo plazo para valores extremos, nos permite poner el foco en el efecto de la dependencia de corto plazo.  Cuando los datos extremales sean estacionarios podremos modelarlos a través del método de máximos por bloques con distribuciones GEV como vimos anteriormente y como veremos luego, por métodos de umbrales [@coles2001introduction].
+Una secuencia de variables aleatorias independientes es, en general, estacionaria. Sin embargo, la estacionariedad admite dependecia en las variables de una serie pero implica que sus propiedades estocásticas sean homogéneas en el tiempo. Si $X_1,X_2, \dots$ es una serie estacionaria, entonces $X_1$ tiene la misma distribución que $X_{60}$, la distribución conjunta de $(X_1, X_2)$ es la misma que $X_{101}$ y $X_{102}$ pero no es necesario que $X_1$ sea independiente de $X_2$ o de $X_{102}$. La dependencia en las series estacionarias puede tomar múltiples formas por lo que se hace dificil realizar generalizaciones. Para el caso extremal, es necesario imponer restricciones: se puede suponer que los valores extremos son independientes cuando están lo suficientemente apartados en el tiempo. Muchas series estacionarias satisfacen esto y además es una condición posible para muchos procesos físicos. Eliminar la dependencia de largo plazo para valores extremos, nos permite poner el foco en el efecto de la dependencia de corto plazo.  Cuando los datos extremales sean estacionarios podremos modelarlos a través del método de máximos por bloques con distribuciones GEV como vimos anteriormente y como veremos luego, por métodos de umbrales [@coles2001introduction].
 
 
 
@@ -66,9 +66,13 @@ head(portpirie, 5)
 
 -->
 
-```{r nice-fig2, echo=FALSE, fig.cap='Niveles máximos anuales del nivel del mar en Port Pirie (1923-1987)', ,echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
-
-plot(portpirie,  xlab = "Year", ylab = "Sea Level (meters)", col="red")
+```{r nice-fig2, echo=FALSE, fig.cap='Máximos anuales del nivel del mar en Port Pirie (1923-1987)', ,echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+plot(portpirie,
+     xlab = "Año",
+     ylab = "Nivel del mar (metros)",
+     pch = 21,        # círculo con borde y relleno
+     bg = "red",      # color de relleno
+     col = "black")   # color del borde
 ```
 
 __Problema:__ A partir de estos datos, puede ser necesario estimar el nivel máximo del mar que
@@ -106,7 +110,7 @@ siendo $m$ un número; si los datos que están a una distancia mayor que
 $m$ entonces son _independientes_. 
 
 Un ejemplo de datos $m$-dependientes son los procesos llamados
-Medias Móviles^[Moving Averages en inglés.] de orden $q$ [@enders]. El proceso $MA(q)$ con $m=q$ puede expresarse como
+Medias Móviles^[Moving Average en inglés.] de orden $q$ [@enders]. El proceso $MA(q)$ con $m=q$ puede expresarse como
 
 \[
 X_t = \mu + \varepsilon_t + \theta_1 \varepsilon_{t-1} + \theta_2 \varepsilon_{t-2} + \cdots + \theta_q \varepsilon_{t-q},
@@ -265,9 +269,10 @@ Existen dos modelos generales para descomponer una serie temporal: el modelo adi
 
 __Modelo aditivo :__ Se utiliza cuando la variación estacional es aproximadamente constante a lo largo del tiempo.
 
-$$
+\begin{equation}
 Y_t = T_t + S_t + R_t
-$$
+ (\#eq:aditivo)
+\end{equation}
 
 donde \(Y_t\) es la serie original, \(T_t\) la tendencia, \(S_t\) la estacionalidad y \(R_t\) el residuo.
 
@@ -798,6 +803,206 @@ Poisson Compuestos. El conteo de eventos extremos será también la base o el �
 <!-- (Lise Bellanger-GP). -->
 
 
+```{example, label="co2", name="Concentración atmosférica de $CO_2$ en Mauna Loa"}
+Vamos a analizar a la serie temporal mensual relativa a la concentración atmosférica de $CO_2$ en Mauna Loa, Hawai. Las concentraciones atmosféricas de $(CO_2)$ se expresan en partes por millón (ppm) y se reportan según la escala preliminar de fracción molar manométrica del SIO de 1997. Es una serie temporal, de frecuencia mensual, con 468 observaciones, desde 1959 a 1997.
+```
+
+
+```{r echo=TRUE}
+library("datasets")
+```
+
+
+
+```{r echo=TRUE}
+class(co2)
+```
+
+```{r echo=TRUE}
+head(co2)
+```
+
+Los datos se pueden visualizar en la siguiente Figura \@ref(fig:co2g).
+
+```{r co2g, fig.cap = "Concentración atmosférica de CO2", echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+# plot(co2, ylab = expression("Concentración atmosférica de CO"[2]),las = 1)
+# Extraer tiempo y convertirlo en fechas reales
+co2_df <- data.frame(
+  fecha = seq(as.Date("1959-01-01"), by = "month", length.out = length(co2)),
+  co2 = as.numeric(co2)
+)
+
+# Crear gráfico
+ggplot(co2_df, aes(x = fecha, y = co2)) +
+  geom_line(color = "steelblue") +
+  labs(
+    x = "Fecha",
+    y = expression("Concentración atmosférica de CO"[2])
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(angle = 0))
+
+```
+
+
+Del análisis visual del gráfico podemos concluir los siguiente:
+
+- Tendencia creciente: la concentración media de $CO_2$ crece sostenidamente entre 1959 y 1997. Esto podría reflejar un fenómeno de largo plazo, relacionado con las emisiones globales de $CO_2$.
+
+- Estacionalidad marcada: hay un patrón oscilante de subidas y bajadas regulares cada año. Es decir, se evidencia un ciclo con máximos y mínimos anuales. Entonces, se puede evidenciar  un patrón repetitivo que ocurre cada año: los valores suben y bajan de manera bastante regular dentro de cada ciclo anual.
+
+- Transición entre máximos y mínimos: es evidente el pasaje sistemático desde un máximo a un mínimo dentro de cada año. 
+
+
+
+
+Si  asumimos un modelo aditivo (Eq. \@ref(eq:aditivo)) para descomponer a la serie temporal, la estacionalidad de la serie resulta evidente y clara. Vamos a realizar una descomposición estacional clásica por médias móviles.
+
+```{r}
+# descomposicion por MM
+co2_decomp <- decompose(co2, type="additive")
+```
+
+
+
+
+```{r co2d, fig.cap = "Descompoisción de la serie", echo=FALSE, fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
+plot(co2_decomp)
+```
+
+
+
+Ahora, analizamos el resultado del test de Box-Ljung para evaluar si los residuos presentan autocorrelación. Se pone a prueba $H_0)$ los residuos son independientes (no autocorrelacionados).
+
+
+
+
+```{r echo=TRUE}
+# help(decompose) --> podemos ver en la ayuda los resultados
+# random: The remainder part
+residuos<-co2_decomp$random
+# Test de Ljung-Box para autocorrelación (independencia)
+Box.test(residuos, lag = 20, type = "Ljung-Box")
+```
+Como el p-valor es muchísimo menor que cualquier nivel típico de significación (0.05, 0.01, etc.), rechazamos $H_0)$. En un buen modelo de series temporales (o en un buen ajuste estacional con `decompose`), los residuos deberían ser ruido blanco (independientes, media 0, varianza constante).
+
+De la Fig.\@ref(fig:acfres), se desprende que hay varias barras (sobre todos las iniciales) que claramente sobrepasan las bandas azules (intervalos de confianza al 95%). Esto indica que existe autocorrelación significativa en los primeros retardos y aunque la correlación parecería decaer a medida que aumentan los lags, no desaparece del todo. 
+
+
+
+```{r acfres, fig.cap="ACF de los residuos para 20 rezagos", fig.height=3, fig.width=6, echo=FALSE, message=FALSE, warning=FALSE}
+# ACF
+acf(residuos, na.action = na.omit, lag.max =20, main="")
+```
+
+Por todo lo anterior podemos concluir que con la descomposición empleada los residuos no se comportan como ruidos blancos. Por esto, es necesario elegir otra descomposición o buscar métodos alternativos que nos brinden los resultados esperados. En este sentido, una alternativa consiste en emplear la función `auto.arima` del paquete `forecast` que nos permite ajustar (detectar) el mejor modelo ARIMA de una serie temporal univariada. 
+
+
+
+```{r echo=TRUE}
+# Si no la tenemos instalada corremos: install.packages("forecast")
+library(forecast)
+# Ajusta el mejor modelo ARIMA a una serie temporal univariada
+fit <- auto.arima(co2, stationary = FALSE, seasonal = TRUE) 
+```
+
+Una vez que ajustamos el modelo, podemos analizar los residuos con `checkresiduals`. 
+
+```{r echo=TRUE}
+# Corre Ljung–Box test
+checkresiduals(fit, plot=FALSE)  
+```
+La prueba de Ljung-Box nos arroja un $p-value = 0.4424 > \alpha=0.05$ por lo que habría evidencia de no autocorrelación de los residuos para 24 rezagos. Podemos concluir que los residuos se comportan como un ruido blanco con una confianza del $95\%$. 
+
+En la Figura \@ref(fig:forecastres) hay tres paneles que resumen el diagnóstico de residuos para el modelo $ARIMA(1,1,1)(1,1,2)[12]$.
+En el gráfico superior se visualizan los residuos hallados trás el ajuste del modelo ARIMA. Los residuos parecerían oscilar alrededor de cero sin mostrar tendencias persistentes ni patrones estacionales visibles. No se observan _rachas_ largas de valores positivos o negativos, lo cual es un buen signo de independencia. Además, la amplitud parece relativamente constante por lo que no parece haber heterocedasticidad fuerte. 
+En el gráfico inferior izquierdo, tenemos el ACF de los residuos. Observamos que la mayoría de las barras están dentro de las bandas del IC($95\%$). Esto refuerza el resultado del test de Ljung–Box. A su vez, en el gráfico inferior derecho, del histograma se desprende un comportamiento aproximadamente normal de los residuos. La distribución de los residuos es bastante simétrica y centrada en cero. La curva roja (densidad normal ajustada) se superpone bien al histograma. Habría ligeras desviaciones en las colas, pero nada dramático.
+
+```{r forecastres, fig.cap="Análisis de los residuos del modelo ARIMA", fig.height=6, fig.width=6, echo=FALSE, message=FALSE, warning=FALSE}
+checkresiduals(fit, plot=TRUE, test=FALSE)  
+```
+
+
+De todo lo anterior podemos concluir que:
+
+- El modelo captura bien la estructura temporal y estacional de la serie.
+
+- Residuos parecerían comportarsr como un ruido blanco, sin autocorrelación significativa y con distribución aproximadamente normal.
+
+- El diagnóstico visual es coherente con el p-valor hallado en el test de Ljung–Box, entonces el modelo es estadísticamente adecuado.
+
+\newpage
+Avanzando en el análisis, es interesante analizar en qué meses se dan tanto los máximos y los mínimos en cada año para entender el componente estacional.
+
+
+
+
+```{r echo=TRUE}
+# slice de la de serie para ver como estan estructurados los datos
+co2_s <- window(co2, start = c(1959, 1), end = c(1970, 12))
+co2_s
+```
+
+
+```{r include=FALSE}
+library(dplyr)
+```
+
+
+
+```{r echo=TRUE}
+# de ts a df
+co2_df <- data.frame(
+  year = floor(time(co2)),
+  month = cycle(co2),
+  value = as.numeric(co2)
+) %>%
+  mutate(date = as.Date(paste(year, month, "01", sep = "-")))
+```
+
+
+```{r echo=TRUE}
+head(co2_df)
+```
+
+
+
+
+```{r echo=TRUE}
+# hallamos los maximos anuales
+co2_max_per_year <- co2_df %>%
+  group_by(year) %>%
+  filter(value == max(value)) %>%
+  ungroup()
+co2_max_per_year
+```
+
+
+```{r echo=TRUE}
+# cuando se dan los maximos anuales: los meses
+unique(co2_max_per_year$month)
+```
+
+
+
+```{r echo=TRUE}
+# minimos anuales
+co2_min_per_year <- co2_df %>%
+  group_by(year) %>%
+  filter(value == min(value)) %>%
+  ungroup()
+co2_min_per_year
+```
+
+```{r echo=TRUE}
+unique(co2_min_per_year$month)
+```
+
+
+En los meses de Abril y Mayo se detectan los picos en las emisiones de $CO_2$ mientras que en los meses de Setiembre y Octubre se registran los valores mínimos. Podríamos pensar que estos meses marcan el punto de inflexión estacional en el ciclo del carbono. La alternancia entre máximos (Abril-Mayo) y mínimos (Setiembre-Octubre) podría ser un reflejo el pulso respiratorio asociado a esa zona del planeta. Con esto, sería interesante analizar la transición entre ciclos. 
+
+
+
 
 \newpage
 
@@ -1019,6 +1224,8 @@ Esto es coherente con el comportamiento esperado de una serie de retornos financ
 
 \vspace{1cm}
 Los datos del índice Dow Jones ofrecen un ejemplo para explorar la utilidad del enfoque POT.
+
+
 
 
 <!--
