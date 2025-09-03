@@ -16,7 +16,7 @@ Z_n=\frac{X_1+\dots+ X_n-n\mu}{\sigma\sqrt{n}}
 Entonces, la función de distribución acumulada (CDF) de \( Z_n \) converge a la CDF normal estándar \( \Phi(z) \), es decir:
   
 $$
-\lim_{n \to \infty} \mathbb{P}(Z_n \leq z) = \Phi(z) = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^z e^{-x^2/2} dx, \quad \text{para todo } z \in \mathbb{R}.
+\lim_{n \to \infty} P(Z_n \leq z) = \Phi(z) = \frac{1}{\sqrt{2\pi}} \int_{-\infty}^z e^{-x^2/2} dx, \quad \text{para todo } z \in \mathbb{R}.
 $$
 ```
 
@@ -31,7 +31,7 @@ El **Teorema Central del Límite (TCL)** permite aproximar probabilidades asocia
 
 ### Aproximación Normal Basada en el TCL
 
-Sea \( S_n = X_1 + \dots + X_n \), donde las \( X_i \) son variables aleatorias independientes e idénticamente distribuidas con media \( \mu \) y varianza \( \sigma^2 \). Si \( n \) es grande, la probabilidad \( \mathbb{P}(S_n \leq c) \) puede aproximarse tratando a \( S_n \) como si siguiera una distribución normal, siguiendo el siguiente procedimiento:
+Sea \( S_n = X_1 + \dots + X_n \), donde las \( X_i \) son variables aleatorias independientes e idénticamente distribuidas con media \( \mu \) y varianza \( \sigma^2 \). Si \( n \) es grande, la probabilidad \( P(S_n \leq c) \) puede aproximarse tratando a \( S_n \) como si siguiera una distribución normal, siguiendo el siguiente procedimiento:
 
 1. Calcular la media \( n\mu \) y la varianza \( n\sigma^2 \) de \( S_n \).
 2. Calcular el valor normalizado
@@ -40,7 +40,7 @@ Sea \( S_n = X_1 + \dots + X_n \), donde las \( X_i \) son variables aleatorias 
    $$
 3. Usar la aproximación
    $$
-   \mathbb{P}(S_n \leq c) \approx \Phi(z),
+   P(S_n \leq c) \approx \Phi(z),
    $$
    donde \( \Phi(z) \) es la función de distribución acumulada de la normal estándar, disponible en tablas estadísticas o mediante software.
 
@@ -58,7 +58,7 @@ Las tres distribuciones de valores extremos son Gumbel, Frechet y Weibull, como 
 Si $\exists$ las secuencias de constantes $\left\{  a_n \right\}$ y $\left\{  b_n \right\}$ tal que 
 
 $$
-\Pr\{M^{\ast}_n \leq z\} \to G(z) \quad\text{a medida que}\quad n\to\infty
+P\{M^{\ast}_n \leq z\} \to G(z) \quad\text{a medida que}\quad n\to\infty
 $$  
   
 siendo $G$ una función de distribución no degenerada, entonces $G$ pertenece a una de las 3 siguientes familias:
@@ -136,6 +136,7 @@ G(z) = \exp\left\{ -\exp\left[ -\left( \frac{z - \mu}{\sigma} \right) \right] \r
 La unificación de las tres familias clásicas de distribuciones extremales en una sola familia (GEV) simplifica el análisis estadístico. Al inferir el parámetro \( \xi \), los datos determinan el tipo de cola más adecuado, evitando decisiones subjetivas previas. La incertidumbre en \( \xi \) refleja cuán claro es ese comportamiento extremo en el conjunto de datos. Aunque los parámetros $a_n$ y $b_n$ son desconocidos, la distribución de los máximos puede aproximarse por una GEV [@coles2001introduction].
 
 
+
 ## Modelado práctico de extremos y niveles de retorno {#sec:practico}
 
 A partir del Teorema de Fisher--Tippett--Gnedenko, se justifica el uso de la familia GEV para modelar los máximos de una secuencia larga de observaciones independientes. Como los parámetros de normalización \( a_n \) y \( b_n \) suelen ser desconocidos, una estrategia práctica consiste en dividir los datos en bloques de tamaño \( n \) (por ejemplo, un año), y considerar los máximos por bloque \( M_{n,1}, \dots, M_{n,m} \).
@@ -143,7 +144,7 @@ A partir del Teorema de Fisher--Tippett--Gnedenko, se justifica el uso de la fam
 A esta nueva muestra de máximos por bloque se le ajusta una distribución GEV, y a partir de este modelo se estiman los \textbf{cuantiles extremos} (también llamados __niveles de retorno__). El cuantil \( z_p \) se define como el valor tal que
 
 \[
-\Pr(M_n > z_p) = p,
+P(M_n > z_p) = p,
 \]
 
 es decir, el valor que se espera superar con probabilidad \( p \). A \( z_p \) se lo interpreta como el nivel de retorno asociado al período \( 1/p \). Por ejemplo, si \( p = 0.01 \), entonces \( z_p \) representa un evento que ocurre, en promedio, una vez cada 100 años.
@@ -164,7 +165,7 @@ knitr::include_graphics("images/gev_params.png")
 Este tipo de gráfico se conoce como _return level plot_, y es útil tanto para comunicar el modelo como para validar su ajuste [@coles2001introduction].
 
 
-
+\newpage
 
 ## Condición de Von Mises I {#sec:vonmises}
 
@@ -314,7 +315,7 @@ En este apartado se presenta el resultado fundamental de la teoría clásica de 
 
 Sean \( X_1, X_2, \dots, X_n \) variables aleatorias independientes e idénticamente distribuidas con función de distribución \( F \). Sea \( M_n = \max\{X_1, \dots, X_n\} \). Existen \( a_n > 0 \), \( b_n \in \mathbb{R} \) y una función de distribución no degenerada \( G \) tal que:
 \[
-\lim_{n \to \infty} \mathbb{P}\left( \frac{M_n - b_n}{a_n} \leq x \right) = G(x),
+\lim_{n \to \infty} P\left( \frac{M_n - b_n}{a_n} \leq x \right) = G(x),
 \]
 si y solo si \( G \) pertenece a una de las siguientes tres familias:
 
@@ -396,7 +397,7 @@ Esta condición se puede expresar también en términos de funciones de tipo Von
 
 Una distribución \( F \) pertenece al **Dominio de Atracción Máxima** de la ley de **Gumbel** \( \Lambda(x) = \exp(-e^{-x}) \), si existen funciones de normalización \( a_n > 0 \), \( b_n \in \mathbb{R} \), tales que:
 \[
-\lim_{n \to \infty} \mathbb{P}\left( \frac{M_n - b_n}{a_n} \leq x \right) = \Lambda(x).
+\lim_{n \to \infty} P\left( \frac{M_n - b_n}{a_n} \leq x \right) = \Lambda(x).
 \]
 
 Una condición suficiente (Condición de Von Mises tipo I) para que esto ocurra es:

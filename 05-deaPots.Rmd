@@ -4,7 +4,7 @@
 
 ### Introducción
 
-Recordemos que si $H$ es una distribución extremal y $X_1,...,X_n$ son iid con distribución $F$, decimos que $F$ pertenece al $DAM(H)$, si existen dos sucesiones de números reales, $d_n$ y $c_n>0$, tales que la distribución de
+Recordemos que si $H$ es una distribución extremal y $X_1,...,X_n$ son $iid$ con distribución $F$, decimos que $F$ pertenece al $DAM(H)$, si existen dos sucesiones de números reales, $d_n$ y $c_n>0$, tales que la distribución de
 
 \begin{equation}
 \lim_{n \to \infty} \frac{max(X_1,...,X_n)- d_n}{c_n}=H
@@ -54,7 +54,7 @@ F^{-1}(p)=\text{inf}\left\{t|F(t)\leq p \right\},\quad\text{para}\;0<p<1.
 
 En la práctica nuestros datos suelen involucrar covariables y ruido puro. Las covariables pueden tener una estructura compleja, muy a menudo no son estacionarias y en ocasiones presentan fuertes dependencias. 
 
-Supongamos que nuestros datos son $X_i=f(W_i,Y_i)$ donde $W_1,\dots,W_n$ son iid y las $Y$ son categóricas (las covariables definen estados), pudiendo tomar los valores $1,2,\dots,k$.
+Supongamos que nuestros datos son $X_i=f(W_i,Y_i)$ donde $W_1,\dots,W_n$ son $iid$ y las $Y$ son categóricas (las covariables definen estados), pudiendo tomar los valores $1,2,\dots,k$.
 
 
 
@@ -147,7 +147,7 @@ los excesos del umbral es una mezcla de DPG.
 
 ## DEA^[DEA: Distribución Extremal Asintótica.] para Datos No Estacionarios y Fuertemente Dependientes {#caro}
 
-Vamos a tomar de ejemplo el articulo  de @crisci2022asymptotic.  La teoría clásica de valores extremos, como el teorema de Fisher-Tippett-Gnedenko, se basa en secuencias de variables aleatorias independientes e idénticamente distribuidas (iid). Sin embargo, en muchos contextos reales como el clima o el tráfico, los datos muestran propiedades no estacionarias y fuerte dependencia temporal, lo que limita el uso de dicha teoría.
+Vamos a tomar de ejemplo el articulo  de @crisci2022asymptotic.  La teoría clásica de valores extremos, como el teorema de Fisher-Tippett-Gnedenko, se basa en secuencias de variables aleatorias independientes e idénticamente distribuidas ($iid$). Sin embargo, en muchos contextos reales como el clima o el tráfico, los datos muestran propiedades no estacionarias y fuerte dependencia temporal, lo que limita el uso de dicha teoría.
 
 
 El objetivo del artículo es extender los resultados de convergencia en distribución para los máximos \( M_n = \max(X_1, \dots, X_n) \), cuando los datos \( X_i \) provienen de una estructura con:

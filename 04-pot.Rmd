@@ -74,7 +74,7 @@ Entonces, cuando $u$ tiende a infinito, $F_u$ tiende a una Distribución de Pare
 ```
      
 
-__Observación 3.__ El método POT para datos $iid$, se esarrolla siguiendo estos pasos:
+__Observación 1.__ El método POT para datos $iid$, se esarrolla siguiendo estos pasos:
 
 1. Se elige adecuadamente un umbral grande $u$. 
 
@@ -82,7 +82,7 @@ __Observación 3.__ El método POT para datos $iid$, se esarrolla siguiendo esto
 
 3. Se toma la submuestra constituída únicamente por los datos que superan el umbral $u$.
 
-4. Se verifica que esta submuestra pueda suponerse iid, mediante los tests de aleatoriedad. 
+4. Se verifica que esta submuestra pueda suponerse $iid$, mediante los tests de aleatoriedad. 
 
 5. Se verifica mediante test de ajuste, que esta submuestra puede modelarse por una Distribución de Pareto Generalizada.
 
@@ -94,9 +94,9 @@ $$
 F(y)=p+(1-p)\; PGE(y-p)
 $$
 
-__Observación 4__ (El _trade off_ sobre u.) El Paso 5 se apoyo en el Teorema PbdH. Por lo cual, es necesario que $u$ sea grande.
+__Observación 2.__ (El _trade off_ sobre u.) El Paso 5 se apoyo en el Teorema PbdH. Por lo cual, es necesario que $u$ sea grande.
 Sin embargo si $u$ es demasiado grande, se van a tener pocos datos (la submuestra del Paso 3). Al tener pocos datos, presumiblemente pasará cualquier test que se realice, pero estas conclusiones serán de muy baja confiabilidad. Y aunque la submuestra
-efectivamente sea iid y se ajuste a una Pareto
+efectivamente sea $iid$ y se ajuste a una Pareto
 Generalizada, la estimación de sus parámetros
 seguramente sea muy pobre. Por lo tanto,
 necesitamos un $u$ _grande pero no tanto_, un claro
@@ -107,25 +107,25 @@ y sencillo: proponemos tomar $u$ grande pero que
 la submuestra del Paso 3 tenga al menos una
 veintena de datos. 
 
-__Observación 5__ (¿Por qué hacer el Paso 4?) El
+__Observación 3.__ (¿Por qué hacer el Paso 4?) El
 motivo para ello es doble. Por un lado, aunque la
 muestra total haya pasado tests de aleatoriedad y
-pueda asumirse iid, podría pasar que al mirar sólo
+pueda asumirse $iid$, podría pasar que al mirar sólo
 los valores altos, se detectaran efectos no aleatorios
 que hayan pasado desapercibidos en los tests sobre
 toda la muestra. Por otro lado, inversamente,
-puede haber muestras que no sean iid debido a
+puede haber muestras que no sean $iid$ debido a
 efectos no aleatorios que se presenten los valores
 bajos de la muestra y que por ende, en los valores
-altos se observe un comportamiento iid. Por esta
+altos se observe un comportamiento $iid$. Por esta
 doble razón, recomendamos no obviar el Paso 5.
 
-__Observación 6__ (El _clustering_.) En ocasiones, la submuestra del Paso 3 presenta muy claramente
+__Observación 4.__ (El _clustering_.) En ocasiones, la submuestra del Paso 3 presenta muy claramente
 _clustering_, esto es, los pasajes del umbral $u$ se dan en grupitos. Eso es una pista muy firme que
 delata la existencia de dependencia en los datos. Y los datos deben respetarse, siempre. Por lo tanto en
 la literatura se encuentran diversas propuestas de “declustering”, esto es, transformar los “grupitos” en un solo pasaje. No somos muy afectos a estos procedimientos (salvo que existan razones de fondo para considerar que hay reverberaciones o réplicas en las medidas observadas y maneras sólidamente asentadas de traducirlas en una única lectura), pues de algún modo se fuerza los datos a adaptarse a un modelo, en lugar de buscar el mejor modelo para los datos. Por ello, consideramos más adecuado discutir cómo implementar POT (o variantes) en datos que presenten dependencia, como se verá más adelante. Previo a ello, como es usual, veremos un ejemplo de aplicación a datos concretos, de forma de consolidar los conceptos. Para ello es necesario establecer algunos conceptos y fórmulas.
 
-__Observación 7__ (Métodos de estimación.) El método de estimación de parámetros por Máxima
+__Observación 5.__ (Métodos de estimación.) El método de estimación de parámetros por Máxima
 Verosimilitud es muy simple en el caso $iid$, pero más complejo en otros contextos. Sin embargo,
 desde el momento que los métodos basados en momentos y en cuantiles funcionan sin modificación alguna en el contexto $iid$ o en el contexto de datos estacionarios y débilmente dependientes, resultan muy atractivos. Además, para el caso en que los datos tienen distribución continua, el método de cuantiles es mucho más general que el de momentos, por lo cual lo explicaremos aquí en lo que sigue.
 
@@ -153,9 +153,9 @@ Como las expresiones del lado izquierdo de la Eq. \@ref(eq:ecuacion15) dependen 
 
 Las soluciones de este sistema $r \times r$ son los estimadores por el método de los cuantiles de los parámetros desconocidos, que usaremos.
 
-__Observación 8__ (Tips para tests de ajuste.) En el capítulo hicimos comentarios sobre el tests chi-cuadrado de ajuste, pero en distribuciones continuas (salvo en distribuciones como la Normal o Exponencial, que tienen tests específicos de ajuste) suele usarse, y con buenas razones, el test de ajuste de Kolmogorov-Smirnov. Sin embargo, este test requiere el completo conocimiento de la distribución a ajustar y no admite parámetros desconocidos. ¿Cómo ajustar una distribución continua que tiene $r$ parámetros desconocidos? Veremos en la respuesta separadamente en el caso de datos $iid$ y en el caso de que los datos son estacionarios y débilmente dependientes.
+__Observación 6.__ (Tips para tests de ajuste.) En el capítulo hicimos comentarios sobre el tests chi-cuadrado de ajuste, pero en distribuciones continuas (salvo en distribuciones como la Normal o Exponencial, que tienen tests específicos de ajuste) suele usarse, y con buenas razones, el test de ajuste de Kolmogorov-Smirnov. Sin embargo, este test requiere el completo conocimiento de la distribución a ajustar y no admite parámetros desconocidos. ¿Cómo ajustar una distribución continua que tiene $r$ parámetros desconocidos? Veremos en la respuesta separadamente en el caso de datos $iid$ y en el caso de que los datos son estacionarios y débilmente dependientes.
 
-__a) Caso de datos iid:__ Se trata de un método en tres pasos, que conducen
+__a) Caso de datos $iid$:__ Se trata de un método en tres pasos, que conducen
 a poder usar hacer correctamente el test de ajuste de Kolmogorov- Smirnov.
 
 i. Se parten los $n$ datos de la muestra en dos subconjuntos: uno $(A)$ de tamaño $d$; otro $(B)$ de tamaño  $n-d$. En datos iid esta división puede ser sistemática (primeros $d$, últimos $n-d$) o por sorteo. Suele tomarse $r\ll d \ll n-d$.
@@ -184,7 +184,7 @@ iv. Llamemos $T(1), \dots,T(s)$ los valores del estadístico de Kolmogorov-Smirn
 
 Nuevamente, más allá de la mayor complejidad, se evitan dinámicas de “juez y parte”. No es difícil presentar versiones más elaboradas del algoritmo en el caso estacionario débilmente dependiente.
 
-__Observación 9__ (Estimación en PGE.) Si $k$ es nulo, que corresponde a una exponencial, $\sigma$ se estima por el método de los momentos por el promedio de los datos (excesos) en consideración. En cambio si $k$ no es nulo, se recurre al método de cuantiles y se obtiene que, si $0<p1<p2<1$, entonces si los excesos en POT son $Y_1,\dots,Y_H$, y de esta muestra se calculan los cuantiles empíricos $q_H(p_1)$, $q_H(p_2)$ y resultan las
+__Observación 7.__ (Estimación en PGE.) Si $k$ es nulo, que corresponde a una exponencial, $\sigma$ se estima por el método de los momentos por el promedio de los datos (excesos) en consideración. En cambio si $k$ no es nulo, se recurre al método de cuantiles y se obtiene que, si $0<p1<p2<1$, entonces si los excesos en POT son $Y_1,\dots,Y_H$, y de esta muestra se calculan los cuantiles empíricos $q_H(p_1)$, $q_H(p_2)$ y resultan las
 estimaciones: $k$ solución computacional de
 
 \begin{align}

@@ -343,7 +343,7 @@ Obviamente, esto muchas veces es “too good to be true”, pero variaciones de 
 
 
 
-__Observación 1:__ En la práctica, si se toman datos
+__Observación 1.__ En la práctica, si se toman datos
 en los instantes $1,\dots,n$ suele reescalarse el tiempo
 dividiendo por $n$ y los instantes quedan en $[0,1]$. Allí se define un PP de manera casi idéntica, obviamente modificando en la Def. \@ref(def:d13), tanto en
 a) como en b) que los intervalos deben estar
@@ -352,7 +352,7 @@ contenidos en $[0,1]$.
 
 
 
-__Observación 2:__ Conviene recordar que si $X$ es
+__Observación 2.__ Conviene recordar que si $X$ es
 una $V.A.$ Poisson de parámetro $\lambda>0$ y $T$ es una $V.A.$
 exponencial de parámetro $\lambda$, entonces $E(X)= \lambda$ y $E(T)=1/\lambda$.
 Si $T_1,\dots,T_n,\dots$ $iid$ son los tiempos inter-eventos de un
@@ -796,12 +796,12 @@ Esto brinda un modelo razonablemente realista en muchas situaciones. Sin embargo
 
 Para “bajar a tierra” los conceptos vistos vamos a ver ejemplos concretos de HLE.  En todos los casos vamos a suponer que $n=5000$ y reescalemos el tiempo para llevarlo a $[0,1]$.
 
-#### HLE para datos iid
+#### HLE para datos $iid$
 
 <!---  [Text to display](https://otexts.com/fpp3/decomposition.html) -->
 
 
-- Simulamos datos i.i.d.
+- Simulamos datos $iid$
 - Introducimos \textit{outliers} grandes (por ejemplo, 20 valores artificialmente altos).
 - Elegimos un umbral \( u_n \) tal que aproximadamente
     \[
@@ -829,7 +829,7 @@ inter_event_times <- rexp(lambda, rate = lambda)
 rescaled_event_times <- cumsum(inter_event_times)
 rescaled_event_times <- rescaled_event_times / max(rescaled_event_times)  
 
-# 3. Generar una señal de fondo i.i.d. normal
+# 3. Generar una señal de fondo iid normal
 X <- rnorm(n)
 
 # 4. Convertir los tiempos de ocurrencia a posiciones de índice
@@ -853,7 +853,7 @@ inter_times <- diff(rescaled_times)
 
 
 
-```{r hleiid, fig.cap = "Datos i.i.d. + outliers aleatorios y espaciados", echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
+```{r hleiid, fig.cap = "Datos iid + outliers aleatorios y espaciados", echo=FALSE, fig.height=3, fig.width=6, message=FALSE, warning=FALSE}
 plot((1:n)/n, X, type = "l", col = "grey40",
      xlab = "Tiempo reescalado", ylab = "Valor")
 
@@ -865,7 +865,7 @@ legend("topright", legend = paste("Umbral u_n =", round(u_n, 2)),
 ```
 El umbral es \( u_n \) y se observan 20 pasajes de dicho umbral, claramente separados. 
 Parece razonable intentar modelarlo mediante un proceso de Poisson. 
-Esto será posible si los tiempos inter-eventos son independientes e idénticamente distribuidos (i.i.d.) con distribución exponencial.
+Esto será posible si los tiempos inter-eventos son independientes e idénticamente distribuidos ($iid$) con distribución exponencial.
 
 Veamos primero en qué instantes se dan los pasajes del umbral  (recordar que reescalamos el tiempo dividiendo por \( n = 5000 \))  y luego analizaremos los tiempos inter-eventos.
 

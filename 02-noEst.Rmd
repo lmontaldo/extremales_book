@@ -618,7 +618,7 @@ Como el valor-\(p = 0.5551\) es mayor que 0.05, no se rechaza la hipótesis nula
 
 Entonces, no hay evidencia de autocorrelación en los residuos.
 
-Esto es positivo, ya que indica que el modelo ajustado capturó correctamente la estructura determinística (tendencia + ciclo), y lo que queda se comporta como \textit{ruido aleatorio} (\textit{iid}).
+Esto es positivo, ya que indica que el modelo ajustado capturó correctamente la estructura determinística (tendencia + ciclo), y lo que queda se comporta como \textit{ruido aleatorio} ($iid$).
 
 <!--
 
