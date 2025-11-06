@@ -1,2 +1,3 @@
 # Laboratorios  {#sec:labs}
 
+## Lab 1: Análisis estadístico de datos extremales
