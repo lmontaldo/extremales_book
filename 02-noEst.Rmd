@@ -42,7 +42,7 @@ aspectos medulares que usemos.
 -->
 ```
 
-## Procesos estacionarios
+## Procesos estacionar
 
 Una secuencia de variables aleatorias independientes es, en general, estacionaria. Sin embargo, la estacionariedad admite dependecia en las variables de una serie pero implica que sus propiedades estocásticas sean homogéneas en el tiempo. Si $X_1,X_2, \dots$ es una serie estacionaria, entonces $X_1$ tiene la misma distribución que $X_{60}$, la distribución conjunta de $(X_1, X_2)$ es la misma que $X_{101}$ y $X_{102}$ pero no es necesario que $X_1$ sea independiente de $X_2$ o de $X_{102}$. La dependencia en las series estacionarias puede tomar múltiples formas por lo que se hace dificil realizar generalizaciones. Para el caso extremal, es necesario imponer restricciones: se puede suponer que los valores extremos son independientes cuando están lo suficientemente apartados en el tiempo. Muchas series estacionarias satisfacen esto y además es una condición posible para muchos procesos físicos. Eliminar la dependencia de largo plazo para valores extremos, nos permite poner el foco en el efecto de la dependencia de corto plazo.  Cuando los datos extremales sean estacionarios podremos modelarlos a través del método de máximos por bloques con distribuciones GEV como vimos anteriormente y como veremos luego, por métodos de umbrales [@coles2001introduction].
 
